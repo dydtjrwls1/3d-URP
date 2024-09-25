@@ -31,8 +31,11 @@ public class Player : MonoBehaviour
     float maxCameraInputValue = 30.0f;
     float meshRotationDelta = 0.2f;
 
+    float onAirTime = 0.0f;
+
     bool isMove = false;
     bool onGround = true;
+    bool isJump = false;
 
     readonly int Move_Hash = Animator.StringToHash("Move");
     readonly int Jump_Hash = Animator.StringToHash("Jump");
@@ -58,14 +61,7 @@ public class Player : MonoBehaviour
         inputAction.Player.Jump.performed += On_Jump;
     }
 
-    private void On_Jump(InputAction.CallbackContext obj)
-    {
-        if (onGround)
-        {
-            animator.SetTrigger(Jump_Hash);
-            rb.AddForce(Vector3.up * jumpForce);
-        }
-    }
+    
 
     private void Start()
     {
@@ -73,6 +69,12 @@ public class Player : MonoBehaviour
         groundSensor.onGround += (isGround) =>
         {
             onGround = isGround;
+            if (onGround)
+            {
+                onAirTime = 0.0f;
+            }
+
+            isJump = false;
             animator.SetBool(IsGround_Hash, isGround);
         };
     }
@@ -83,6 +85,11 @@ public class Player : MonoBehaviour
         {
             MeshRotation();
         }
+
+        if(!onGround)
+        {
+            onAirTime += Time.deltaTime;
+        }
     }
 
     private void LateUpdate()
@@ -92,12 +99,21 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isMove)
+        if (isJump)
         {
-            Vector3 cameraForward = new Vector3(cameraPoint.forward.x, 0, cameraPoint.forward.z).normalized;
-            moveDirection = Quaternion.LookRotation(inputDirection) * cameraForward;
-            rb.MovePosition(rb.position + Time.fixedDeltaTime * moveSpeed * moveDirection);
+            rb.angularVelocity = Vector3.zero;
         }
+        else
+        {
+            if (isMove)
+            {
+                Vector3 cameraForward = new Vector3(cameraPoint.forward.x, 0, cameraPoint.forward.z).normalized;
+                moveDirection = Quaternion.LookRotation(inputDirection) * cameraForward;
+                rb.MovePosition(rb.position + Time.fixedDeltaTime * moveSpeed * moveDirection);
+            }
+        }
+
+        Debug.Log(isJump);
     }
 
     private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -143,6 +159,16 @@ public class Player : MonoBehaviour
         nextCameraRotation = Quaternion.Euler(nextXRotation, nextYRotation, 0);
 
         //
+    }
+
+    private void On_Jump(InputAction.CallbackContext obj)
+    {
+        if (onGround)
+        {
+            isJump = true;
+            animator.SetTrigger(Jump_Hash);
+            rb.AddForce((Vector3.up + Vector3.forward) * jumpForce, ForceMode.Impulse);
+        }
     }
 
     void MeshRotation()
