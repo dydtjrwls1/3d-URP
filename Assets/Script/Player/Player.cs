@@ -25,9 +25,14 @@ public class Player : MonoBehaviour
     Quaternion moveRotation;
     Quaternion nextCameraRotation;
 
+    float maxCameraInputValue = 30.0f;
+    float meshRotationDelta = 0.2f;
+
     bool isMove = false;
 
     readonly int Move_Hash = Animator.StringToHash("Move");
+    readonly int Jump_Hash = Animator.StringToHash("Jump");
+    readonly int IsGround_Hash = Animator.StringToHash("IsGround");
 
     private void Awake()
     {
@@ -51,7 +56,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        
+        cameraPoint.Rotate(Vector3.right * 0.01f);
     }
 
     private void Update()
@@ -89,11 +94,6 @@ public class Player : MonoBehaviour
         }
         else
         {
-            //moveRotation = cameraPoint.localRotation * Quaternion.LookRotation(inputDirection);
-            //moveRotation = Quaternion.Euler(0, moveRotation.y, 0);
-            //Quaternion cameraForwardRotation = Quaternion.Euler(0, cameraPoint.localRotation.eulerAngles.y, 0);
-            //moveRotation = cameraForwardRotation * Quaternion.LookRotation(inputDirection);
-            //moveDirection = moveRotation * cameraPoint.forward;
             isMove = true;
             animator.SetBool(Move_Hash, true);
         }
@@ -103,10 +103,23 @@ public class Player : MonoBehaviour
     {
         Vector2 delta = context.ReadValue<Vector2>();
 
-        float deltaX = Mathf.Clamp(delta.x, -30.0f, 30.0f);
-        float deltaY = Mathf.Clamp(delta.y, -30.0f, 30.0f);
+        float deltaX = Mathf.Clamp(delta.x, -maxCameraInputValue, maxCameraInputValue);
+        float deltaY = Mathf.Clamp(delta.y, -maxCameraInputValue, maxCameraInputValue);
 
-        float nextXRotation = cameraPoint.localEulerAngles.x - deltaY;
+        float nextXRotation;
+        if (cameraPoint.localEulerAngles.x < 360.0f && cameraPoint.localEulerAngles.x > 270.0f)
+        {
+            nextXRotation = Mathf.Max(cameraPoint.localEulerAngles.x - deltaY, 270.1f);
+        } 
+        else if(cameraPoint.localEulerAngles.x > 0.0f && cameraPoint.localEulerAngles.x < 90.0f) 
+        {
+            nextXRotation = Mathf.Min(cameraPoint.localEulerAngles.x - deltaY, 89.9f);
+        }
+        else
+        {
+            nextXRotation = cameraPoint.localEulerAngles.x;
+        }
+
         float nextYRotation = cameraPoint.localEulerAngles.y + deltaX;
 
         nextCameraRotation = Quaternion.Euler(nextXRotation, nextYRotation, 0);
@@ -118,6 +131,6 @@ public class Player : MonoBehaviour
     {
         Quaternion cameraForwardRotation = Quaternion.Euler(0, cameraPoint.localRotation.eulerAngles.y, 0);
         moveRotation = cameraForwardRotation * Quaternion.LookRotation(inputDirection);
-        mesh.rotation = Quaternion.Lerp(mesh.rotation, moveRotation, 0.05f);
+        mesh.rotation = Quaternion.Lerp(mesh.rotation, moveRotation, meshRotationDelta);
     }
 }
