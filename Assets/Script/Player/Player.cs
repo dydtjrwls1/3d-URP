@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 {
     public float moveSpeed = 3.0f;
     public float cameraSpeed = 30.0f;
+    public float jumpForce = 10.0f;
 
     PlayerInputActions inputAction;
 
@@ -19,6 +20,8 @@ public class Player : MonoBehaviour
 
     Transform cameraPoint;
 
+    GroundSensor groundSensor;
+
     Vector3 moveDirection;
     Vector3 inputDirection;
 
@@ -29,6 +32,7 @@ public class Player : MonoBehaviour
     float meshRotationDelta = 0.2f;
 
     bool isMove = false;
+    bool onGround = true;
 
     readonly int Move_Hash = Animator.StringToHash("Move");
     readonly int Jump_Hash = Animator.StringToHash("Jump");
@@ -42,6 +46,7 @@ public class Player : MonoBehaviour
 
         mesh = transform.GetChild(0);
         cameraPoint = transform.GetChild(1);
+        groundSensor = GetComponentInChildren<GroundSensor>();
     }
 
     private void OnEnable()
@@ -50,13 +55,26 @@ public class Player : MonoBehaviour
         inputAction.Player.Move.performed += OnMove;
         inputAction.Player.Move.canceled += OnMove;
         inputAction.Player.MousePoint.performed += On_MouseMove;
+        inputAction.Player.Jump.performed += On_Jump;
     }
 
-    
+    private void On_Jump(InputAction.CallbackContext obj)
+    {
+        if (onGround)
+        {
+            animator.SetTrigger(Jump_Hash);
+            rb.AddForce(Vector3.up * jumpForce);
+        }
+    }
 
     private void Start()
     {
         cameraPoint.Rotate(Vector3.right * 0.01f);
+        groundSensor.onGround += (isGround) =>
+        {
+            onGround = isGround;
+            animator.SetBool(IsGround_Hash, isGround);
+        };
     }
 
     private void Update()
