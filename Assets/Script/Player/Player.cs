@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ public class Player : MonoBehaviour
 
     Transform cameraPoint;
 
+    CinemachineVirtualCamera vcam;
+
     GroundSensor groundSensor;
 
     Vector3 moveDirection;
@@ -28,7 +31,7 @@ public class Player : MonoBehaviour
     Quaternion moveRotation;
     Quaternion nextCameraRotation;
 
-    float maxCameraInputValue = 30.0f;
+    float maxCameraInputValue = 5f;
     float meshRotationDelta = 0.2f;
 
     bool isMove = false;
@@ -46,6 +49,7 @@ public class Player : MonoBehaviour
         inputAction = new PlayerInputActions();
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        vcam = GetComponentInChildren<CinemachineVirtualCamera>();
 
         mesh = transform.GetChild(0);
         cameraPoint = transform.GetChild(1);
@@ -76,9 +80,16 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (isMove)
+        if (isAim)
         {
-            MeshRotation();
+            mesh.rotation = cameraPoint.rotation;
+        }
+        else
+        {
+            if (isMove)
+            {
+                MeshRotation();
+            }
         }
     }
 
@@ -135,18 +146,27 @@ public class Player : MonoBehaviour
         float deltaY = Mathf.Clamp(delta.y, -maxCameraInputValue, maxCameraInputValue);
 
         float nextXRotation;
-        if (cameraPoint.localEulerAngles.x < 360.0f && cameraPoint.localEulerAngles.x > 270.0f)
-        {
-            nextXRotation = Mathf.Max(cameraPoint.localEulerAngles.x - deltaY, 270.1f);
-        } 
-        else if(cameraPoint.localEulerAngles.x > 0.0f && cameraPoint.localEulerAngles.x < 90.0f) 
-        {
-            nextXRotation = Mathf.Min(cameraPoint.localEulerAngles.x - deltaY, 89.9f);
-        }
-        else
+        if(cameraPoint.localEulerAngles.x - 90.0f > 0.0f &&  cameraPoint.localEulerAngles.x - 90.0f < 180.0f)
         {
             nextXRotation = cameraPoint.localEulerAngles.x;
         }
+        else
+        {
+            nextXRotation = cameraPoint.localEulerAngles.x - deltaY;
+        }
+
+        //if (cameraPoint.localEulerAngles.x < 360.0f && cameraPoint.localEulerAngles.x > 270.0f)
+        //{
+        //    nextXRotation = Mathf.Max(cameraPoint.localEulerAngles.x - deltaY, 270.1f);
+        //} 
+        //else if(cameraPoint.localEulerAngles.x > 0.0f && cameraPoint.localEulerAngles.x < 90.0f) 
+        //{
+        //    nextXRotation = Mathf.Min(cameraPoint.localEulerAngles.x - deltaY, 89.9f);
+        //}
+        //else
+        //{
+        //    nextXRotation = cameraPoint.localEulerAngles.x;
+        //}
 
         float nextYRotation = cameraPoint.localEulerAngles.y + deltaX;
 
@@ -163,6 +183,7 @@ public class Player : MonoBehaviour
         // Aim 상태일경우 트리거 발동
         if (isAim)
         {
+            AimCameraSetting();
             animator.SetTrigger(Aim_Hash);
         }
     }
@@ -181,4 +202,26 @@ public class Player : MonoBehaviour
         moveRotation = cameraForwardRotation * Quaternion.LookRotation(inputDirection);
         mesh.rotation = Quaternion.Lerp(mesh.rotation, moveRotation, meshRotationDelta);
     }
+
+    void AimCameraSetting()
+    {
+        Cinemachine3rdPersonFollow component = vcam.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
+        if (component != null) 
+        {
+            component.ShoulderOffset = new Vector3(0.22f, 0.36f, 0.0f);
+            component.VerticalArmLength = -0.33f;
+            component.CameraDistance = 0.05f;
+        }
+        else
+        {
+            Debug.LogWarning("Cinemachine3rdPersonFollow 컴포넌트를 불러오지 못했습니다.");
+        }
+    }
+
+#if UNITY_EDITOR
+    public void Test_CamLock()
+    {
+        inputAction.Player.MousePoint.performed -= On_MouseMove;
+    }
+#endif
 }
