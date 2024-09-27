@@ -51,7 +51,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Click",
+                    "name": "RClick",
                     "type": "Button",
                     "id": "7f802cdc-c7ca-4a41-8a04-0495f94a09f3",
                     "expectedControlType": "Button",
@@ -163,11 +163,11 @@
                 {
                     "name": "",
                     "id": "2044c50b-9e63-4950-95e0-3ec96a1babdc",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Player",
-                    "action": "Click",
+                    "action": "RClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

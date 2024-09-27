@@ -32,11 +32,14 @@ public class Player : MonoBehaviour
     float meshRotationDelta = 0.2f;
 
     bool isMove = false;
+    bool isAim = false;
     bool onGround = true;
 
     readonly int Move_Hash = Animator.StringToHash("Move");
     readonly int Jump_Hash = Animator.StringToHash("Jump");
     readonly int IsGround_Hash = Animator.StringToHash("IsGround");
+    readonly int Aim_Hash = Animator.StringToHash("Aim");
+    readonly int IsAim_Hash = Animator.StringToHash("IsAim");
 
     private void Awake()
     {
@@ -56,6 +59,7 @@ public class Player : MonoBehaviour
         inputAction.Player.Move.canceled += OnMove;
         inputAction.Player.MousePoint.performed += On_MouseMove;
         inputAction.Player.Jump.performed += On_Jump;
+        inputAction.Player.RClick.performed += On_RClick;
     }
 
     
@@ -151,6 +155,17 @@ public class Player : MonoBehaviour
         //
     }
 
+    private void On_RClick(InputAction.CallbackContext obj)
+    {
+        isAim = !isAim;
+        animator.SetBool(IsAim_Hash, isAim);
+
+        // Aim 상태일경우 트리거 발동
+        if (isAim)
+        {
+            animator.SetTrigger(Aim_Hash);
+        }
+    }
     private void On_Jump(InputAction.CallbackContext obj)
     {
         if (onGround)
