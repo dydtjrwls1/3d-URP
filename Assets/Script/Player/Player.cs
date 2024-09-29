@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     public float cameraSpeed = 30.0f;
     public float jumpForce = 10.0f;
 
+    public Transform head;
+
     PlayerInputActions inputAction;
 
     Rigidbody rb;
@@ -24,6 +26,9 @@ public class Player : MonoBehaviour
     CinemachineVirtualCamera vcam;
 
     GroundSensor groundSensor;
+
+    // 현재 카메라의 시선을 알기위한 컴포넌트
+    CinemachinePOV vcamPOV;
 
     Vector3 moveDirection;
     Vector3 inputDirection;
@@ -54,6 +59,8 @@ public class Player : MonoBehaviour
         mesh = transform.GetChild(0);
         cameraPoint = transform.GetChild(1);
         groundSensor = GetComponentInChildren<GroundSensor>();
+
+        vcamPOV = vcam.GetCinemachineComponent<CinemachinePOV>();
     }
 
     private void OnEnable()
@@ -80,22 +87,15 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (isAim)
+        if (isAim || isMove)
         {
-            mesh.rotation = cameraPoint.rotation;
-        }
-        else
-        {
-            if (isMove)
-            {
-                MeshRotation();
-            }
+            MeshRotation();
         }
     }
 
     private void LateUpdate()
     {
-        cameraPoint.localRotation = Quaternion.Slerp(cameraPoint.localRotation, nextCameraRotation, Time.deltaTime * cameraSpeed);
+        Debug.Log(cameraPoint.localRotation);
     }
 
     private void FixedUpdate()
@@ -115,8 +115,9 @@ public class Player : MonoBehaviour
         //}
         if (isMove)
         {
-            Vector3 cameraForward = new Vector3(cameraPoint.forward.x, 0, cameraPoint.forward.z).normalized;
-            moveDirection = Quaternion.LookRotation(inputDirection) * cameraForward;
+            Quaternion cameraForward = Quaternion.Euler(0, vcamPOV.m_HorizontalAxis.Value, 0);
+            Quaternion moveRotation = Quaternion.LookRotation(inputDirection) * cameraForward;
+            moveDirection = moveRotation * transform.forward;
             rb.MovePosition(rb.position + Time.fixedDeltaTime * moveSpeed * moveDirection);
         }
     }
@@ -145,15 +146,15 @@ public class Player : MonoBehaviour
         float deltaX = Mathf.Clamp(delta.x, -maxCameraInputValue, maxCameraInputValue);
         float deltaY = Mathf.Clamp(delta.y, -maxCameraInputValue, maxCameraInputValue);
 
-        float nextXRotation;
-        if(cameraPoint.localEulerAngles.x - 90.0f > 0.0f &&  cameraPoint.localEulerAngles.x - 90.0f < 180.0f)
-        {
-            nextXRotation = cameraPoint.localEulerAngles.x;
-        }
-        else
-        {
-            nextXRotation = cameraPoint.localEulerAngles.x - deltaY;
-        }
+        //float nextXRotation;
+        //if(cameraPoint.localEulerAngles.x - 90.0f > 0.0f &&  cameraPoint.localEulerAngles.x - 90.0f < 180.0f)
+        //{
+        //    nextXRotation = cameraPoint.localEulerAngles.x;
+        //}
+        //else
+        //{
+        //    nextXRotation = cameraPoint.localEulerAngles.x - deltaY;
+        //}
 
         //if (cameraPoint.localEulerAngles.x < 360.0f && cameraPoint.localEulerAngles.x > 270.0f)
         //{
@@ -167,7 +168,7 @@ public class Player : MonoBehaviour
         //{
         //    nextXRotation = cameraPoint.localEulerAngles.x;
         //}
-
+        float nextXRotation = cameraPoint.localEulerAngles.x - deltaY;
         float nextYRotation = cameraPoint.localEulerAngles.y + deltaX;
 
         nextCameraRotation = Quaternion.Euler(nextXRotation, nextYRotation, 0);
@@ -198,9 +199,9 @@ public class Player : MonoBehaviour
 
     void MeshRotation()
     {
-        Quaternion cameraForwardRotation = Quaternion.Euler(0, cameraPoint.localRotation.eulerAngles.y, 0);
-        moveRotation = cameraForwardRotation * Quaternion.LookRotation(inputDirection);
-        mesh.rotation = Quaternion.Lerp(mesh.rotation, moveRotation, meshRotationDelta);
+        Quaternion cameraForwardRotation = Quaternion.Euler(0, vcamPOV.m_HorizontalAxis.Value, 0);
+        //moveRotation = cameraForwardRotation * Quaternion.LookRotation(inputDirection);
+        mesh.localRotation = cameraForwardRotation;
     }
 
     void AimCameraSetting()
