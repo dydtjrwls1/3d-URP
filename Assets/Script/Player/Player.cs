@@ -11,6 +11,10 @@ public class Player : MonoBehaviour
     public float cameraSpeed = 30.0f;
     public float jumpForce = 10.0f;
 
+    public float maxPlayerSpeed = 10.0f;
+
+    public float velocityChangeSpeed = 10.0f;
+
     public Transform head;
 
     PlayerInputActions inputAction;
@@ -56,8 +60,8 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
         vcam = GetComponentInChildren<CinemachineVirtualCamera>();
 
-        mesh = transform.GetChild(0);
-        cameraPoint = transform.GetChild(1);
+        //mesh = transform.GetChild(0);
+        //cameraPoint = transform.GetChild(1);
         groundSensor = GetComponentInChildren<GroundSensor>();
 
         vcamPOV = vcam.GetCinemachineComponent<CinemachinePOV>();
@@ -77,7 +81,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        cameraPoint.Rotate(Vector3.right * 0.01f);
+        //cameraPoint.Rotate(Vector3.right * 0.01f);
         groundSensor.onGround += (isGround) =>
         {
             onGround = isGround;
@@ -87,15 +91,14 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (isAim || isMove)
-        {
-            MeshRotation();
-        }
+        //if (isAim || isMove)
+        //{
+        //    MeshRotation();
+        //}
     }
 
     private void LateUpdate()
     {
-        Debug.Log(cameraPoint.localRotation);
     }
 
     private void FixedUpdate()
@@ -113,30 +116,34 @@ public class Player : MonoBehaviour
         //        rb.MovePosition(rb.position + Time.fixedDeltaTime * moveSpeed * moveDirection);
         //    }
         //}
-        if (isMove)
-        {
-            Quaternion cameraForward = Quaternion.Euler(0, vcamPOV.m_HorizontalAxis.Value, 0);
-            Quaternion moveRotation = Quaternion.LookRotation(inputDirection) * cameraForward;
-            moveDirection = moveRotation * transform.forward;
-            rb.MovePosition(rb.position + Time.fixedDeltaTime * moveSpeed * moveDirection);
-        }
+        rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxPlayerSpeed);
+
+        Vector3 inputForce = inputDirection * moveSpeed;
+        rb.velocity = Vector3.Lerp(rb.velocity, inputForce, Time.fixedDeltaTime * velocityChangeSpeed);
+        //if (isMove)
+        //{
+        //    Quaternion cameraForward = Quaternion.Euler(0, vcamPOV.m_HorizontalAxis.Value, 0);
+        //    Quaternion moveRotation = Quaternion.LookRotation(inputDirection) * cameraForward;
+        //    moveDirection = moveRotation * transform.forward;
+        //    rb.MovePosition(rb.position + Time.fixedDeltaTime * moveSpeed * moveDirection);
+        //}
     }
 
     private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
         Vector2 input = context.ReadValue<Vector2>();
-        inputDirection = new(input.x, 0, input.y);
+        inputDirection = new Vector3(input.x, 0, input.y).normalized;
 
-        if (context.canceled)
-        {
-            animator.SetBool(Move_Hash, false);
-            isMove = false;
-        }
-        else
-        {
-            animator.SetBool(Move_Hash, true);
-            isMove = true;
-        }
+        //if (context.canceled)
+        //{
+        //    animator.SetBool(Move_Hash, false);
+        //    isMove = false;
+        //}
+        //else
+        //{
+        //    animator.SetBool(Move_Hash, true);
+        //    isMove = true;
+        //}
     }
 
     private void On_MouseMove(InputAction.CallbackContext context)
@@ -168,10 +175,10 @@ public class Player : MonoBehaviour
         //{
         //    nextXRotation = cameraPoint.localEulerAngles.x;
         //}
-        float nextXRotation = cameraPoint.localEulerAngles.x - deltaY;
-        float nextYRotation = cameraPoint.localEulerAngles.y + deltaX;
+        //float nextXRotation = cameraPoint.localEulerAngles.x - deltaY;
+        //float nextYRotation = cameraPoint.localEulerAngles.y + deltaX;
 
-        nextCameraRotation = Quaternion.Euler(nextXRotation, nextYRotation, 0);
+        //nextCameraRotation = Quaternion.Euler(nextXRotation, nextYRotation, 0);
 
         //
     }
@@ -184,8 +191,8 @@ public class Player : MonoBehaviour
         // Aim 상태일경우 트리거 발동
         if (isAim)
         {
-            AimCameraSetting();
-            animator.SetTrigger(Aim_Hash);
+            //AimCameraSetting();
+            //animator.SetTrigger(Aim_Hash);
         }
     }
     private void On_Jump(InputAction.CallbackContext obj)
