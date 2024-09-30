@@ -17,25 +17,23 @@ public class Player : MonoBehaviour
 
     public Transform head;
 
+    public CinemachineVirtualCamera vcam;
+
     PlayerInputActions inputAction;
 
     Rigidbody rb;
-    Animator animator;
-
-    // 플레이어 Mesh 의 트랜스폼
-    Transform mesh;
-
-    Transform cameraPoint;
-
-    CinemachineVirtualCamera vcam;
 
     GroundSensor groundSensor;
+
+    Transform gunPoint;
 
     // 현재 카메라의 시선을 알기위한 컴포넌트
     CinemachinePOV vcamPOV;
 
     Vector3 moveDirection;
     Vector3 inputDirection;
+
+    Vector3 orgGunPoint;
 
     Quaternion moveRotation;
     Quaternion nextCameraRotation;
@@ -47,18 +45,14 @@ public class Player : MonoBehaviour
     bool isAim = false;
     bool onGround = true;
 
-    readonly int Move_Hash = Animator.StringToHash("Move");
-    readonly int Jump_Hash = Animator.StringToHash("Jump");
-    readonly int IsGround_Hash = Animator.StringToHash("IsGround");
-    readonly int Aim_Hash = Animator.StringToHash("Aim");
-    readonly int IsAim_Hash = Animator.StringToHash("IsAim");
-
     private void Awake()
     {
+        Transform child = transform.GetChild(0);
+        gunPoint = child;
+        orgGunPoint = gunPoint.localPosition;
+
         inputAction = new PlayerInputActions();
         rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
-        vcam = GetComponentInChildren<CinemachineVirtualCamera>();
 
         //mesh = transform.GetChild(0);
         //cameraPoint = transform.GetChild(1);
@@ -73,6 +67,7 @@ public class Player : MonoBehaviour
         inputAction.Player.Move.performed += OnMove;
         inputAction.Player.Move.canceled += OnMove;
         inputAction.Player.MousePoint.performed += On_MouseMove;
+        inputAction.Player.MousePoint.canceled += On_MouseMove;
         inputAction.Player.Jump.performed += On_Jump;
         inputAction.Player.RClick.performed += On_RClick;
     }
@@ -81,24 +76,24 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         //cameraPoint.Rotate(Vector3.right * 0.01f);
         groundSensor.onGround += (isGround) =>
         {
             onGround = isGround;
-            animator.SetBool(IsGround_Hash, isGround);
         };
     }
 
     private void Update()
     {
-        //if (isAim || isMove)
-        //{
-        //    MeshRotation();
-        //}
+        transform.rotation = Quaternion.Euler(transform.localRotation.x, vcamPOV.m_HorizontalAxis.Value, transform.localRotation.z);
     }
 
     private void LateUpdate()
     {
+        
     }
 
     private void FixedUpdate()
@@ -116,6 +111,8 @@ public class Player : MonoBehaviour
         //        rb.MovePosition(rb.position + Time.fixedDeltaTime * moveSpeed * moveDirection);
         //    }
         //}
+        
+
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxPlayerSpeed);
 
         Vector3 inputForce = inputDirection * moveSpeed;
@@ -150,8 +147,11 @@ public class Player : MonoBehaviour
     {
         Vector2 delta = context.ReadValue<Vector2>();
 
-        float deltaX = Mathf.Clamp(delta.x, -maxCameraInputValue, maxCameraInputValue);
-        float deltaY = Mathf.Clamp(delta.y, -maxCameraInputValue, maxCameraInputValue);
+        vcamPOV.m_HorizontalAxis.m_InputAxisValue = delta.x;
+        vcamPOV.m_VerticalAxis.m_InputAxisValue = delta.y;
+
+        //float deltaX = Mathf.Clamp(delta.x, -maxCameraInputValue, maxCameraInputValue);
+        //float deltaY = Mathf.Clamp(delta.y, -maxCameraInputValue, maxCameraInputValue);
 
         //float nextXRotation;
         //if(cameraPoint.localEulerAngles.x - 90.0f > 0.0f &&  cameraPoint.localEulerAngles.x - 90.0f < 180.0f)
@@ -186,7 +186,6 @@ public class Player : MonoBehaviour
     private void On_RClick(InputAction.CallbackContext obj)
     {
         isAim = !isAim;
-        animator.SetBool(IsAim_Hash, isAim);
 
         // Aim 상태일경우 트리거 발동
         if (isAim)
@@ -199,16 +198,15 @@ public class Player : MonoBehaviour
     {
         if (onGround)
         {
-            animator.SetTrigger(Jump_Hash);
             rb.velocity = new Vector3(jumpForce, jumpForce);
         }
     }
 
     void MeshRotation()
     {
-        Quaternion cameraForwardRotation = Quaternion.Euler(0, vcamPOV.m_HorizontalAxis.Value, 0);
+        //Quaternion cameraForwardRotation = Quaternion.Euler(0, vcamPOV.m_HorizontalAxis.Value, 0);
         //moveRotation = cameraForwardRotation * Quaternion.LookRotation(inputDirection);
-        mesh.localRotation = cameraForwardRotation;
+        //mesh.localRotation = cameraForwardRotation;
     }
 
     void AimCameraSetting()
