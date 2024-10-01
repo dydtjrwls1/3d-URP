@@ -7,9 +7,16 @@ public class Test01_PlayerTest : TestBase
 {
     public Player player;
 
+    public PlayerCamera playerCamera;
+
     protected override void Num1_performed(InputAction.CallbackContext obj)
     {
         player.Test_CamLock();
+    }
+
+    protected override void Num2_performed(InputAction.CallbackContext obj)
+    {
+        playerCamera.Aim();
     }
 
     // shoulder offset x = 0.22

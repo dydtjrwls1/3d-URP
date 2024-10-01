@@ -88,7 +88,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        transform.rotation = Quaternion.Euler(transform.localRotation.x, vcamPOV.m_HorizontalAxis.Value, transform.localRotation.z);
+        transform.rotation = Quaternion.Euler(Vector3.up * vcamPOV.m_HorizontalAxis.Value);
     }
 
     private void LateUpdate()
