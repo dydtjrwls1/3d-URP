@@ -7,7 +7,7 @@ public class Test01_PlayerTest : TestBase
 {
     public Player player;
 
-    public PlayerCamera playerCamera;
+    public GunPointController playerCamera;
 
     protected override void Num1_performed(InputAction.CallbackContext obj)
     {
