@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -20,6 +21,14 @@ public class Player : MonoBehaviour
     public float maxPlayerSpeed = 10.0f;
     public float velocityChangeSpeed = 10.0f;
 
+    [Header("Weapon Position")]
+    public Transform defaultWeaponPosotion;
+    public Transform aimingWeaponPosotion;
+
+    public float defaultFOV = 45f;
+    public float FOVMultiplier = 0.8f;
+    public float aimingSpeed = 2f;
+
     CharacterController m_controller;
 
     PlayerInputActions inputAction;
@@ -27,6 +36,8 @@ public class Player : MonoBehaviour
     GroundSensor m_GroundSensor;
 
     CinemachineVirtualCamera m_PlayerCamera;
+
+    Transform m_GunPoint;
 
     Vector3 m_InputDirection;
 
@@ -43,6 +54,9 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        Transform child = transform.GetChild(1);
+        m_GunPoint = child.GetChild(1); // cinemachine 밑에 안보이는 자식이 있으므로 2번째 자식을 가져온다.
+
         m_PlayerCamera = GetComponentInChildren<CinemachineVirtualCamera>();
 
         m_controller = GetComponent<CharacterController>();
@@ -81,6 +95,33 @@ public class Player : MonoBehaviour
     {
         HandlePlayerMovement();
     }
+
+    private void LateUpdate()
+    {
+        HandleGunMovement();
+    }
+
+    private void HandleGunMovement()
+    {
+        UpdateAimingPosition();
+    }
+
+    private void UpdateAimingPosition()
+    {
+        if (m_IsAim)
+        {
+            m_GunPoint.localPosition = Vector3.Lerp(m_GunPoint.localPosition, aimingWeaponPosotion.localPosition, aimingSpeed * Time.deltaTime);
+            SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV * FOVMultiplier, aimingSpeed * Time.deltaTime));
+        }
+        else
+        {
+            m_GunPoint.localPosition = Vector3.Lerp(m_GunPoint.localPosition, defaultWeaponPosotion.localPosition, aimingSpeed * Time.deltaTime);
+            SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV, aimingSpeed * Time.deltaTime));
+        }
+
+        Debug.Log(m_GunPoint.localPosition);
+    }
+
     private void FixedUpdate()
     {
         //m_Rigidbody.velocity = Vector3.ClampMagnitude(m_Rigidbody.velocity, maxPlayerSpeed);
@@ -89,16 +130,19 @@ public class Player : MonoBehaviour
         //m_Rigidbody.velocity = Vector3.Lerp(m_Rigidbody.velocity, inputForce, Time.fixedDeltaTime * velocityChangeSpeed);
     }
 
+    // 키보드 입력 처리 함수
     private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
         Vector2 input = context.ReadValue<Vector2>();
         m_InputDirection = new Vector3(input.x, 0, input.y);
     }
 
+    // 마우스 입력 처리 함수
     private void On_MouseMove(InputAction.CallbackContext context)
     {
         Vector2 delta = context.ReadValue<Vector2>();
 
+        // 마우스 입력 최대, 최소값 설정
         m_MouseXInput = Mathf.Clamp(delta.x, -maxRotationInputValue, maxRotationInputValue);
         m_MouseYInput = Mathf.Clamp(delta.y, -maxRotationInputValue, maxRotationInputValue);
     }
@@ -137,11 +181,14 @@ public class Player : MonoBehaviour
         // 플레이어 이동
         Vector3 characterVelocity = transform.TransformVector(m_InputDirection) * moveSpeed;
 
-        Debug.Log(characterVelocity);
-
         m_controller.Move(characterVelocity * Time.deltaTime);
     }
    
+    void SetFOV(float fov)
+    {
+        m_PlayerCamera.m_Lens.FieldOfView = fov;
+    }
+
 
 #if UNITY_EDITOR
     public void Test_CamLock()
