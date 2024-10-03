@@ -5,48 +5,53 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class Player : MonoBehaviour
 {
+    [Header("Player Movement")]
     public float moveSpeed = 3.0f;
-    public float cameraSpeed = 30.0f;
+    public float rotationSpeed = 30.0f;
+
+    public float maxRotationInputValue = 5.0f;
+
+    [Header("Player Physics Settings")]
     public float jumpForce = 10.0f;
-
     public float maxPlayerSpeed = 10.0f;
-
     public float velocityChangeSpeed = 10.0f;
 
-    public Transform head;
-
-    public CinemachineVirtualCamera vcam;
+    CharacterController m_controller;
 
     PlayerInputActions inputAction;
 
-    Rigidbody rb;
+    GroundSensor m_GroundSensor;
 
-    GroundSensor groundSensor;
+    CinemachineVirtualCamera m_PlayerCamera;
 
-    // 현재 카메라의 시선을 알기위한 컴포넌트
-    CinemachinePOV vcamPOV;
+    Vector3 m_InputDirection;
 
-    Vector2 inputDirection;
+    bool m_IsMove = false;
+    bool m_IsAim = false;
+    bool m_OnGround = true;
 
-    bool isMove = false;
-    bool isAim = false;
-    bool onGround = true;
+    float m_MouseXInput;
+    float m_MouseYInput;
+
+    float m_CameraVerticalAngle = 0f;
 
     public Action onAim = null;
 
     private void Awake()
     {
+        m_PlayerCamera = GetComponentInChildren<CinemachineVirtualCamera>();
+
+        m_controller = GetComponent<CharacterController>();
+
         inputAction = new PlayerInputActions();
-        rb = GetComponent<Rigidbody>();
 
         //mesh = transform.GetChild(0);
         //cameraPoint = transform.GetChild(1);
-        groundSensor = GetComponentInChildren<GroundSensor>();
-
-        vcamPOV = vcam.GetCinemachineComponent<CinemachinePOV>();
+        m_GroundSensor = GetComponentInChildren<GroundSensor>();
     }
 
     private void OnEnable()
@@ -66,74 +71,77 @@ public class Player : MonoBehaviour
         Cursor.visible = false;
 
         //cameraPoint.Rotate(Vector3.right * 0.01f);
-        groundSensor.onGround += (isGround) =>
+        m_GroundSensor.onGround += (isGround) =>
         {
-            onGround = isGround;
+            m_OnGround = isGround;
         };
     }
 
     private void Update()
     {
+        HandlePlayerMovement();
     }
-
     private void FixedUpdate()
     {
-        rb.rotation = Quaternion.Euler(Vector3.up * vcamPOV.m_HorizontalAxis.Value);
+        //m_Rigidbody.velocity = Vector3.ClampMagnitude(m_Rigidbody.velocity, maxPlayerSpeed);
 
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxPlayerSpeed);
-
-        Vector3 inputForce = ((transform.forward * inputDirection.y) + (transform.right * inputDirection.x)).normalized * moveSpeed;
-        rb.velocity = Vector3.Lerp(rb.velocity, inputForce, Time.fixedDeltaTime * velocityChangeSpeed);
+        //Vector3 inputForce = ((transform.forward * m_InputDirection.y) + (transform.right * m_InputDirection.x)).normalized * moveSpeed;
+        //m_Rigidbody.velocity = Vector3.Lerp(m_Rigidbody.velocity, inputForce, Time.fixedDeltaTime * velocityChangeSpeed);
     }
 
     private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        inputDirection = context.ReadValue<Vector2>();
+        Vector2 input = context.ReadValue<Vector2>();
+        m_InputDirection = new Vector3(input.x, 0, input.y);
     }
 
     private void On_MouseMove(InputAction.CallbackContext context)
     {
         Vector2 delta = context.ReadValue<Vector2>();
 
-        float xMove = Mathf.Clamp(delta.x, -30.0f, 30.0f);
-        float yMove = Mathf.Clamp(delta.y, -30.0f, 30.0f);
-
-        vcamPOV.m_HorizontalAxis.m_InputAxisValue = xMove;
-        vcamPOV.m_VerticalAxis.m_InputAxisValue = yMove;
+        m_MouseXInput = Mathf.Clamp(delta.x, -maxRotationInputValue, maxRotationInputValue);
+        m_MouseYInput = Mathf.Clamp(delta.y, -maxRotationInputValue, maxRotationInputValue);
     }
 
     private void On_RClick(InputAction.CallbackContext obj)
     {
-        isAim = !isAim;
+        m_IsAim = !m_IsAim;
 
         // Aim 상태일경우 트리거 발동
-        if (isAim)
+        if (m_IsAim)
         {
             onAim?.Invoke();
         }
     }
     private void On_Jump(InputAction.CallbackContext obj)
     {
-        if (onGround)
+        if (m_OnGround)
         {
-            rb.velocity = new Vector3(jumpForce, jumpForce);
+            //m_Rigidbody.velocity = new Vector3(jumpForce, jumpForce);
         }
     }
 
-    void AimCameraSetting()
+    // 플레이어 프레임별 움직임
+    private void HandlePlayerMovement()
     {
-        Cinemachine3rdPersonFollow component = vcam.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
-        if (component != null) 
-        {
-            component.ShoulderOffset = new Vector3(0.22f, 0.36f, 0.0f);
-            component.VerticalArmLength = -0.33f;
-            component.CameraDistance = 0.05f;
-        }
-        else
-        {
-            Debug.LogWarning("Cinemachine3rdPersonFollow 컴포넌트를 불러오지 못했습니다.");
-        }
+        // 수평 회전
+        transform.Rotate(Vector3.up * m_MouseXInput * rotationSpeed, Space.Self);
+
+        // 카메라 수직 회전
+        m_CameraVerticalAngle -= m_MouseYInput * rotationSpeed;
+
+        m_CameraVerticalAngle = Mathf.Clamp(m_CameraVerticalAngle, -89f, 89f);
+
+        m_PlayerCamera.transform.localEulerAngles = new Vector3(m_CameraVerticalAngle, 0f, 0f);
+
+        // 플레이어 이동
+        Vector3 characterVelocity = transform.TransformVector(m_InputDirection) * moveSpeed;
+
+        Debug.Log(characterVelocity);
+
+        m_controller.Move(characterVelocity * Time.deltaTime);
     }
+   
 
 #if UNITY_EDITOR
     public void Test_CamLock()
