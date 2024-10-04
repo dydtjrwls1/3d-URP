@@ -550,6 +550,8 @@ MonoBehaviour:
   defaultFOV: 45
   FOVMultiplier: 0.4
   aimingSpeed: 10
+  fireRate: 0.1
+  recoilAmount: 1.1
 --- !u!4 &344085497
 Transform:
   m_ObjectHideFlags: 0
@@ -1153,7 +1155,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1922950578}
   m_Layer: 0
-  m_Name: GunPoint
+  m_Name: WeaponPoint
   m_TagString: Untagged
   m_Icon: {fileID: 7422848464349959988, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -1168,7 +1170,7 @@ Transform:
   m_GameObject: {fileID: 1922950577}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.111, y: -0.11400002, z: 0.415}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.59999996, y: 0.59999967, z: 0.5999997}
   m_ConstrainProportionsScale: 0
   m_Children:

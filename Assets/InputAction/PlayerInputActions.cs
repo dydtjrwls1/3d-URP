@@ -80,6 +80,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""4217ff6f-5b31-45a8-b2af-3240c2058f97"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -192,6 +201,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""RClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52a275c1-a34e-459f-98df-b7104edf04c1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -223,6 +243,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_MousePoint = m_Player.FindAction("MousePoint", throwIfNotFound: true);
         m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
         m_Player_RClick = m_Player.FindAction("RClick", throwIfNotFound: true);
+        m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -290,6 +311,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_MousePoint;
     private readonly InputAction m_Player_Zoom;
     private readonly InputAction m_Player_RClick;
+    private readonly InputAction m_Player_Fire;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -300,6 +322,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @MousePoint => m_Wrapper.m_Player_MousePoint;
         public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
         public InputAction @RClick => m_Wrapper.m_Player_RClick;
+        public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -327,6 +350,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @RClick.started += instance.OnRClick;
             @RClick.performed += instance.OnRClick;
             @RClick.canceled += instance.OnRClick;
+            @Fire.started += instance.OnFire;
+            @Fire.performed += instance.OnFire;
+            @Fire.canceled += instance.OnFire;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -349,6 +375,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @RClick.started -= instance.OnRClick;
             @RClick.performed -= instance.OnRClick;
             @RClick.canceled -= instance.OnRClick;
+            @Fire.started -= instance.OnFire;
+            @Fire.performed -= instance.OnFire;
+            @Fire.canceled -= instance.OnFire;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -383,5 +412,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnMousePoint(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnRClick(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
 }

@@ -29,6 +29,10 @@ public class Player : MonoBehaviour
     public float FOVMultiplier = 0.8f;
     public float aimingSpeed = 2f;
 
+    [Header("Attack Setting")]
+    public float fireRate = 0.5f;
+    public float recoilAmount = 1.1f;
+
     CharacterController m_controller;
 
     PlayerInputActions inputAction;
@@ -37,16 +41,20 @@ public class Player : MonoBehaviour
 
     CinemachineVirtualCamera m_PlayerCamera;
 
-    Transform m_GunPoint;
+    Transform m_WeaponPoint;
 
     Vector3 m_InputDirection;
+    Vector3 m_AimingWeaponPosition;
+    Vector3 m_RecoilWeaponPosition;
 
-    bool m_IsMove = false;
     bool m_IsAim = false;
     bool m_OnGround = true;
+    bool m_IsFire = false;
 
     float m_MouseXInput;
     float m_MouseYInput;
+
+    float m_CurrentFireCoolTime = 0f;
 
     float m_CameraVerticalAngle = 0f;
 
@@ -55,7 +63,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         Transform child = transform.GetChild(1);
-        m_GunPoint = child.GetChild(1); // cinemachine 밑에 안보이는 자식이 있으므로 2번째 자식을 가져온다.
+        m_WeaponPoint = child.GetChild(1); // cinemachine 밑에 안보이는 자식이 있으므로 2번째 자식을 가져온다.
 
         m_PlayerCamera = GetComponentInChildren<CinemachineVirtualCamera>();
 
@@ -77,6 +85,13 @@ public class Player : MonoBehaviour
         inputAction.Player.MousePoint.canceled += On_MouseMove;
         inputAction.Player.Jump.performed += On_Jump;
         inputAction.Player.RClick.performed += On_RClick;
+        inputAction.Player.Fire.performed += On_Fire;
+        inputAction.Player.Fire.canceled += On_Fire;
+    }
+
+    private void On_Fire(InputAction.CallbackContext context)
+    {
+        m_IsFire = !context.canceled;
     }
 
     private void Start()
@@ -104,22 +119,53 @@ public class Player : MonoBehaviour
     private void HandleGunMovement()
     {
         UpdateAimingPosition();
+        UpdateRecoilPosition();
+
+        m_WeaponPoint.localPosition = m_AimingWeaponPosition + m_RecoilWeaponPosition;
     }
 
+    // 총알을 발사하고 총의 반동에 의한 움직임을 동작하는 함수
+    private void UpdateRecoilPosition()
+    {
+        if (m_IsFire)
+        {
+            m_CurrentFireCoolTime -= Time.deltaTime;
+
+            if (m_CurrentFireCoolTime < 0)
+            {
+                // 총알 생성
+
+                m_CurrentFireCoolTime = fireRate;
+            }
+
+            float recoil = (Mathf.Sin(Mathf.Lerp(0, Mathf.PI, Time.deltaTime / fireRate)) + 1f) * 0.5f * recoilAmount;
+
+            Vector3 recoilPosition = new Vector3(0, 0, recoil);
+
+            m_RecoilWeaponPosition = recoilPosition;
+        }
+        else
+        {
+            //m_RecoilWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, defaultWeaponPosotion.localPosition, Time.deltaTime * aimingSpeed);
+        }
+        
+    }
+
+    // 조준 시 위치를 변경하는 함수
     private void UpdateAimingPosition()
     {
         if (m_IsAim)
         {
-            m_GunPoint.localPosition = Vector3.Lerp(m_GunPoint.localPosition, aimingWeaponPosotion.localPosition, aimingSpeed * Time.deltaTime);
+            m_AimingWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, aimingWeaponPosotion.localPosition, aimingSpeed * Time.deltaTime);
             SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV * FOVMultiplier, aimingSpeed * Time.deltaTime));
         }
         else
         {
-            m_GunPoint.localPosition = Vector3.Lerp(m_GunPoint.localPosition, defaultWeaponPosotion.localPosition, aimingSpeed * Time.deltaTime);
+            m_AimingWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, defaultWeaponPosotion.localPosition, aimingSpeed * Time.deltaTime);
             SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV, aimingSpeed * Time.deltaTime));
         }
 
-        Debug.Log(m_GunPoint.localPosition);
+        // Debug.Log(m_WeaponPoint.localPosition);
     }
 
     private void FixedUpdate()
