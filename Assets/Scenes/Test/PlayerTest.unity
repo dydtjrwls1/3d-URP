@@ -545,13 +545,15 @@ MonoBehaviour:
   jumpForce: 5
   maxPlayerSpeed: 5
   velocityChangeSpeed: 10
-  defaultWeaponPosotion: {fileID: 1155640413}
-  aimingWeaponPosotion: {fileID: 1703544141}
+  defaultWeaponPosition: {fileID: 1155640413}
+  aimingWeaponPosition: {fileID: 1703544141}
   defaultFOV: 45
   FOVMultiplier: 0.4
   aimingSpeed: 10
-  fireRate: 0.1
-  recoilAmount: 1.1
+  fireRate: 0.3
+  recoilTime: 0.1
+  recoilSmooth: 30
+  recoilAmount: 0.1
 --- !u!4 &344085497
 Transform:
   m_ObjectHideFlags: 0
@@ -944,7 +946,7 @@ Transform:
   m_GameObject: {fileID: 1155640412}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.111, y: -0.114, z: 0.415}
+  m_LocalPosition: {x: 0.111, y: -0.114, z: 0.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1048,7 +1050,7 @@ Transform:
   m_GameObject: {fileID: 1703544140}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.053, z: 0.415}
+  m_LocalPosition: {x: 0, y: -0.053, z: 0.475}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []

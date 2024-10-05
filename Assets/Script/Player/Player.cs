@@ -22,8 +22,8 @@ public class Player : MonoBehaviour
     public float velocityChangeSpeed = 10.0f;
 
     [Header("Weapon Position")]
-    public Transform defaultWeaponPosotion;
-    public Transform aimingWeaponPosotion;
+    public Transform defaultWeaponPosition;
+    public Transform aimingWeaponPosition;
 
     public float defaultFOV = 45f;
     public float FOVMultiplier = 0.8f;
@@ -31,6 +31,8 @@ public class Player : MonoBehaviour
 
     [Header("Attack Setting")]
     public float fireRate = 0.5f;
+    public float recoilTime = 0.1f;
+    public float recoilSmooth = 2.0f;
     public float recoilAmount = 1.1f;
 
     CharacterController m_controller;
@@ -44,6 +46,7 @@ public class Player : MonoBehaviour
     Transform m_WeaponPoint;
 
     Vector3 m_InputDirection;
+    Vector3 m_MainLocalPosition;
     Vector3 m_AimingWeaponPosition;
     Vector3 m_RecoilWeaponPosition;
 
@@ -53,9 +56,8 @@ public class Player : MonoBehaviour
 
     float m_MouseXInput;
     float m_MouseYInput;
-
+    float m_CurrentRecoilTime = 0f;
     float m_CurrentFireCoolTime = 0f;
-
     float m_CameraVerticalAngle = 0f;
 
     public Action onAim = null;
@@ -75,6 +77,8 @@ public class Player : MonoBehaviour
         //cameraPoint = transform.GetChild(1);
         m_GroundSensor = GetComponentInChildren<GroundSensor>();
     }
+
+   
 
     private void OnEnable()
     {
@@ -104,6 +108,8 @@ public class Player : MonoBehaviour
         {
             m_OnGround = isGround;
         };
+
+        m_MainLocalPosition = defaultWeaponPosition.localPosition;
     }
 
     private void Update()
@@ -121,32 +127,41 @@ public class Player : MonoBehaviour
         UpdateAimingPosition();
         UpdateRecoilPosition();
 
-        m_WeaponPoint.localPosition = m_AimingWeaponPosition + m_RecoilWeaponPosition;
+        m_WeaponPoint.localPosition = m_MainLocalPosition + m_AimingWeaponPosition + m_RecoilWeaponPosition;
     }
 
     // 총알을 발사하고 총의 반동에 의한 움직임을 동작하는 함수
     private void UpdateRecoilPosition()
     {
+        m_CurrentFireCoolTime -= Time.deltaTime;
+        m_CurrentRecoilTime -= Time.deltaTime;
+
         if (m_IsFire)
         {
-            m_CurrentFireCoolTime -= Time.deltaTime;
-
             if (m_CurrentFireCoolTime < 0)
             {
                 // 총알 생성
 
                 m_CurrentFireCoolTime = fireRate;
+                m_CurrentRecoilTime = recoilTime;
             }
 
-            float recoil = (Mathf.Sin(Mathf.Lerp(0, Mathf.PI, Time.deltaTime / fireRate)) + 1f) * 0.5f * recoilAmount;
+            // 반동 세기 계산
+            float amplitude = -recoilAmount;
 
+            float xValue = Mathf.Max(0, 3.141592f * m_CurrentRecoilTime / recoilTime);
+
+            float recoil = Mathf.Sin(xValue) * amplitude;
+            
+
+            // 반동 세기만큼 z축으로 이동
             Vector3 recoilPosition = new Vector3(0, 0, recoil);
 
             m_RecoilWeaponPosition = recoilPosition;
         }
         else
         {
-            //m_RecoilWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, defaultWeaponPosotion.localPosition, Time.deltaTime * aimingSpeed);
+            m_RecoilWeaponPosition = Vector3.Lerp(m_RecoilWeaponPosition, Vector3.zero, recoilSmooth * Time.deltaTime);
         }
         
     }
@@ -156,14 +171,25 @@ public class Player : MonoBehaviour
     {
         if (m_IsAim)
         {
-            m_AimingWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, aimingWeaponPosotion.localPosition, aimingSpeed * Time.deltaTime);
+            m_MainLocalPosition = Vector3.Lerp(m_MainLocalPosition, aimingWeaponPosition.localPosition, aimingSpeed * Time.deltaTime);
             SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV * FOVMultiplier, aimingSpeed * Time.deltaTime));
         }
         else
         {
-            m_AimingWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, defaultWeaponPosotion.localPosition, aimingSpeed * Time.deltaTime);
+            m_MainLocalPosition = Vector3.Lerp(m_MainLocalPosition, defaultWeaponPosition.localPosition, aimingSpeed * Time.deltaTime);
             SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV, aimingSpeed * Time.deltaTime));
         }
+
+        //if (m_IsAim)
+        //{
+        //    m_AimingWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, aimingWeaponPosition.localPosition, aimingSpeed * Time.deltaTime);
+        //    SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV * FOVMultiplier, aimingSpeed * Time.deltaTime));
+        //}
+        //else
+        //{
+        //    m_AimingWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, defaultWeaponPosition.localPosition, aimingSpeed * Time.deltaTime);
+        //    SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV, aimingSpeed * Time.deltaTime));
+        //}
 
         // Debug.Log(m_WeaponPoint.localPosition);
     }
