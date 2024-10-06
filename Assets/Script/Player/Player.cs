@@ -166,6 +166,7 @@ public class Player : MonoBehaviour
         {
             m_BobWeaponPosition = Vector3.Lerp(m_BobWeaponPosition, Vector3.zero, bobRecoverySpeed * Time.deltaTime);
         }
+
     }
 
     // 총알을 발사하고 총의 반동에 의한 움직임을 동작하는 함수
