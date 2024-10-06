@@ -554,6 +554,10 @@ MonoBehaviour:
   recoilTime: 0.1
   recoilSmooth: 30
   recoilAmount: 0.1
+  bobRate: 0.8
+  aimingBobAmount: 0.2
+  defaultBobAmount: 1.4
+  bobRecoverySpeed: 5
 --- !u!4 &344085497
 Transform:
   m_ObjectHideFlags: 0

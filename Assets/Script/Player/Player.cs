@@ -35,6 +35,12 @@ public class Player : MonoBehaviour
     public float recoilSmooth = 2.0f;
     public float recoilAmount = 1.1f;
 
+    [Header("Bob Setting")]
+    public float bobRate = 0.3f;
+    public float aimingBobAmount = 1.1f;
+    public float defaultBobAmount = 1.5f;
+    public float bobRecoverySpeed = 5.0f;
+
     CharacterController m_controller;
 
     PlayerInputActions inputAction;
@@ -47,20 +53,24 @@ public class Player : MonoBehaviour
 
     Vector3 m_InputDirection;
     Vector3 m_MainLocalPosition;
-    Vector3 m_AimingWeaponPosition;
     Vector3 m_RecoilWeaponPosition;
+    Vector3 m_BobWeaponPosition;
 
     bool m_IsAim = false;
     bool m_OnGround = true;
     bool m_IsFire = false;
+    bool m_IsMove = false;
 
     float m_MouseXInput;
     float m_MouseYInput;
     float m_CurrentRecoilTime = 0f;
     float m_CurrentFireCoolTime = 0f;
+    float m_CurrentBobTime = 0f;
     float m_CameraVerticalAngle = 0f;
 
     public Action onAim = null;
+
+    const float PI = 3.141592f;
 
     private void Awake()
     {
@@ -126,8 +136,36 @@ public class Player : MonoBehaviour
     {
         UpdateAimingPosition();
         UpdateRecoilPosition();
+        UpdateBobPosition();
 
-        m_WeaponPoint.localPosition = m_MainLocalPosition + m_AimingWeaponPosition + m_RecoilWeaponPosition;
+        m_WeaponPoint.localPosition = m_MainLocalPosition + m_RecoilWeaponPosition + m_BobWeaponPosition;
+    }
+
+    private void UpdateBobPosition()
+    {
+        m_CurrentBobTime -= Time.deltaTime;
+
+        if (m_IsMove)
+        {
+            
+            if (m_CurrentBobTime < 0)
+            {
+                m_CurrentBobTime = bobRate;
+            }
+
+            float bob = Math.Max(0, 2 * PI * m_CurrentBobTime / bobRate);
+            float bobAmount = m_IsAim ? aimingBobAmount : defaultBobAmount;
+            float verticalBobValue = (Mathf.Sin(bob * 2f) + 1f) * 0.5f * bobAmount;
+            float horizontalBobValue = Mathf.Sin(bob) * 1.5f * bobAmount;
+
+            Vector3 bobPosition = new Vector3(horizontalBobValue, verticalBobValue, 0) * 0.005f;
+
+            m_BobWeaponPosition = bobPosition;
+        }
+        else
+        {
+            m_BobWeaponPosition = Vector3.Lerp(m_BobWeaponPosition, Vector3.zero, bobRecoverySpeed * Time.deltaTime);
+        }
     }
 
     // 총알을 발사하고 총의 반동에 의한 움직임을 동작하는 함수
@@ -149,7 +187,7 @@ public class Player : MonoBehaviour
             // 반동 세기 계산
             float amplitude = -recoilAmount;
 
-            float xValue = Mathf.Max(0, 3.141592f * m_CurrentRecoilTime / recoilTime);
+            float xValue = Mathf.Max(0, PI * m_CurrentRecoilTime / recoilTime);
 
             float recoil = Mathf.Sin(xValue) * amplitude;
             
@@ -205,6 +243,8 @@ public class Player : MonoBehaviour
     // 키보드 입력 처리 함수
     private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
+        m_IsMove = !context.canceled;
+
         Vector2 input = context.ReadValue<Vector2>();
         m_InputDirection = new Vector3(input.x, 0, input.y);
     }
