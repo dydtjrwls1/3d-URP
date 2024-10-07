@@ -5,18 +5,11 @@ using UnityEngine.InputSystem;
 
 public class Test01_PlayerTest : TestBase
 {
-    public Player player;
-
-    public GunPointController playerCamera;
+    public Transform firePoint;
 
     protected override void Num1_performed(InputAction.CallbackContext obj)
     {
-        player.Test_CamLock();
-    }
-
-    protected override void Num2_performed(InputAction.CallbackContext obj)
-    {
-        playerCamera.Aim();
+        Factory.Instance.GetProjectile(firePoint.position);
     }
 
     // shoulder offset x = 0.22
