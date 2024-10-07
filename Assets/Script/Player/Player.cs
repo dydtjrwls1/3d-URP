@@ -41,6 +41,11 @@ public class Player : MonoBehaviour
     public float defaultBobAmount = 1.5f;
     public float bobRecoverySpeed = 5.0f;
 
+    [Header("Shoot Effect")]
+    public ParticleSystem shootEffect;
+    public Light fireLight;
+    public float lightTime = 0.5f;
+
     CharacterController m_controller;
 
     PlayerInputActions inputAction;
@@ -50,6 +55,8 @@ public class Player : MonoBehaviour
     CinemachineVirtualCamera m_PlayerCamera;
 
     Transform m_WeaponPoint;
+
+    Coroutine m_FireLightOnCoroutune;
 
     Vector3 m_InputDirection;
     Vector3 m_MainLocalPosition;
@@ -83,8 +90,6 @@ public class Player : MonoBehaviour
 
         inputAction = new PlayerInputActions();
 
-        //mesh = transform.GetChild(0);
-        //cameraPoint = transform.GetChild(1);
         m_GroundSensor = GetComponentInChildren<GroundSensor>();
     }
 
@@ -103,10 +108,7 @@ public class Player : MonoBehaviour
         inputAction.Player.Fire.canceled += On_Fire;
     }
 
-    private void On_Fire(InputAction.CallbackContext context)
-    {
-        m_IsFire = !context.canceled;
-    }
+    
 
     private void Start()
     {
@@ -137,8 +139,51 @@ public class Player : MonoBehaviour
         UpdateAimingPosition();
         UpdateRecoilPosition();
         UpdateBobPosition();
+        Fire();
 
         m_WeaponPoint.localPosition = m_MainLocalPosition + m_RecoilWeaponPosition + m_BobWeaponPosition;
+    }
+
+    private void Fire()
+    {
+        if (m_IsFire)
+        {
+            if(m_CurrentFireCoolTime < 0)
+            {
+                // 총알 발사
+
+                if(m_FireLightOnCoroutune != null)
+                {
+                    m_FireLightOnCoroutune = null;
+                }
+
+                m_FireLightOnCoroutune = StartCoroutine(OnFireEffect());
+
+                // 총알 발사 쿨타임 초기화
+                m_CurrentFireCoolTime = fireRate;
+            }
+        }
+
+        m_CurrentFireCoolTime -= Time.deltaTime;
+    }
+
+    // 플레이어 프레임별 움직임
+    private void HandlePlayerMovement()
+    {
+        // 수평 회전
+        transform.Rotate(Vector3.up * m_MouseXInput * rotationSpeed, Space.Self);
+
+        // 카메라 수직 회전
+        m_CameraVerticalAngle -= m_MouseYInput * rotationSpeed;
+
+        m_CameraVerticalAngle = Mathf.Clamp(m_CameraVerticalAngle, -89f, 89f);
+
+        m_PlayerCamera.transform.localEulerAngles = new Vector3(m_CameraVerticalAngle, 0f, 0f);
+
+        // 플레이어 이동
+        Vector3 characterVelocity = transform.TransformVector(m_InputDirection) * moveSpeed;
+
+        m_controller.Move(characterVelocity * Time.deltaTime);
     }
 
     private void UpdateBobPosition()
@@ -172,16 +217,12 @@ public class Player : MonoBehaviour
     // 총알을 발사하고 총의 반동에 의한 움직임을 동작하는 함수
     private void UpdateRecoilPosition()
     {
-        m_CurrentFireCoolTime -= Time.deltaTime;
         m_CurrentRecoilTime -= Time.deltaTime;
 
         if (m_IsFire)
         {
-            if (m_CurrentFireCoolTime < 0)
+            if (m_CurrentFireCoolTime < 0f)
             {
-                // 총알 생성
-
-                m_CurrentFireCoolTime = fireRate;
                 m_CurrentRecoilTime = recoilTime;
             }
 
@@ -218,27 +259,6 @@ public class Player : MonoBehaviour
             m_MainLocalPosition = Vector3.Lerp(m_MainLocalPosition, defaultWeaponPosition.localPosition, aimingSpeed * Time.deltaTime);
             SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV, aimingSpeed * Time.deltaTime));
         }
-
-        //if (m_IsAim)
-        //{
-        //    m_AimingWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, aimingWeaponPosition.localPosition, aimingSpeed * Time.deltaTime);
-        //    SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV * FOVMultiplier, aimingSpeed * Time.deltaTime));
-        //}
-        //else
-        //{
-        //    m_AimingWeaponPosition = Vector3.Lerp(m_WeaponPoint.localPosition, defaultWeaponPosition.localPosition, aimingSpeed * Time.deltaTime);
-        //    SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV, aimingSpeed * Time.deltaTime));
-        //}
-
-        // Debug.Log(m_WeaponPoint.localPosition);
-    }
-
-    private void FixedUpdate()
-    {
-        //m_Rigidbody.velocity = Vector3.ClampMagnitude(m_Rigidbody.velocity, maxPlayerSpeed);
-
-        //Vector3 inputForce = ((transform.forward * m_InputDirection.y) + (transform.right * m_InputDirection.x)).normalized * moveSpeed;
-        //m_Rigidbody.velocity = Vector3.Lerp(m_Rigidbody.velocity, inputForce, Time.fixedDeltaTime * velocityChangeSpeed);
     }
 
     // 키보드 입력 처리 함수
@@ -278,28 +298,37 @@ public class Player : MonoBehaviour
         }
     }
 
-    // 플레이어 프레임별 움직임
-    private void HandlePlayerMovement()
+    private void On_Fire(InputAction.CallbackContext context)
     {
-        // 수평 회전
-        transform.Rotate(Vector3.up * m_MouseXInput * rotationSpeed, Space.Self);
-
-        // 카메라 수직 회전
-        m_CameraVerticalAngle -= m_MouseYInput * rotationSpeed;
-
-        m_CameraVerticalAngle = Mathf.Clamp(m_CameraVerticalAngle, -89f, 89f);
-
-        m_PlayerCamera.transform.localEulerAngles = new Vector3(m_CameraVerticalAngle, 0f, 0f);
-
-        // 플레이어 이동
-        Vector3 characterVelocity = transform.TransformVector(m_InputDirection) * moveSpeed;
-
-        m_controller.Move(characterVelocity * Time.deltaTime);
+        m_IsFire = !context.canceled;
+        
+        
+        
     }
+
+    
    
     void SetFOV(float fov)
     {
         m_PlayerCamera.m_Lens.FieldOfView = fov;
+    }
+
+    IEnumerator OnFireEffect()
+    {
+        float elapsedTime = lightTime;
+
+        fireLight.enabled = true;
+        shootEffect.Play();
+
+        while (elapsedTime > 0f)
+        {
+            elapsedTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        fireLight.enabled = false;
+
+        m_FireLightOnCoroutune = null;
     }
 
 
