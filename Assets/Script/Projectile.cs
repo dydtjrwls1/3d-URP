@@ -12,6 +12,12 @@ public class Projectile : RecycleObject
 
     Vector3 m_Velocity;
 
+    public Vector3 Velocity
+    {
+        get => m_Velocity;
+        set => m_Velocity = value;
+    }
+
     private void Awake()
     {
         m_Rb = GetComponent<Rigidbody>();
@@ -19,9 +25,6 @@ public class Projectile : RecycleObject
 
     protected override void OnReset()
     {
-        // 생성된 위치에서 앞으로 가는 방향으로 설정
-        m_Velocity = transform.forward * speed;
-
         // 타이머 설정
         DisableTimer(lifeTime);
     }

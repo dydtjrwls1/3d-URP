@@ -31,6 +31,10 @@ public class Player : MonoBehaviour
 
     [Header("Attack Setting")]
     public float fireRate = 0.5f;
+    public Transform firePoint;
+    public float firePointOffset = 0.1f;
+
+    [Header("Recoil Setting")]
     public float recoilTime = 0.1f;
     public float recoilSmooth = 2.0f;
     public float recoilAmount = 1.1f;
@@ -76,6 +80,8 @@ public class Player : MonoBehaviour
     float m_CameraVerticalAngle = 0f;
 
     public Action onAim = null;
+
+    public Action onShoot = null;
 
     const float PI = 3.141592f;
 
@@ -127,6 +133,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         HandlePlayerMovement();
+        Fire();
     }
 
     private void LateUpdate()
@@ -139,7 +146,7 @@ public class Player : MonoBehaviour
         UpdateAimingPosition();
         UpdateRecoilPosition();
         UpdateBobPosition();
-        Fire();
+        
 
         m_WeaponPoint.localPosition = m_MainLocalPosition + m_RecoilWeaponPosition + m_BobWeaponPosition;
     }
@@ -150,14 +157,19 @@ public class Player : MonoBehaviour
         {
             if(m_CurrentFireCoolTime < 0)
             {
-                // ÃÑ¾Ë ¹ß»ç
-
                 if(m_FireLightOnCoroutune != null)
                 {
                     m_FireLightOnCoroutune = null;
                 }
 
+                // ÃÑ¾Ë ¹ß»ç ÀÌÆåÆ® ½ÇÇà
                 m_FireLightOnCoroutune = StartCoroutine(OnFireEffect());
+
+                // ÃÑ¾Ë ¹ß»ç
+                Projectile projectile = Factory.Instance.GetProjectile(firePoint.position + firePoint.forward * firePointOffset, firePoint.eulerAngles);
+                projectile.Velocity = firePoint.forward;
+
+                onShoot?.Invoke();
 
                 // ÃÑ¾Ë ¹ß»ç ÄðÅ¸ÀÓ ÃÊ±âÈ­
                 m_CurrentFireCoolTime = fireRate;
@@ -301,9 +313,6 @@ public class Player : MonoBehaviour
     private void On_Fire(InputAction.CallbackContext context)
     {
         m_IsFire = !context.canceled;
-        
-        
-        
     }
 
     

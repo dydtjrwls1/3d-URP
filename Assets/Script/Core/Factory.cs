@@ -12,9 +12,9 @@ public class Factory : SingleTon<Factory>
         projectilePool.Initialize();
     }
 
-    public Projectile GetProjectile(Vector3 position)
+    public Projectile GetProjectile(Vector3 position, Vector3 rotation)
     {
-        Projectile projectile = projectilePool.GetObject(position);
+        Projectile projectile = projectilePool.GetObject(position, rotation);
         return projectile;
     }
 }

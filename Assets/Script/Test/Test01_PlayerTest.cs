@@ -9,7 +9,12 @@ public class Test01_PlayerTest : TestBase
 
     protected override void Num1_performed(InputAction.CallbackContext obj)
     {
-        Factory.Instance.GetProjectile(firePoint.position);
+        Time.timeScale = 0.1f;
+    }
+
+    protected override void Num2_performed(InputAction.CallbackContext obj)
+    {
+        Time.timeScale = 1.0f;
     }
 
     // shoulder offset x = 0.22
