@@ -35,8 +35,16 @@ public class Player : MonoBehaviour
     public float firePointOffset = 0.1f;
 
     [Header("Recoil Setting")]
+    // 반동 주기 ( 이번 반동에서 다음 반동까지의 시간 간격 )
+    public float recoilRate = 0.5f;
+
+    // 반동 시간 ( 이번 반동의 발동 시간 )
     public float recoilTime = 0.1f;
+
+    // 사격중이 아닐 때 원래 위치로 돌아가는 정도
     public float recoilSmooth = 2.0f;
+
+    // 반동 세기
     public float recoilAmount = 1.1f;
 
     [Header("Bob Setting")]
@@ -74,6 +82,7 @@ public class Player : MonoBehaviour
 
     float m_MouseXInput;
     float m_MouseYInput;
+    float m_CurrentRecoilRate = 0f;
     float m_CurrentRecoilTime = 0f;
     float m_CurrentFireCoolTime = 0f;
     float m_CurrentBobTime = 0f;
@@ -229,12 +238,14 @@ public class Player : MonoBehaviour
     // 총알을 발사하고 총의 반동에 의한 움직임을 동작하는 함수
     private void UpdateRecoilPosition()
     {
+        m_CurrentRecoilRate -= Time.deltaTime;
         m_CurrentRecoilTime -= Time.deltaTime;
 
         if (m_IsFire)
         {
-            if (m_CurrentFireCoolTime < 0f)
+            if (m_CurrentRecoilRate < 0f)
             {
+                m_CurrentRecoilRate = recoilRate;
                 m_CurrentRecoilTime = recoilTime;
             }
 
