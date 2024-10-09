@@ -31,7 +31,8 @@ public class Projectile : RecycleObject
 
     private void FixedUpdate()
     {
-        m_Rb.MovePosition(m_Rb.position + Time.fixedDeltaTime * speed * m_Velocity);
+        //m_Rb.MovePosition(m_Rb.position + Time.fixedDeltaTime * speed);
+        transform.Translate(Time.deltaTime * speed * m_Velocity, Space.World);
     }
 
     private void OnTriggerEnter(Collider other)

@@ -90,7 +90,7 @@ public class Player : MonoBehaviour
 
     public Action onAim = null;
 
-    public Action onShoot = null;
+    public Action onBulletFire = null;
 
     const float PI = 3.141592f;
 
@@ -178,7 +178,7 @@ public class Player : MonoBehaviour
                 Projectile projectile = Factory.Instance.GetProjectile(firePoint.position + firePoint.forward * firePointOffset, firePoint.eulerAngles);
                 projectile.Velocity = firePoint.forward;
 
-                onShoot?.Invoke();
+                onBulletFire?.Invoke();
 
                 // 총알 발사 쿨타임 초기화
                 m_CurrentFireCoolTime = fireRate;
