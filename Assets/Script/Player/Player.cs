@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
     public float aimingSpeed = 2f;
 
     [Header("Attack Setting")]
-    public float fireRate = 0.5f;
+    // public float fireRate = 0.5f;
     public Transform firePoint;
     public float firePointOffset = 0.1f;
 
@@ -58,6 +58,9 @@ public class Player : MonoBehaviour
     public Light fireLight;
     public float lightTime = 0.5f;
 
+    [Header("Weapon")]
+    public Weapon defaultWeapon;
+
     CharacterController m_controller;
 
     PlayerInputActions inputAction;
@@ -69,6 +72,10 @@ public class Player : MonoBehaviour
     Transform m_WeaponPoint;
 
     Coroutine m_FireLightOnCoroutune;
+
+    List<Weapon> m_WeaponList;
+
+    Weapon m_CurrentWeapon;
 
     Vector3 m_InputDirection;
     Vector3 m_MainLocalPosition;
@@ -87,6 +94,7 @@ public class Player : MonoBehaviour
     float m_CurrentFireCoolTime = 0f;
     float m_CurrentBobTime = 0f;
     float m_CameraVerticalAngle = 0f;
+    float m_FireRate;
 
     public Action onAim = null;
 
@@ -106,6 +114,8 @@ public class Player : MonoBehaviour
         inputAction = new PlayerInputActions();
 
         m_GroundSensor = GetComponentInChildren<GroundSensor>();
+
+        m_WeaponList = new List<Weapon>();
     }
 
    
@@ -137,6 +147,9 @@ public class Player : MonoBehaviour
         };
 
         m_MainLocalPosition = defaultWeaponPosition.localPosition;
+
+        AddWeapon(defaultWeapon);
+        SetWeapon(defaultWeapon);
     }
 
     private void Update()
@@ -181,7 +194,7 @@ public class Player : MonoBehaviour
                 onBulletFire?.Invoke();
 
                 // ÃÑ¾Ë ¹ß»ç ÄðÅ¸ÀÓ ÃÊ±âÈ­
-                m_CurrentFireCoolTime = fireRate;
+                m_CurrentFireCoolTime = m_FireRate;
             }
         }
 
@@ -281,6 +294,39 @@ public class Player : MonoBehaviour
         {
             m_MainLocalPosition = Vector3.Lerp(m_MainLocalPosition, defaultWeaponPosition.localPosition, aimingSpeed * Time.deltaTime);
             SetFOV(Mathf.Lerp(m_PlayerCamera.m_Lens.FieldOfView, defaultFOV, aimingSpeed * Time.deltaTime));
+        }
+    }
+
+    void AddWeapon(Weapon weapon)
+    {
+        if (HasWeapon(weapon))
+        {
+            return;
+        }
+
+        m_WeaponList.Add(weapon);
+    }
+
+    bool HasWeapon(Weapon weapon)
+    {
+        return m_WeaponList.Contains(weapon);
+    }
+
+    void SetWeapon(Weapon weapon)
+    {
+        GameObject currentWeapon = null;
+
+        if (HasWeapon(weapon))
+        {
+            currentWeapon = Instantiate(weapon).gameObject;
+        }
+
+        if(currentWeapon != null)
+        {
+            currentWeapon.transform.parent = m_WeaponPoint;
+            currentWeapon.transform.localPosition = Vector3.zero;
+            m_CurrentWeapon = weapon;
+            m_FireRate = weapon.fireRate;
         }
     }
 
