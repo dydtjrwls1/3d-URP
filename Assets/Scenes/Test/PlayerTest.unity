@@ -717,6 +717,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 1937691009}
+  rifle: {fileID: 7063207154990288367, guid: 8107f7dc456607b44a46c9740f9b9c50, type: 3}
+  handGun: {fileID: 2452625387924588487, guid: ea3dec04f8812b54b8cb642e1e3c51dd, type: 3}
 --- !u!4 &787516275
 Transform:
   m_ObjectHideFlags: 0

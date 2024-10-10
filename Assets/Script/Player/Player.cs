@@ -77,6 +77,7 @@ public class Player : MonoBehaviour
 
     Weapon m_CurrentWeapon;
 
+    Vector3 m_WeaponOffset;
     Vector3 m_InputDirection;
     Vector3 m_MainLocalPosition;
     Vector3 m_RecoilWeaponPosition;
@@ -297,7 +298,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void AddWeapon(Weapon weapon)
+    public void AddWeapon(Weapon weapon)
     {
         if (HasWeapon(weapon))
         {
@@ -305,6 +306,8 @@ public class Player : MonoBehaviour
         }
 
         m_WeaponList.Add(weapon);
+
+        //SetWeapon(weapon);
     }
 
     bool HasWeapon(Weapon weapon)
@@ -312,20 +315,30 @@ public class Player : MonoBehaviour
         return m_WeaponList.Contains(weapon);
     }
 
-    void SetWeapon(Weapon weapon)
+    public void SetWeapon(Weapon weapon)
     {
         GameObject currentWeapon = null;
 
         if (HasWeapon(weapon))
         {
+            // 현재 장착중인 무기 파괴
+            if (m_CurrentWeapon != null)
+            {
+                Destroy(m_CurrentWeapon.gameObject);
+            }
+
+            // 새로 장착할 무기 생성
             currentWeapon = Instantiate(weapon).gameObject;
+            m_CurrentWeapon = currentWeapon.GetComponent<Weapon>();
         }
 
         if(currentWeapon != null)
         {
+            // 무기를 weapon point에 위치
             currentWeapon.transform.parent = m_WeaponPoint;
-            currentWeapon.transform.localPosition = Vector3.zero;
-            m_CurrentWeapon = weapon;
+            currentWeapon.transform.localPosition = Vector3.zero + weapon.offset;
+            currentWeapon.transform.forward = m_PlayerCamera.transform.forward;
+            
             m_FireRate = weapon.fireRate;
         }
     }

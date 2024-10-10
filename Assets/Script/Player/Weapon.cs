@@ -7,6 +7,7 @@ public class Weapon : MonoBehaviour
 {
     public float fireRate = 0.5f;
     public int maxAmmo = 12;
+    public Vector3 offset = Vector3.zero;
 
     int m_CurrentAmmo;
 
