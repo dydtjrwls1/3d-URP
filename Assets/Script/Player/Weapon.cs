@@ -34,7 +34,7 @@ public class Weapon : MonoBehaviour
 
     public Light FireLight => m_FireLight;
 
-    public int CurrentAmmo => m_CurrentAmmo;
+    public event Action<int> onBulletChange = null;
 
     private void Awake()
     {
@@ -52,6 +52,8 @@ public class Weapon : MonoBehaviour
     private void OnBulletFired(Weapon _)
     {
         m_CurrentAmmo--;
+        onBulletChange?.Invoke(m_CurrentAmmo);
+
         if(m_CurrentAmmo < 0)
         {
             // 재장전 알림

@@ -22,17 +22,20 @@ public class AmmoUI : MonoBehaviour
         Player player = GameManager.Instance.Player;
 
         player.onWeaponChange += UpdateMaxAmmoDisplay;
-        player.onBulletFire += UpdateCurrentAmmoDisplay;
     }
 
-    private void UpdateCurrentAmmoDisplay(Weapon weapon)
+    private void UpdateCurrentAmmoDisplay(int currentBullets)
     {
-        m_CurrentAmmoGUI.text = weapon.CurrentAmmo.ToString();
+        m_CurrentAmmoGUI.text = currentBullets.ToString();
     }
 
     private void UpdateMaxAmmoDisplay(Weapon weapon)
     {
         m_MaxAmmoGUI.text = weapon.maxAmmo.ToString();
+        m_CurrentAmmoGUI.text = weapon.maxAmmo.ToString();
+
+        weapon.onBulletChange -= UpdateCurrentAmmoDisplay;
+        weapon.onBulletChange += UpdateCurrentAmmoDisplay;
     }
 
 
