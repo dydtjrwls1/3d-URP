@@ -31,12 +31,12 @@ public class Player : MonoBehaviour
 
     [Header("Attack Setting")]
     // public float fireRate = 0.5f;
-    public Transform firePoint;
+    // public Transform m_FirePoint;
     public float firePointOffset = 0.1f;
 
     [Header("Recoil Setting")]
-    // 반동 주기 ( 이번 반동에서 다음 반동까지의 시간 간격 )
-    public float recoilRate = 0.5f;
+    // 반동 주기 ( 이번 반동에서 다음 반동까지의 시간 간격 , 총의 발사시간과 같게 한다.)
+    // public float recoilRate = 0.5f;
 
     // 반동 시간 ( 이번 반동의 발동 시간 )
     public float recoilTime = 0.1f;
@@ -54,8 +54,8 @@ public class Player : MonoBehaviour
     public float bobRecoverySpeed = 5.0f;
 
     [Header("Shoot Effect")]
-    public ParticleSystem shootEffect;
-    public Light fireLight;
+    // public ParticleSystem m_FireEffect;
+    // public Light m_FireLight;
     public float lightTime = 0.5f;
 
     [Header("Weapon")]
@@ -70,14 +70,16 @@ public class Player : MonoBehaviour
     CinemachineVirtualCamera m_PlayerCamera;
 
     Transform m_WeaponPoint;
+    Transform m_FirePoint;
 
     Coroutine m_FireLightOnCoroutune;
 
     List<Weapon> m_WeaponList;
 
     Weapon m_CurrentWeapon;
+    ParticleSystem m_FireEffect;
+    Light m_FireLight;
 
-    Vector3 m_WeaponOffset;
     Vector3 m_InputDirection;
     Vector3 m_MainLocalPosition;
     Vector3 m_RecoilWeaponPosition;
@@ -171,7 +173,7 @@ public class Player : MonoBehaviour
         UpdateBobPosition();
         
 
-        m_WeaponPoint.localPosition = m_MainLocalPosition + m_RecoilWeaponPosition + m_BobWeaponPosition;
+        m_WeaponPoint.localPosition = m_MainLocalPosition + m_RecoilWeaponPosition + m_BobWeaponPosition + m_CurrentWeapon.offset;
     }
 
     private void Fire()
@@ -189,8 +191,8 @@ public class Player : MonoBehaviour
                 m_FireLightOnCoroutune = StartCoroutine(OnFireEffect());
 
                 // 총알 발사
-                Projectile projectile = Factory.Instance.GetProjectile(firePoint.position + firePoint.forward * firePointOffset, firePoint.eulerAngles);
-                projectile.Velocity = firePoint.forward;
+                Projectile projectile = Factory.Instance.GetProjectile(m_FirePoint.position + m_FirePoint.forward * firePointOffset, m_FirePoint.eulerAngles);
+                projectile.Velocity = m_FirePoint.forward;
 
                 onBulletFire?.Invoke();
 
@@ -259,7 +261,7 @@ public class Player : MonoBehaviour
         {
             if (m_CurrentRecoilRate < 0f)
             {
-                m_CurrentRecoilRate = recoilRate;
+                m_CurrentRecoilRate = m_FireRate;
                 m_CurrentRecoilTime = recoilTime;
             }
 
@@ -330,13 +332,17 @@ public class Player : MonoBehaviour
             // 새로 장착할 무기 생성
             currentWeapon = Instantiate(weapon).gameObject;
             m_CurrentWeapon = currentWeapon.GetComponent<Weapon>();
+            m_FirePoint = m_CurrentWeapon.firePoint;
+            m_FireLight = m_CurrentWeapon.FireLight;
+            m_FireEffect = m_CurrentWeapon.fireEffect;
+            
         }
 
         if(currentWeapon != null)
         {
             // 무기를 weapon point에 위치
             currentWeapon.transform.parent = m_WeaponPoint;
-            currentWeapon.transform.localPosition = Vector3.zero + weapon.offset;
+            currentWeapon.transform.localPosition = Vector3.zero;
             currentWeapon.transform.forward = m_PlayerCamera.transform.forward;
             
             m_FireRate = weapon.fireRate;
@@ -396,8 +402,8 @@ public class Player : MonoBehaviour
     {
         float elapsedTime = lightTime;
 
-        fireLight.enabled = true;
-        shootEffect.Play();
+        m_FireLight.enabled = true;
+        m_FireEffect.Play();
 
         while (elapsedTime > 0f)
         {
@@ -405,7 +411,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        fireLight.enabled = false;
+        m_FireLight.enabled = false;
 
         m_FireLightOnCoroutune = null;
     }

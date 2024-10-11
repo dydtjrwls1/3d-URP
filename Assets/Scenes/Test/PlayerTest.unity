@@ -388,7 +388,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 45
   orthographic: 0
@@ -1290,6 +1290,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2521232454291280881, guid: dce9c7ee36aa6904c954e250e3cc95a4,
         type: 3}
+      propertyPath: fireLight
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2521232454291280881, guid: dce9c7ee36aa6904c954e250e3cc95a4,
+        type: 3}
+      propertyPath: lightTime
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2521232454291280881, guid: dce9c7ee36aa6904c954e250e3cc95a4,
+        type: 3}
+      propertyPath: recoilRate
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2521232454291280881, guid: dce9c7ee36aa6904c954e250e3cc95a4,
+        type: 3}
+      propertyPath: shootEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2521232454291280881, guid: dce9c7ee36aa6904c954e250e3cc95a4,
+        type: 3}
       propertyPath: defaultWeapon
       value: 
       objectReference: {fileID: 2452625387924588487, guid: ea3dec04f8812b54b8cb642e1e3c51dd,
@@ -1355,6 +1375,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5396421500796309482, guid: dce9c7ee36aa6904c954e250e3cc95a4,
+        type: 3}
+      propertyPath: m_Lens.FieldOfView
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396421500796309482, guid: dce9c7ee36aa6904c954e250e3cc95a4,
+        type: 3}
+      propertyPath: m_Lens.NearClipPlane
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 5635179325454967451, guid: dce9c7ee36aa6904c954e250e3cc95a4,
         type: 3}
       propertyPath: m_Name
@@ -1363,6 +1393,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8459112921927394370, guid: dce9c7ee36aa6904c954e250e3cc95a4, type: 3}
+    - {fileID: 545049511288760198, guid: dce9c7ee36aa6904c954e250e3cc95a4, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dce9c7ee36aa6904c954e250e3cc95a4, type: 3}
