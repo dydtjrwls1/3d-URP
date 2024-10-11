@@ -2,11 +2,8 @@ using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 
 public class Player : MonoBehaviour
 {
@@ -335,7 +332,6 @@ public class Player : MonoBehaviour
             m_FirePoint = m_CurrentWeapon.firePoint;
             m_FireLight = m_CurrentWeapon.FireLight;
             m_FireEffect = m_CurrentWeapon.fireEffect;
-            
         }
 
         if(currentWeapon != null)

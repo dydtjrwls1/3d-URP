@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    [Header("Basic")]
     // 발사 속도
     public float fireRate = 0.5f;
 
@@ -14,6 +15,7 @@ public class Weapon : MonoBehaviour
     // 카메라 위치에 맞게 메쉬의 위치조정을 위한 값
     public Vector3 offset = Vector3.zero;
 
+    [Header("Effect")]
     // 발사 위치
     public Transform firePoint;
 
