@@ -1,9 +1,10 @@
 using Cinemachine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour
 {
@@ -42,7 +43,10 @@ public class Player : MonoBehaviour
     public float recoilSmooth = 2.0f;
 
     // 반동 세기
-    public float recoilAmount = 1.1f;
+    // public float recoilAmount = 1.1f;
+
+    // 좌우로 튀는 정도
+    public float randomRecoilAmount = 1.0f;
 
     [Header("Bob Setting")]
     public float bobRate = 0.3f;
@@ -91,14 +95,21 @@ public class Player : MonoBehaviour
     float m_MouseYInput;
     float m_CurrentRecoilRate = 0f;
     float m_CurrentRecoilTime = 0f;
+    float m_RecoilModifier = 1.0f;
+    float m_RecoilAmount;
+    float m_AimRecoilAmount;
+    float m_RandomRecoilX;
+    float m_RandomRecoilY;
     float m_CurrentFireCoolTime = 0f;
     float m_CurrentBobTime = 0f;
     float m_CameraVerticalAngle = 0f;
     float m_FireRate;
 
-    public Action onAim = null;
+    public event Action onAim = null;
 
-    public Action onBulletFire = null;
+    public event Action<Weapon> onBulletFire = null;
+
+    public event Action<Weapon> onWeaponChange = null;
 
     const float PI = 3.141592f;
 
@@ -191,7 +202,7 @@ public class Player : MonoBehaviour
                 Projectile projectile = Factory.Instance.GetProjectile(m_FirePoint.position + m_FirePoint.forward * firePointOffset, m_FirePoint.eulerAngles);
                 projectile.Velocity = m_FirePoint.forward;
 
-                onBulletFire?.Invoke();
+                onBulletFire?.Invoke(m_CurrentWeapon);
 
                 // 총알 발사 쿨타임 초기화
                 m_CurrentFireCoolTime = m_FireRate;
@@ -253,6 +264,7 @@ public class Player : MonoBehaviour
     {
         m_CurrentRecoilRate -= Time.deltaTime;
         m_CurrentRecoilTime -= Time.deltaTime;
+        m_RecoilModifier -= Time.deltaTime;
 
         if (m_IsFire)
         {
@@ -260,18 +272,25 @@ public class Player : MonoBehaviour
             {
                 m_CurrentRecoilRate = m_FireRate;
                 m_CurrentRecoilTime = recoilTime;
+
+                m_RandomRecoilX = Random.Range(-randomRecoilAmount, randomRecoilAmount);
+                m_RandomRecoilY = Random.Range(-randomRecoilAmount, randomRecoilAmount);
+
+                m_RecoilModifier = 0.75f;
             }
 
             // 반동 세기 계산
-            float amplitude = -recoilAmount;
+            float amplitude = m_IsAim ? m_AimRecoilAmount : m_RecoilAmount;
 
-            float xValue = Mathf.Max(0, PI * m_CurrentRecoilTime / recoilTime);
+            float xValue = Mathf.Max(0, PI * m_RecoilModifier * m_CurrentRecoilTime / recoilTime);
 
-            float recoil = Mathf.Sin(xValue) * amplitude;
-            
+            float recoil = Mathf.Sin(xValue) * -amplitude;
+
+            float recoilX = recoil * m_RandomRecoilX;
+            float recoilY = recoil * m_RandomRecoilY;
 
             // 반동 세기만큼 z축으로 이동
-            Vector3 recoilPosition = new Vector3(0, 0, recoil);
+            Vector3 recoilPosition = new Vector3(recoilX, recoilY, recoil);
 
             m_RecoilWeaponPosition = recoilPosition;
         }
@@ -328,10 +347,15 @@ public class Player : MonoBehaviour
 
             // 새로 장착할 무기 생성
             currentWeapon = Instantiate(weapon).gameObject;
+
             m_CurrentWeapon = currentWeapon.GetComponent<Weapon>();
             m_FirePoint = m_CurrentWeapon.firePoint;
             m_FireLight = m_CurrentWeapon.FireLight;
             m_FireEffect = m_CurrentWeapon.fireEffect;
+            m_RecoilAmount = m_CurrentWeapon.recoilAmount;
+            m_AimRecoilAmount = m_CurrentWeapon.aimRecoilAmount;
+
+            onWeaponChange?.Invoke(m_CurrentWeapon);
         }
 
         if(currentWeapon != null)

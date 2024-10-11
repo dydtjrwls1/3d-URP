@@ -9,6 +9,12 @@ public class Weapon : MonoBehaviour
     // 발사 속도
     public float fireRate = 0.5f;
 
+    // 반동 세기
+    public float recoilAmount = 1.0f;
+
+    // 에임 시 반동 세기
+    public float aimRecoilAmount = 0.1f;
+
     // 탄창량
     public int maxAmmo = 12;
 
@@ -28,6 +34,8 @@ public class Weapon : MonoBehaviour
 
     public Light FireLight => m_FireLight;
 
+    public int CurrentAmmo => m_CurrentAmmo;
+
     private void Awake()
     {
         m_CurrentAmmo = maxAmmo;
@@ -41,9 +49,14 @@ public class Weapon : MonoBehaviour
         player.onBulletFire += OnBulletFired;
     }
 
-    private void OnBulletFired()
+    private void OnBulletFired(Weapon _)
     {
         m_CurrentAmmo--;
+        if(m_CurrentAmmo < 0)
+        {
+            // 재장전 알림
+            m_CurrentAmmo = maxAmmo;
+        }
     }
 
 

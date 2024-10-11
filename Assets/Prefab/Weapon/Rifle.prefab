@@ -46,8 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f72b6cd80358d646984addaf60d8e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireRate: 0.5
-  maxAmmo: 12
+  fireRate: 0.1
+  recoilAmount: 0.1
+  aimRecoilAmount: 0.02
+  maxAmmo: 30
   offset: {x: 0, y: 0.087, z: -0.18}
   firePoint: {fileID: 3214798476760302703}
   fireEffect: {fileID: 8636454311355306609}
@@ -2473,12 +2475,12 @@ PrefabInstance:
     - target: {fileID: 5768663199619169104, guid: 6ba1b531d4ea1894b99263e543f5a997,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.14
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5768663199619169104, guid: 6ba1b531d4ea1894b99263e543f5a997,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5768663199619169104, guid: 6ba1b531d4ea1894b99263e543f5a997,
         type: 3}
