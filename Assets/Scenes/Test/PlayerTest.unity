@@ -1713,7 +1713,17 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 2521232454291280881, guid: dce9c7ee36aa6904c954e250e3cc95a4,
         type: 3}
+      propertyPath: weaponChangeSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2521232454291280881, guid: dce9c7ee36aa6904c954e250e3cc95a4,
+        type: 3}
       propertyPath: randomRecoilAmount
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2521232454291280881, guid: dce9c7ee36aa6904c954e250e3cc95a4,
+        type: 3}
+      propertyPath: weaponChangeOffset
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2521232454291280881, guid: dce9c7ee36aa6904c954e250e3cc95a4,

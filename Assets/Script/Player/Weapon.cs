@@ -9,6 +9,8 @@ public class Weapon : MonoBehaviour
     // 발사 속도
     public float fireRate = 0.5f;
 
+    public float reloadTime = 0.5f;
+
     // 반동 세기
     public float recoilAmount = 1.0f;
 
@@ -34,6 +36,8 @@ public class Weapon : MonoBehaviour
 
     public Light FireLight => m_FireLight;
 
+    public bool CanFire => m_CurrentAmmo > 0;
+
     public event Action<int> onBulletChange = null;
 
     private void Awake()
@@ -44,22 +48,47 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
+        
+    }
+
+    private void OnEnable()
+    {
         Player player = GameManager.Instance.Player;
 
         player.onBulletFire += OnBulletFired;
     }
 
+    private void OnDisable()
+    {
+        Player player = GameManager.Instance.Player;
+
+        player.onBulletFire -= OnBulletFired;
+    }
+
     private void OnBulletFired(Weapon _)
     {
         m_CurrentAmmo--;
+
         onBulletChange?.Invoke(m_CurrentAmmo);
 
-        if(m_CurrentAmmo < 0)
+        if(m_CurrentAmmo < 1)
         {
             // 재장전 알림
-            m_CurrentAmmo = maxAmmo;
+            StartCoroutine(Reload());
         }
     }
 
+    IEnumerator Reload()
+    {
+        float elapsedTime = 0.0f;
 
+        while (elapsedTime < reloadTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            yield return null;  
+        }
+
+        m_CurrentAmmo = maxAmmo;
+    }
 }

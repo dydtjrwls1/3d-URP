@@ -61,6 +61,8 @@ public class Player : MonoBehaviour
 
     [Header("Weapon")]
     public Weapon defaultWeapon;
+    public float weaponChangeOffset = 0.5f;
+    public float weaponChangeSpeed = 1.5f;
 
     CharacterController m_controller;
 
@@ -85,6 +87,7 @@ public class Player : MonoBehaviour
     Vector3 m_MainLocalPosition;
     Vector3 m_RecoilWeaponPosition;
     Vector3 m_BobWeaponPosition;
+    Vector3 m_WeaponChangePosition;
 
     bool m_IsAim = false;
     bool m_OnGround = true;
@@ -105,6 +108,11 @@ public class Player : MonoBehaviour
     float m_CameraVerticalAngle = 0f;
     float m_FireRate;
 
+    public Weapon CurrentWeapon => m_CurrentWeapon;
+
+    // 무기의 남은 탄창 수가 0이 아니고 마우스 오른쪽 버튼을 눌렀을 경우
+    public bool CanFire => m_CurrentWeapon.CanFire && m_IsFire;
+
     public event Action onAim = null;
 
     public event Action<Weapon> onBulletFire = null;
@@ -112,6 +120,7 @@ public class Player : MonoBehaviour
     public event Action<Weapon> onWeaponChange = null;
 
     const float PI = 3.141592f;
+
 
     private void Awake()
     {
@@ -179,14 +188,20 @@ public class Player : MonoBehaviour
         UpdateAimingPosition();
         UpdateRecoilPosition();
         UpdateBobPosition();
+        UpdateWeaponChangePosition();
         
 
-        m_WeaponPoint.localPosition = m_MainLocalPosition + m_RecoilWeaponPosition + m_BobWeaponPosition + m_CurrentWeapon.offset;
+        m_WeaponPoint.localPosition = m_MainLocalPosition + m_RecoilWeaponPosition + m_BobWeaponPosition + m_WeaponChangePosition + m_CurrentWeapon.offset;
+    }
+
+    private void UpdateWeaponChangePosition()
+    {
+        m_WeaponChangePosition = Vector3.Lerp(m_WeaponChangePosition, Vector3.zero, weaponChangeSpeed * Time.deltaTime);
     }
 
     private void Fire()
     {
-        if (m_IsFire)
+        if (CanFire)
         {
             if(m_CurrentFireCoolTime < 0)
             {
@@ -266,7 +281,7 @@ public class Player : MonoBehaviour
         m_CurrentRecoilTime -= Time.deltaTime;
         m_RecoilModifier -= Time.deltaTime;
 
-        if (m_IsFire)
+        if (CanFire)
         {
             if (m_CurrentRecoilRate < 0f)
             {
@@ -339,6 +354,12 @@ public class Player : MonoBehaviour
 
         if (HasWeapon(weapon))
         {
+            // 같은 무기면 바꾸지 않는다.
+            if (m_CurrentWeapon == weapon)
+            {
+                return;
+            }
+
             // 현재 장착중인 무기 파괴
             if (m_CurrentWeapon != null)
             {
@@ -366,6 +387,8 @@ public class Player : MonoBehaviour
             currentWeapon.transform.forward = m_PlayerCamera.transform.forward;
             
             m_FireRate = weapon.fireRate;
+
+            m_WeaponChangePosition = new Vector3(0, -weaponChangeOffset, 0);
         }
     }
 

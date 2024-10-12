@@ -2467,6 +2467,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3214798476760302703}
     m_Modifications:
+    - target: {fileID: 2470011933010623264, guid: 6ba1b531d4ea1894b99263e543f5a997,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237257501551987762, guid: 6ba1b531d4ea1894b99263e543f5a997,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5768663199619169104, guid: 6ba1b531d4ea1894b99263e543f5a997,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2521,6 +2531,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DefaultFireEffect
+      objectReference: {fileID: 0}
+    - target: {fileID: 7538264100964116804, guid: 6ba1b531d4ea1894b99263e543f5a997,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
