@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
     // public float recoilRate = 0.5f;
 
     // 반동 시간 ( 이번 반동의 발동 시간 )
-    public float recoilTime = 0.1f;
+    //public float recoilTime = 0.1f;
 
     // 사격중이 아닐 때 원래 위치로 돌아가는 정도
     public float recoilSmooth = 2.0f;
@@ -92,18 +92,20 @@ public class Player : MonoBehaviour
     bool m_IsAim = false;
     bool m_OnGround = true;
     bool m_IsFire = false;
+    bool m_IsFired = false;
     bool m_IsMove = false;
 
     float m_MouseXInput;
     float m_MouseYInput;
-    float m_CurrentRecoilRate = 0f;
-    float m_CurrentRecoilTime = 0f;
+    float m_RemainsRecoilRate = 0f;
+    float m_RemainsRecoilTime = 0f;
     float m_RecoilModifier = 1.0f;
     float m_RecoilAmount;
+    float m_RecoilTime;
     float m_AimRecoilAmount;
     float m_RandomRecoilX;
     float m_RandomRecoilY;
-    float m_CurrentFireCoolTime = 0f;
+    float m_RemainsFireCoolTime = 0f;
     float m_CurrentBobTime = 0f;
     float m_CameraVerticalAngle = 0f;
     float m_FireRate;
@@ -201,9 +203,11 @@ public class Player : MonoBehaviour
 
     private void Fire()
     {
+        m_RemainsFireCoolTime -= Time.deltaTime;
+
         if (CanFire)
         {
-            if(m_CurrentFireCoolTime < 0)
+            if(m_RemainsFireCoolTime < 0f)
             {
                 if(m_FireLightOnCoroutune != null)
                 {
@@ -220,11 +224,11 @@ public class Player : MonoBehaviour
                 onBulletFire?.Invoke(m_CurrentWeapon);
 
                 // 총알 발사 쿨타임 초기화
-                m_CurrentFireCoolTime = m_FireRate;
+                m_RemainsFireCoolTime = m_FireRate;
+
+                m_IsFired = true;
             }
         }
-
-        m_CurrentFireCoolTime -= Time.deltaTime;
     }
 
     // 플레이어 프레임별 움직임
@@ -277,16 +281,17 @@ public class Player : MonoBehaviour
     // 총알을 발사하고 총의 반동에 의한 움직임을 동작하는 함수
     private void UpdateRecoilPosition()
     {
-        m_CurrentRecoilRate -= Time.deltaTime;
-        m_CurrentRecoilTime -= Time.deltaTime;
+        m_RemainsRecoilRate -= Time.deltaTime;
+        m_RemainsRecoilTime -= Time.deltaTime;
         m_RecoilModifier -= Time.deltaTime;
 
-        if (CanFire)
+        // 발사가 성공적으로 됐다면
+        if (m_IsFired)
         {
-            if (m_CurrentRecoilRate < 0f)
+            if (m_RemainsRecoilRate < 0f)
             {
-                m_CurrentRecoilRate = m_FireRate;
-                m_CurrentRecoilTime = recoilTime;
+                m_RemainsRecoilRate = m_FireRate;
+                m_RemainsRecoilTime = m_RecoilTime;
 
                 m_RandomRecoilX = Random.Range(-randomRecoilAmount, randomRecoilAmount);
                 m_RandomRecoilY = Random.Range(-randomRecoilAmount, randomRecoilAmount);
@@ -297,7 +302,7 @@ public class Player : MonoBehaviour
             // 반동 세기 계산
             float amplitude = m_IsAim ? m_AimRecoilAmount : m_RecoilAmount;
 
-            float xValue = Mathf.Max(0, PI * m_RecoilModifier * m_CurrentRecoilTime / recoilTime);
+            float xValue = Mathf.Max(0, PI * m_RecoilModifier * m_RemainsRecoilTime / m_RecoilTime);
 
             float recoil = Mathf.Sin(xValue) * -amplitude;
 
@@ -313,7 +318,12 @@ public class Player : MonoBehaviour
         {
             m_RecoilWeaponPosition = Vector3.Lerp(m_RecoilWeaponPosition, Vector3.zero, recoilSmooth * Time.deltaTime);
         }
-        
+
+        // 반동이 끝나거나 발사버튼 미클릭 시 발사 여부는 false 로 바꾼다. 
+        if (m_RemainsRecoilTime < 0f || !m_IsFire)
+        {
+            m_IsFired = false;
+        }
     }
 
     // 조준 시 위치를 변경하는 함수
@@ -374,7 +384,9 @@ public class Player : MonoBehaviour
             m_FireLight = m_CurrentWeapon.FireLight;
             m_FireEffect = m_CurrentWeapon.fireEffect;
             m_RecoilAmount = m_CurrentWeapon.recoilAmount;
+            m_RecoilTime = m_CurrentWeapon.recoilTime;
             m_AimRecoilAmount = m_CurrentWeapon.aimRecoilAmount;
+
 
             onWeaponChange?.Invoke(m_CurrentWeapon);
         }

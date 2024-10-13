@@ -184,6 +184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fireRate: 0.5
+  reloadTime: 0.5
   recoilAmount: 1
   aimRecoilAmount: 0.1
   maxAmmo: 12
@@ -269,6 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fireRate: 0.5
+  reloadTime: 0.75
   recoilAmount: 0.15
   aimRecoilAmount: 0.1
   maxAmmo: 8

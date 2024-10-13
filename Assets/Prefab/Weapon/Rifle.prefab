@@ -47,7 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fireRate: 0.1
+  reloadTime: 1
   recoilAmount: 0.1
+  recoilTime: 0.09
   aimRecoilAmount: 0.02
   maxAmmo: 30
   offset: {x: 0, y: 0.087, z: -0.18}

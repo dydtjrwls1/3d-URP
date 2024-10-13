@@ -14,6 +14,9 @@ public class Weapon : MonoBehaviour
     // 반동 세기
     public float recoilAmount = 1.0f;
 
+    // 반동 시간
+    public float recoilTime = 0.1f;
+
     // 에임 시 반동 세기
     public float aimRecoilAmount = 0.1f;
 
@@ -34,6 +37,19 @@ public class Weapon : MonoBehaviour
 
     int m_CurrentAmmo;
 
+    int CurrentAmmo
+    {
+        get => m_CurrentAmmo;
+        set
+        {
+            if (m_CurrentAmmo != value)
+            {
+                m_CurrentAmmo = value;
+                onBulletChange?.Invoke(m_CurrentAmmo);
+            }
+        }
+    }
+
     public Light FireLight => m_FireLight;
 
     public bool CanFire => m_CurrentAmmo > 0;
@@ -44,11 +60,6 @@ public class Weapon : MonoBehaviour
     {
         m_CurrentAmmo = maxAmmo;
         m_FireLight = GetComponentInChildren<Light>();
-    }
-
-    private void Start()
-    {
-        
     }
 
     private void OnEnable()
@@ -67,9 +78,7 @@ public class Weapon : MonoBehaviour
 
     private void OnBulletFired(Weapon _)
     {
-        m_CurrentAmmo--;
-
-        onBulletChange?.Invoke(m_CurrentAmmo);
+        CurrentAmmo -= 1;
 
         if(m_CurrentAmmo < 1)
         {
@@ -89,6 +98,6 @@ public class Weapon : MonoBehaviour
             yield return null;  
         }
 
-        m_CurrentAmmo = maxAmmo;
+        CurrentAmmo = maxAmmo;
     }
 }
