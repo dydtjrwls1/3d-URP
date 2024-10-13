@@ -186,9 +186,11 @@ MonoBehaviour:
   fireRate: 0.5
   reloadTime: 0.5
   recoilAmount: 1
+  recoilTime: 0.1
   aimRecoilAmount: 0.1
   maxAmmo: 12
   offset: {x: 0, y: 0, z: 0}
+  isDefault: 0
   firePoint: {fileID: 0}
   fireEffect: {fileID: 0}
 --- !u!1 &7485070251117267042
@@ -272,9 +274,11 @@ MonoBehaviour:
   fireRate: 0.5
   reloadTime: 0.75
   recoilAmount: 0.15
+  recoilTime: 0.1
   aimRecoilAmount: 0.1
   maxAmmo: 8
   offset: {x: 0, y: 0, z: 0}
+  isDefault: 1
   firePoint: {fileID: 4916695368041601825}
   fireEffect: {fileID: 6762044441469884748}
 --- !u!1 &8120346547957578475

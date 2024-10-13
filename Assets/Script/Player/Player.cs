@@ -74,6 +74,7 @@ public class Player : MonoBehaviour
 
     Transform m_WeaponPoint;
     Transform m_FirePoint;
+    Transform m_PlayerWeapons;
 
     Coroutine m_FireLightOnCoroutune;
 
@@ -121,6 +122,10 @@ public class Player : MonoBehaviour
 
     public event Action<Weapon> onWeaponChange = null;
 
+    public event Action onKeyOne = null;
+    public event Action onKeyTwo = null;
+    public event Action onKeyThree = null;
+
     const float PI = 3.141592f;
 
 
@@ -153,9 +158,12 @@ public class Player : MonoBehaviour
         inputAction.Player.RClick.performed += On_RClick;
         inputAction.Player.Fire.performed += On_Fire;
         inputAction.Player.Fire.canceled += On_Fire;
+        inputAction.Player.Num1.performed += OnKeyOne;
+        inputAction.Player.Num2.performed += OnKeyTwo;
+        inputAction.Player.Num3.performed += OnKeyThree;
     }
-
     
+
 
     private void Start()
     {
@@ -170,8 +178,8 @@ public class Player : MonoBehaviour
 
         m_MainLocalPosition = defaultWeaponPosition.localPosition;
 
-        AddWeapon(defaultWeapon);
-        SetWeapon(defaultWeapon);
+        //AddWeapon(defaultWeapon);
+        //SetWeapon(defaultWeapon);
     }
 
     private void Update()
@@ -341,67 +349,78 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void AddWeapon(Weapon weapon)
+    //public void AddWeapon(Weapon weapon)
+    //{
+    //    if (HasWeapon(weapon))
+    //    {
+    //        return;
+    //    }
+
+    //    m_WeaponList.Add(weapon);
+
+    //    //SetWeapon(weapon);
+    //}
+
+    //bool HasWeapon(Weapon weapon)
+    //{
+    //    return m_WeaponList.Contains(weapon);
+    //}
+
+    //public void SetWeapon(Weapon weapon)
+    //{
+    //    GameObject currentWeapon = null;
+
+    //    if (HasWeapon(weapon))
+    //    {
+    //        // 같은 무기면 바꾸지 않는다.
+    //        if (m_CurrentWeapon == weapon)
+    //        {
+    //            return;
+    //        }
+
+    //        // 현재 장착중인 무기 파괴
+    //        if (m_CurrentWeapon != null)
+    //        {
+    //            Destroy(m_CurrentWeapon.gameObject);
+    //        }
+
+    //        // 새로 장착할 무기 생성
+    //        currentWeapon = Instantiate(weapon).gameObject;
+
+    //        m_CurrentWeapon = currentWeapon.GetComponent<Weapon>();
+    //        m_FirePoint = m_CurrentWeapon.firePoint;
+    //        m_FireLight = m_CurrentWeapon.FireLight;
+    //        m_FireEffect = m_CurrentWeapon.fireEffect;
+    //        m_RecoilAmount = m_CurrentWeapon.recoilAmount;
+    //        m_RecoilTime = m_CurrentWeapon.recoilTime;
+    //        m_AimRecoilAmount = m_CurrentWeapon.aimRecoilAmount;
+
+
+    //        onWeaponChange?.Invoke(m_CurrentWeapon);
+
+    //        if (currentWeapon != null)
+    //        {
+    //            // 무기를 weapon point에 위치
+    //            currentWeapon.transform.parent = m_WeaponPoint;
+    //            currentWeapon.transform.localPosition = Vector3.zero;
+    //            currentWeapon.transform.forward = m_PlayerCamera.transform.forward;
+
+    //            m_FireRate = weapon.fireRate;
+
+    //            m_WeaponChangePosition = new Vector3(0, -weaponChangeOffset, 0);
+    //        }
+    //    }
+    //}
+
+    public void SetWeaponSetting(Weapon weapon)
     {
-        if (HasWeapon(weapon))
-        {
-            return;
-        }
-
-        m_WeaponList.Add(weapon);
-
-        //SetWeapon(weapon);
-    }
-
-    bool HasWeapon(Weapon weapon)
-    {
-        return m_WeaponList.Contains(weapon);
-    }
-
-    public void SetWeapon(Weapon weapon)
-    {
-        GameObject currentWeapon = null;
-
-        if (HasWeapon(weapon))
-        {
-            // 같은 무기면 바꾸지 않는다.
-            if (m_CurrentWeapon == weapon)
-            {
-                return;
-            }
-
-            // 현재 장착중인 무기 파괴
-            if (m_CurrentWeapon != null)
-            {
-                Destroy(m_CurrentWeapon.gameObject);
-            }
-
-            // 새로 장착할 무기 생성
-            currentWeapon = Instantiate(weapon).gameObject;
-
-            m_CurrentWeapon = currentWeapon.GetComponent<Weapon>();
-            m_FirePoint = m_CurrentWeapon.firePoint;
-            m_FireLight = m_CurrentWeapon.FireLight;
-            m_FireEffect = m_CurrentWeapon.fireEffect;
-            m_RecoilAmount = m_CurrentWeapon.recoilAmount;
-            m_RecoilTime = m_CurrentWeapon.recoilTime;
-            m_AimRecoilAmount = m_CurrentWeapon.aimRecoilAmount;
-
-
-            onWeaponChange?.Invoke(m_CurrentWeapon);
-        }
-
-        if(currentWeapon != null)
-        {
-            // 무기를 weapon point에 위치
-            currentWeapon.transform.parent = m_WeaponPoint;
-            currentWeapon.transform.localPosition = Vector3.zero;
-            currentWeapon.transform.forward = m_PlayerCamera.transform.forward;
-            
-            m_FireRate = weapon.fireRate;
-
-            m_WeaponChangePosition = new Vector3(0, -weaponChangeOffset, 0);
-        }
+        m_CurrentWeapon = weapon;
+        m_FirePoint = weapon.firePoint;
+        m_FireLight = weapon.FireLight;
+        m_FireEffect = weapon.fireEffect;
+        m_RecoilAmount = weapon.recoilAmount;
+        m_RecoilTime = weapon.recoilTime;
+        m_AimRecoilAmount = weapon.aimRecoilAmount;
     }
 
     // 키보드 입력 처리 함수
@@ -446,8 +465,20 @@ public class Player : MonoBehaviour
         m_IsFire = !context.canceled;
     }
 
-    
-   
+    private void OnKeyOne(InputAction.CallbackContext _)
+    {
+        onKeyOne?.Invoke();
+    }
+
+    private void OnKeyTwo(InputAction.CallbackContext _)
+    {
+        onKeyTwo?.Invoke();
+    }
+    private void OnKeyThree(InputAction.CallbackContext _)
+    {
+        onKeyThree?.Invoke();
+    }
+
     void SetFOV(float fov)
     {
         m_PlayerCamera.m_Lens.FieldOfView = fov;

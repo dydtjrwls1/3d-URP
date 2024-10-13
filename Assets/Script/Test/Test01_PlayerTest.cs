@@ -26,14 +26,14 @@ public class Test01_PlayerTest : TestBase
 
     protected override void Num4_performed(InputAction.CallbackContext obj)
     {
-        GameManager.Instance.Player.AddWeapon(handGun);
-        GameManager.Instance.Player.SetWeapon(handGun);
+        //GameManager.Instance.Player.AddWeapon(handGun);
+        //GameManager.Instance.Player.SetWeapon(handGun);
     }
 
     protected override void Num5_performed(InputAction.CallbackContext obj)
     {
-        GameManager.Instance.Player.AddWeapon(rifle);
-        GameManager.Instance.Player.SetWeapon(rifle);
+        //GameManager.Instance.Player.AddWeapon(rifle);
+        //GameManager.Instance.Player.SetWeapon(rifle);
     }
 
     // shoulder offset x = 0.22

@@ -37,6 +37,14 @@ public class Weapon : MonoBehaviour
 
     int m_CurrentAmmo;
 
+    bool m_IsActivate = false;
+
+    public bool Activate
+    {
+        get => m_IsActivate;
+        set => m_IsActivate = value;
+    }
+
     public Action<float> onReloadTimeChange = null;
 
     int CurrentAmmo
