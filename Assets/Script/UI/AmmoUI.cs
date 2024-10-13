@@ -2,15 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AmmoUI : MonoBehaviour
 {
     TextMeshProUGUI m_MaxAmmoGUI;
     TextMeshProUGUI m_CurrentAmmoGUI;
 
+    Image m_AmmoIcon;
+
     private void Awake()
     {
-        Transform child = transform.GetChild(1);
+        Transform child = transform.GetChild(0);
+        m_AmmoIcon = child.GetComponent<Image>();
+
+        child = transform.GetChild(1);
         m_MaxAmmoGUI = child.GetComponent<TextMeshProUGUI>();
 
         child = transform.GetChild(2);
@@ -37,10 +43,17 @@ public class AmmoUI : MonoBehaviour
     {
         m_MaxAmmoGUI.text = weapon.maxAmmo.ToString();
         m_CurrentAmmoGUI.text = weapon.maxAmmo.ToString();
-
+        
+        // Weapon 의 델리게이트와 연결
         weapon.onBulletChange -= UpdateCurrentAmmoDisplay;
         weapon.onBulletChange += UpdateCurrentAmmoDisplay;
+
+        weapon.onReloadTimeChange -= UpdateAmmoIconDisplay;
+        weapon.onReloadTimeChange += UpdateAmmoIconDisplay;
     }
 
-
+    private void UpdateAmmoIconDisplay(float ratio)
+    {
+        m_AmmoIcon.fillAmount = ratio;
+    }
 }

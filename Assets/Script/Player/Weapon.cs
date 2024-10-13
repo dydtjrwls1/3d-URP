@@ -37,6 +37,8 @@ public class Weapon : MonoBehaviour
 
     int m_CurrentAmmo;
 
+    public Action<float> onReloadTimeChange = null;
+
     int CurrentAmmo
     {
         get => m_CurrentAmmo;
@@ -45,6 +47,7 @@ public class Weapon : MonoBehaviour
             if (m_CurrentAmmo != value)
             {
                 m_CurrentAmmo = value;
+
                 onBulletChange?.Invoke(m_CurrentAmmo);
             }
         }
@@ -90,10 +93,13 @@ public class Weapon : MonoBehaviour
     IEnumerator Reload()
     {
         float elapsedTime = 0.0f;
+        float inverseReloadTime = 1 / reloadTime;
 
         while (elapsedTime < reloadTime)
         {
             elapsedTime += Time.deltaTime;
+
+            onReloadTimeChange?.Invoke(elapsedTime * inverseReloadTime);
 
             yield return null;  
         }
