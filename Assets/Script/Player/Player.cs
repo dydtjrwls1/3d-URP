@@ -415,12 +415,17 @@ public class Player : MonoBehaviour
     public void SetWeaponSetting(Weapon weapon)
     {
         m_CurrentWeapon = weapon;
+        m_FireRate = weapon.fireRate;
         m_FirePoint = weapon.firePoint;
         m_FireLight = weapon.FireLight;
         m_FireEffect = weapon.fireEffect;
         m_RecoilAmount = weapon.recoilAmount;
         m_RecoilTime = weapon.recoilTime;
         m_AimRecoilAmount = weapon.aimRecoilAmount;
+
+        onWeaponChange?.Invoke(m_CurrentWeapon);
+
+        m_WeaponChangePosition = new Vector3(0, -weaponChangeOffset, 0);
     }
 
     // 키보드 입력 처리 함수

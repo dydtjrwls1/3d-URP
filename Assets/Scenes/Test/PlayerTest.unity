@@ -743,9 +743,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dea75c3a304901a4aa3dfe04a35f2d0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weapons:
+  m_WeaponPrefabs:
   - {fileID: 7508044950429389412, guid: ea3dec04f8812b54b8cb642e1e3c51dd, type: 3}
   - {fileID: 128567453166736957, guid: 8107f7dc456607b44a46c9740f9b9c50, type: 3}
+  m_WeaponPoint: {fileID: 1808652709}
 --- !u!1 &787516273
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,7 +763,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &787516274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1581,6 +1582,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1275915064}
   m_CullTransparentMesh: 1
+--- !u!4 &1808652709 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3410625050264866606, guid: dce9c7ee36aa6904c954e250e3cc95a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 5165719184952783280}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1937691008
 GameObject:
   m_ObjectHideFlags: 0

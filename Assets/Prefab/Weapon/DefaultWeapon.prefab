@@ -190,7 +190,6 @@ MonoBehaviour:
   aimRecoilAmount: 0.1
   maxAmmo: 12
   offset: {x: 0, y: 0, z: 0}
-  isDefault: 0
   firePoint: {fileID: 0}
   fireEffect: {fileID: 0}
 --- !u!1 &7485070251117267042
@@ -252,7 +251,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.016, y: 0.016, z: 0.016}
+  m_LocalScale: {x: 0.025, y: 0.025, z: 0.025}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3348099412186128817}
@@ -278,7 +277,6 @@ MonoBehaviour:
   aimRecoilAmount: 0.1
   maxAmmo: 8
   offset: {x: 0, y: 0, z: 0}
-  isDefault: 1
   firePoint: {fileID: 4916695368041601825}
   fireEffect: {fileID: 6762044441469884748}
 --- !u!1 &8120346547957578475

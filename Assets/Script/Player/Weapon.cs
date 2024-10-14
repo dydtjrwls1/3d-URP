@@ -39,6 +39,8 @@ public class Weapon : MonoBehaviour
 
     bool m_IsActivate = false;
 
+    public GameObject PrefabObject { get; set; }
+
     public bool Activate
     {
         get => m_IsActivate;
@@ -69,13 +71,15 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        m_CurrentAmmo = maxAmmo;
-        m_FireLight = GetComponentInChildren<Light>();
+        
     }
 
     private void OnEnable()
     {
         Player player = GameManager.Instance.Player;
+
+        CurrentAmmo = maxAmmo;
+        m_FireLight = GetComponentInChildren<Light>();
 
         player.onBulletFire += OnBulletFired;
     }

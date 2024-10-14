@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class PlayerWeaponHandler : MonoBehaviour
 {
-    public GameObject[] m_Weapons;
+    public GameObject[] m_WeaponPrefabs;
 
-    Transform m_PlayerWeapons;
-
-    Transform m_WeaponPoint;
+    public Transform m_WeaponPoint;
 
     Player m_Player;
+
+    GameObject m_CurrentWeapon;
 
     const int Pistol = 0;
     const int Rifle = 1;
@@ -18,16 +18,11 @@ public class PlayerWeaponHandler : MonoBehaviour
 
     private void Awake()
     {
-        Transform child = transform.GetChild(1);
-        m_PlayerWeapons = child.GetChild(0);
-
-        child = transform.GetChild(2);
-        m_PlayerWeapons = child;
-
-        foreach(var weapon in m_Weapons)
+        foreach(var prefab in m_WeaponPrefabs)
         {
-            GameObject obj = Instantiate(weapon);
-            obj.transform.parent = m_PlayerWeapons;
+            GameObject obj = Instantiate(prefab, m_WeaponPoint);
+            Weapon w = obj.GetComponent<Weapon>();
+            w.PrefabObject = obj;
             obj.SetActive(false);
         }
     }
@@ -40,24 +35,53 @@ public class PlayerWeaponHandler : MonoBehaviour
         m_Player.onKeyTwo += OnKeyTwo;
         m_Player.onKeyThree += OnKeyThree;
 
-        m_Weapons[0].GetComponent<Weapon>().Activate = true;
+        AddWeapon(Pistol);
+        AddWeapon(Rifle);
 
         SetWeapon(Pistol);
     }
 
+    private Weapon GetWeapon(int index)
+    {
+        if(index > m_WeaponPrefabs.Length - 1)
+        {
+            return null;
+        }
+
+        GameObject weapon = m_WeaponPoint.GetChild(index).gameObject;
+        return weapon.GetComponent<Weapon>();
+    }
+
     private bool HasWeapon(int index)
     {
-        return m_Weapons[index].GetComponent<Weapon>().Activate;
+        Weapon weapon = GetWeapon(index);
+
+        if(weapon == null)
+        {
+            return false;
+        }
+        else
+        {
+            return weapon.Activate;
+        }
     }
 
     private void SetWeapon(int index)
     {
         if (HasWeapon(index))
         {
-            m_Weapons[index].transform.parent = m_WeaponPoint;
-            m_Weapons[index].SetActive(true);
+            // 현재 착용중인 무기 해제
+            if(m_CurrentWeapon != null)
+            {
+                m_CurrentWeapon.SetActive(false);
+            }
 
-            m_Player.SetWeaponSetting(m_Weapons[index].GetComponent<Weapon>());
+            Weapon weapon = GetWeapon(index);
+
+            weapon.PrefabObject.SetActive(true);
+            m_CurrentWeapon = weapon.PrefabObject;
+
+            m_Player.SetWeaponSetting(weapon);
         }
     }
 
@@ -65,7 +89,7 @@ public class PlayerWeaponHandler : MonoBehaviour
     {
         if (!HasWeapon(index))
         {
-            m_Weapons[index].GetComponent<Weapon>().Activate = true;
+            GetWeapon(index).Activate = true;
         }
     }
 
