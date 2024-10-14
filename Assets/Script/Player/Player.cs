@@ -185,7 +185,12 @@ public class Player : MonoBehaviour
     private void Update()
     {
         HandlePlayerMovement();
+        RayCastTarget();
         Fire();
+    }
+
+    private void RayCastTarget()
+    {
     }
 
     private void LateUpdate()
@@ -412,6 +417,7 @@ public class Player : MonoBehaviour
     //    }
     //}
 
+    // 무기가 바뀔경우 실행될 함수
     public void SetWeaponSetting(Weapon weapon)
     {
         m_CurrentWeapon = weapon;
@@ -429,7 +435,7 @@ public class Player : MonoBehaviour
     }
 
     // 키보드 입력 처리 함수
-    private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    private void OnMove(InputAction.CallbackContext context)
     {
         m_IsMove = !context.canceled;
 
