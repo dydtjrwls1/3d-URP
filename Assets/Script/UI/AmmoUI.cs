@@ -42,8 +42,8 @@ public class AmmoUI : MonoBehaviour
     private void UpdateMaxAmmoDisplay(Weapon weapon)
     {
         m_MaxAmmoGUI.text = weapon.maxAmmo.ToString();
-        m_CurrentAmmoGUI.text = weapon.maxAmmo.ToString();
-        
+        m_CurrentAmmoGUI.text = weapon.CurrentAmmo.ToString();
+
         // Weapon 의 델리게이트와 연결
         weapon.onBulletChange -= UpdateCurrentAmmoDisplay;
         weapon.onBulletChange += UpdateCurrentAmmoDisplay;

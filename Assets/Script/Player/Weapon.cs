@@ -23,6 +23,9 @@ public class Weapon : MonoBehaviour
     // 탄창량
     public int maxAmmo = 12;
 
+    // 기본 데미지
+    public int defaultDamage = 1;
+
     // 카메라 위치에 맞게 메쉬의 위치조정을 위한 값
     public Vector3 offset = Vector3.zero;
 
@@ -49,7 +52,7 @@ public class Weapon : MonoBehaviour
 
     public Action<float> onReloadTimeChange = null;
 
-    int CurrentAmmo
+    public int CurrentAmmo
     {
         get => m_CurrentAmmo;
         set
@@ -71,14 +74,13 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        
+        CurrentAmmo = maxAmmo;
     }
 
     private void OnEnable()
     {
         Player player = GameManager.Instance.Player;
 
-        CurrentAmmo = maxAmmo;
         m_FireLight = GetComponentInChildren<Light>();
 
         player.onBulletFire += OnBulletFired;

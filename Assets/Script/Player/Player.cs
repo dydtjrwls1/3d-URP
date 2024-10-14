@@ -162,7 +162,22 @@ public class Player : MonoBehaviour
         inputAction.Player.Num2.performed += OnKeyTwo;
         inputAction.Player.Num3.performed += OnKeyThree;
     }
-    
+
+    private void OnDisable()
+    {
+        inputAction.Player.Num3.performed -= OnKeyThree;
+        inputAction.Player.Num2.performed -= OnKeyTwo;
+        inputAction.Player.Num1.performed -= OnKeyOne;
+        inputAction.Player.Fire.canceled -= On_Fire;
+        inputAction.Player.Fire.performed -= On_Fire;
+        inputAction.Player.RClick.performed -= On_RClick;
+        inputAction.Player.Jump.performed -= On_Jump;
+        inputAction.Player.MousePoint.canceled -= On_MouseMove;
+        inputAction.Player.MousePoint.performed -= On_MouseMove;
+        inputAction.Player.Move.canceled -= OnMove;
+        inputAction.Player.Move.performed -= OnMove;
+        inputAction.Player.Disable();
+    }
 
 
     private void Start()
@@ -231,8 +246,8 @@ public class Player : MonoBehaviour
                 m_FireLightOnCoroutune = StartCoroutine(OnFireEffect());
 
                 // ÃÑ¾Ë ¹ß»ç
-                Projectile projectile = Factory.Instance.GetProjectile(m_FirePoint.position + m_FirePoint.forward * firePointOffset, m_FirePoint.eulerAngles);
-                projectile.Velocity = m_FirePoint.forward;
+                //Projectile projectile = Factory.Instance.GetProjectile(m_FirePoint.position + m_FirePoint.forward * firePointOffset, m_FirePoint.eulerAngles);
+                //projectile.Velocity = m_FirePoint.forward;
 
                 onBulletFire?.Invoke(m_CurrentWeapon);
 
