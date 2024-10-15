@@ -23,9 +23,12 @@ public class Factory : SingleTon<Factory>
         return projectile;
     }
 
+    // hitnormal => Hit 위치의 노말 벡터
     public HitEffect GetHitEffect(Vector3 position, Vector3 hitNormal)
     {
-        HitEffect hitEffect = hitEffectPool.GetObject(position);
+        HitEffect hitEffect = hitEffectPool.GetObject(position); 
+        hitEffect.transform.forward = hitNormal;
+
         return hitEffect;
     }
 }

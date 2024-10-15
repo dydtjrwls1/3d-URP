@@ -13,7 +13,9 @@ public class PlayerHitHandler : MonoBehaviour
 
     int enemyLayerMask; 
     int groundLayerMask; 
-    int WallLayerMask; 
+    int WallLayerMask;
+
+    const float HitOffset = 0.01f; // 제트 파이팅 방지용
 
     private void Awake()
     {
@@ -41,7 +43,7 @@ public class PlayerHitHandler : MonoBehaviour
             1000f,
             enemyLayerMask | groundLayerMask | WallLayerMask))
         {
-            Factory.Instance.GetHitEffect(hit.point, hit.normal);
+            Factory.Instance.GetHitEffect(hit.point + hit.normal * HitOffset, hit.normal);
         }
     }
 }

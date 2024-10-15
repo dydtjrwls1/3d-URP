@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5842859057782266590}
-  - component: {fileID: 8164935006253960483}
+  - component: {fileID: 6027803164060733462}
+  - component: {fileID: 279663574971527578}
   m_Layer: 0
   m_Name: HitEffectPool
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2683870910604918206}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8164935006253960483
+--- !u!114 &6027803164060733462
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +42,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 2156069677120847604}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aede69a8a395be341bb6657453bd371d, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d1d574c7eafda946a64d2587951518c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 3202922195882922277, guid: 55d95f05f67251e40ad6ca46adc123d8, type: 3}
+  poolSize: 64
+--- !u!114 &279663574971527578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2156069677120847604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d1d574c7eafda946a64d2587951518c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 3202922195882922277, guid: 55d95f05f67251e40ad6ca46adc123d8, type: 3}
@@ -91,7 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 1403377585213940650, guid: 9fe2a77f6a20ac64e9fdc3a81b8a2baa, type: 3}
-  poolSize: 64
+  poolSize: 1
 --- !u!1 &8324028604765532616
 GameObject:
   m_ObjectHideFlags: 0

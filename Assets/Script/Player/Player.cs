@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     public float jumpForce = 10.0f;
     public float maxPlayerSpeed = 10.0f;
     public float velocityChangeSpeed = 10.0f;
+    public float gravityForce = 9.8f;
 
     [Header("Weapon Position")]
     public Transform defaultWeaponPosition;
@@ -274,6 +275,14 @@ public class Player : MonoBehaviour
 
         // 플레이어 이동
         Vector3 characterVelocity = transform.TransformVector(m_InputDirection) * moveSpeed;
+
+        // 공중이라면
+        if(!m_controller.isGrounded)
+        {
+            characterVelocity += Vector3.up * -gravityForce;
+        }
+
+        Debug.Log(m_controller.isGrounded);
 
         m_controller.Move(characterVelocity * Time.deltaTime);
     }

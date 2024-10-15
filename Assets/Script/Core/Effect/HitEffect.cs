@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HitEffect : RecycleObject
 {
-    ParticleSystem m_hitEffect; 
+    ParticleSystem m_hitEffect;
 
     private void Awake()
     {
@@ -14,5 +14,10 @@ public class HitEffect : RecycleObject
     protected override void OnReset()
     {
         DisableTimer(m_hitEffect.main.duration);
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
     }
 }
