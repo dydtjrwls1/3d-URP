@@ -78,10 +78,14 @@ public class PlayerWeaponHandler : MonoBehaviour
 
             Weapon weapon = GetWeapon(index);
 
-            weapon.PrefabObject.SetActive(true);
-            m_CurrentWeapon = weapon.PrefabObject;
+            // weapon 을 정상적으로 불러왔다면 무기를 장착한다.
+            if(weapon != null)
+            {
+                weapon.PrefabObject.SetActive(true);
+                m_CurrentWeapon = weapon.PrefabObject;
 
-            m_Player.SetWeaponSetting(weapon);
+                m_Player.SetWeaponSetting(weapon);
+            }
         }
     }
 
