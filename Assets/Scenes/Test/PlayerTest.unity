@@ -1383,6 +1383,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1091799155}
   m_CullTransparentMesh: 1
+--- !u!1 &1103170991 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2156069677120847604, guid: ae506af64eb03d94a8bb594c30a576a0,
+    type: 3}
+  m_PrefabInstance: {fileID: 963759245090361446}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1103170993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103170991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d1d574c7eafda946a64d2587951518c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 3202922195882922277, guid: 55d95f05f67251e40ad6ca46adc123d8, type: 3}
+  poolSize: 64
 --- !u!1 &1123200373
 GameObject:
   m_ObjectHideFlags: 0
@@ -1921,15 +1941,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6562619140897733425, guid: ae506af64eb03d94a8bb594c30a576a0,
+        type: 3}
+      propertyPath: poolSize
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8324028604765532616, guid: ae506af64eb03d94a8bb594c30a576a0,
         type: 3}
       propertyPath: m_Name
       value: Factory
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8164935006253960483, guid: ae506af64eb03d94a8bb594c30a576a0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2156069677120847604, guid: ae506af64eb03d94a8bb594c30a576a0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1103170993}
   m_SourcePrefab: {fileID: 100100000, guid: ae506af64eb03d94a8bb594c30a576a0, type: 3}
 --- !u!1001 &5165719184952783280
 PrefabInstance:

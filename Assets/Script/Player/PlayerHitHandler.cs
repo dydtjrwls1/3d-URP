@@ -41,7 +41,7 @@ public class PlayerHitHandler : MonoBehaviour
             1000f,
             enemyLayerMask | groundLayerMask | WallLayerMask))
         {
-            testSphere.position = hit.point;
+            Factory.Instance.GetHitEffect(hit.point, hit.normal);
         }
     }
 }
