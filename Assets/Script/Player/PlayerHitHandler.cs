@@ -43,7 +43,15 @@ public class PlayerHitHandler : MonoBehaviour
             1000f,
             enemyLayerMask | groundLayerMask | WallLayerMask))
         {
-            Factory.Instance.GetHitEffect(hit.point + hit.normal * HitOffset, hit.normal);
+            int hitLayerNum = 1 << hit.collider.gameObject.layer;
+            if (hitLayerNum == enemyLayerMask)
+            {
+                Factory.Instance.GetFlashHitEffect(hit.point + hit.normal * HitOffset, hit.normal);
+            }
+            else
+            {
+                Factory.Instance.GetHitEffect(hit.point + hit.normal * HitOffset, hit.normal);
+            }
         }
     }
 }

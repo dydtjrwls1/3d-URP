@@ -8,13 +8,20 @@ public class Factory : SingleTon<Factory>
 
     HitEffectPool hitEffectPool;
 
+    HitEffectPool flashHitEffectPool;
+
     protected override void OnInitialize()
     {
         projectilePool = GetComponentInChildren<ProjectilePool>();
         projectilePool.Initialize();
 
-        hitEffectPool = GetComponentInChildren<HitEffectPool>();
+        Transform child = transform.GetChild(1);
+        hitEffectPool = child.GetComponent<HitEffectPool>();
         hitEffectPool.Initialize();
+
+        child = transform.GetChild(2);
+        flashHitEffectPool = child.GetComponent<HitEffectPool>();
+        flashHitEffectPool.Initialize();
     }
 
     public Projectile GetProjectile(Vector3 position, Vector3 rotation)
@@ -27,6 +34,14 @@ public class Factory : SingleTon<Factory>
     public HitEffect GetHitEffect(Vector3 position, Vector3 hitNormal)
     {
         HitEffect hitEffect = hitEffectPool.GetObject(position); 
+        hitEffect.transform.forward = hitNormal;
+
+        return hitEffect;
+    }
+
+    public HitEffect GetFlashHitEffect(Vector3 position, Vector3 hitNormal)
+    {
+        HitEffect hitEffect = flashHitEffectPool.GetObject(position);
         hitEffect.transform.forward = hitNormal;
 
         return hitEffect;
