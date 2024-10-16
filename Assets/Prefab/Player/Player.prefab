@@ -253,11 +253,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  rotationSpeed: 0.5
+  rotationSpeed: 1
   maxRotationInputValue: 5
   jumpForce: 5
   maxPlayerSpeed: 5
   velocityChangeSpeed: 10
+  gravityForce: 9.8
   defaultWeaponPosition: {fileID: 5482883569693702621}
   aimingWeaponPosition: {fileID: 2474781325433258183}
   defaultFOV: 60
@@ -327,7 +328,7 @@ CharacterController:
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.01
+  m_SkinWidth: 0.05
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6132637320807025777

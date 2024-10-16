@@ -31003,12 +31003,7 @@ PrefabInstance:
     - target: {fileID: 4798330798683888558, guid: dce9c7ee36aa6904c954e250e3cc95a4,
         type: 3}
       propertyPath: m_SkinWidth
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 4798330798683888558, guid: dce9c7ee36aa6904c954e250e3cc95a4,
-        type: 3}
-      propertyPath: m_IncludeLayers.m_Bits
-      value: 0
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 5635179325454967451, guid: dce9c7ee36aa6904c954e250e3cc95a4,
         type: 3}
