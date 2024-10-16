@@ -282,8 +282,6 @@ public class Player : MonoBehaviour
             characterVelocity += Vector3.up * -gravityForce;
         }
 
-        Debug.Log(m_controller.isGrounded);
-
         m_controller.Move(characterVelocity * Time.deltaTime);
     }
 
