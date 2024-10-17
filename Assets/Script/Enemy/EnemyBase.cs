@@ -25,10 +25,12 @@ public class EnemyBase : RecycleObject
 
     AIState m_State = AIState.Follow;
 
+    Vector3 m_VectorToTarget;
+
     float m_CurrentAttackCoolTime;
     float m_OriginalSpeed;
 
-    bool m_CanMove;
+    bool m_StateChangable = true;
 
     readonly int Speed_Hash = Animator.StringToHash("Speed");
     readonly int Attack_Hash = Animator.StringToHash("Attack");
@@ -50,13 +52,32 @@ public class EnemyBase : RecycleObject
 
     protected override void OnReset()
     {
-        m_Agent.SetDestination(m_Player.transform.position);
+        // m_Agent.SetDestination(m_Player.transform.position);
     }
 
     private void Update()
     {
         UpdateAIState();
         EnemyStateAction();
+    }
+
+    private void UpdateAIState()
+    {
+        switch (m_State)
+        {
+            case AIState.Follow:
+                if (IsTargetInRange())
+                {
+                    m_State = AIState.Attack;
+                }
+                break;
+            case AIState.Attack:
+                if (!IsTargetInRange() && m_StateChangable)
+                {
+                    m_State = AIState.Follow;
+                }
+                break;
+        }
     }
 
     private void EnemyStateAction()
@@ -67,42 +88,51 @@ public class EnemyBase : RecycleObject
         switch (m_State)
         {
             case AIState.Follow:
-                m_Agent.SetDestination(m_Player.transform.position - m_Player.transform.forward * 0.15f);
+                if (!m_Agent.pathPending)
+                {
+                    m_Agent.SetDestination(m_Player.transform.position);
+                }
                 break;
             case AIState.Attack:
-                if (m_CurrentAttackCoolTime < 0.0f)
-                {
-                    m_Animator.SetTrigger(Attack_Hash);
-                    m_CurrentAttackCoolTime = attackCoolTime;
-                }
+                OrientToTarget();
+                Attack();
                 break;
         }
 
         m_Animator.SetFloat(Speed_Hash, m_Agent.velocity.sqrMagnitude);
     }
 
-    private void UpdateAIState()
+    private void OrientToTarget()
     {
-        switch (m_State)
+        transform.forward = Vector3.ProjectOnPlane(m_VectorToTarget, Vector3.up);
+    }
+
+    private void Attack()
+    {
+        if (m_CurrentAttackCoolTime < 0.0f)
         {
-            case AIState.Follow:
-                if (!m_Agent.pathPending && IsTargetInRange())
-                {
-                    m_State = AIState.Attack;
-                }
-                break;
-            case AIState.Attack:
-                if(!m_Agent.pathPending && !IsTargetInRange())
-                {
-                    m_State = AIState.Follow;
-                }
-                break;
+            
+            m_CurrentAttackCoolTime = attackCoolTime;
         }
     }
 
     private bool IsTargetInRange()
     {
-        float distance = Vector3.SqrMagnitude(m_Player.transform.position - m_Agent.transform.position);
+        m_VectorToTarget = m_Player.transform.position - m_Agent.transform.position;
+        float distance = Vector3.SqrMagnitude(m_VectorToTarget);
+
         return distance < stoppingDistance;
+    }
+
+    IEnumerator AttackCoroutine()
+    {
+        m_StateChangable = false;
+
+        m_Animator.SetTrigger(Attack_Hash);
+
+        // 공격 애니메이션 재생 도중 다른행동을 취하지 않는다.
+        yield return new WaitForSeconds(m_Animator.GetCurrentAnimatorClipInfo(0).Length);
+
+        m_StateChangable = true;
     }
 } 
