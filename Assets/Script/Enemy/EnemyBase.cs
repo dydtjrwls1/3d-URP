@@ -15,7 +15,9 @@ public class EnemyBase : RecycleObject
     }
 
     public float attackCoolTime = 2.0f;
-    public float stoppingDistance = 1.5f;
+    public float attackDistance = 1.5f;
+
+    public uint maxHealth = 10;
 
     NavMeshAgent m_Agent;
 
@@ -23,14 +25,40 @@ public class EnemyBase : RecycleObject
 
     Animator m_Animator;
 
+    Coroutine m_AttackCoroutine = null;
+
     AIState m_State = AIState.Follow;
 
     Vector3 m_VectorToTarget;
 
     float m_CurrentAttackCoolTime;
-    float m_OriginalSpeed;
 
     bool m_StateChangable = true;
+
+    uint m_CurrentHealth;
+
+    public uint Health
+    {
+        get => m_CurrentHealth;
+        set
+        {
+            if (m_CurrentHealth != value)
+            {
+                m_CurrentHealth = value;
+                onEnemyHealthChange?.Invoke(m_CurrentHealth);
+
+                if(m_CurrentHealth == 0)
+                {
+                    onEnemyDie?.Invoke();
+                    gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    public event Action<uint> onEnemyHealthChange = null;
+
+    public event Action onEnemyDie = null;
 
     readonly int Speed_Hash = Animator.StringToHash("Speed");
     readonly int Attack_Hash = Animator.StringToHash("Attack");
@@ -41,7 +69,8 @@ public class EnemyBase : RecycleObject
         m_Animator = GetComponent<Animator>();
 
         m_CurrentAttackCoolTime = attackCoolTime;
-        m_OriginalSpeed = m_Agent.speed;
+
+        m_CurrentHealth = maxHealth;
     }
 
     private void Start()
@@ -63,20 +92,23 @@ public class EnemyBase : RecycleObject
 
     private void UpdateAIState()
     {
-        switch (m_State)
+        if (m_StateChangable) 
         {
-            case AIState.Follow:
-                if (IsTargetInRange())
-                {
-                    m_State = AIState.Attack;
-                }
-                break;
-            case AIState.Attack:
-                if (!IsTargetInRange() && m_StateChangable)
-                {
-                    m_State = AIState.Follow;
-                }
-                break;
+            switch (m_State)
+            {
+                case AIState.Follow:
+                    if (IsTargetInRange())
+                    {
+                        m_State = AIState.Attack;
+                    }
+                    break;
+                case AIState.Attack:
+                    if (!IsTargetInRange())
+                    {
+                        m_State = AIState.Follow;
+                    }
+                    break;
+            }
         }
     }
 
@@ -91,6 +123,7 @@ public class EnemyBase : RecycleObject
                 if (!m_Agent.pathPending)
                 {
                     m_Agent.SetDestination(m_Player.transform.position);
+                    m_Animator.SetFloat(Speed_Hash, m_Agent.velocity.sqrMagnitude);
                 }
                 break;
             case AIState.Attack:
@@ -99,7 +132,8 @@ public class EnemyBase : RecycleObject
                 break;
         }
 
-        m_Animator.SetFloat(Speed_Hash, m_Agent.velocity.sqrMagnitude);
+        Debug.Log(m_StateChangable);
+        
     }
 
     private void OrientToTarget()
@@ -109,9 +143,9 @@ public class EnemyBase : RecycleObject
 
     private void Attack()
     {
-        if (m_CurrentAttackCoolTime < 0.0f)
+        if (m_CurrentAttackCoolTime < 0.0f && m_AttackCoroutine == null)
         {
-            
+            Util.ResetAndRunCoroutine(this, ref m_AttackCoroutine, AttackCoroutine);
             m_CurrentAttackCoolTime = attackCoolTime;
         }
     }
@@ -121,7 +155,7 @@ public class EnemyBase : RecycleObject
         m_VectorToTarget = m_Player.transform.position - m_Agent.transform.position;
         float distance = Vector3.SqrMagnitude(m_VectorToTarget);
 
-        return distance < stoppingDistance;
+        return distance < attackDistance;
     }
 
     IEnumerator AttackCoroutine()
@@ -131,8 +165,9 @@ public class EnemyBase : RecycleObject
         m_Animator.SetTrigger(Attack_Hash);
 
         // 공격 애니메이션 재생 도중 다른행동을 취하지 않는다.
-        yield return new WaitForSeconds(m_Animator.GetCurrentAnimatorClipInfo(0).Length);
+        yield return new WaitForSeconds(2.0f);
 
+        m_AttackCoroutine = null;
         m_StateChangable = true;
     }
 } 

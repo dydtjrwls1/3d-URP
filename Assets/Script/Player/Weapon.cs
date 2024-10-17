@@ -24,7 +24,7 @@ public class Weapon : MonoBehaviour
     public int maxAmmo = 12;
 
     // 기본 데미지
-    public int defaultDamage = 1;
+    public uint defaultDamage = 1;
 
     // 카메라 위치에 맞게 메쉬의 위치조정을 위한 값
     public Vector3 offset = Vector3.zero;
