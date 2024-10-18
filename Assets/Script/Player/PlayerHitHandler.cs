@@ -49,12 +49,12 @@ public class PlayerHitHandler : MonoBehaviour
                 // 총에 맞은 대상이 적일 경우 이펙트 생성 후 대상의 체력을 깎는다
                 Factory.Instance.GetFlashHitEffect(hit.point + hit.normal * HitOffset, hit.normal);
 
-                EnemyBase target = hit.collider.GetComponentInParent<EnemyBase>();
+                Health health = hit.collider.GetComponentInParent<Health>();
 
                 // 적 체력 무기데미지 만큼 감소
-                if (target != null)
+                if (health != null)
                 {
-                    target.Health -= Player.CurrentWeapon.defaultDamage;
+                    health.OnDamage(Player.CurrentWeapon.defaultDamage);
                 }
 
             }

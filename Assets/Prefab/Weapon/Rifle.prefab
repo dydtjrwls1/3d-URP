@@ -52,7 +52,7 @@ MonoBehaviour:
   recoilTime: 0.09
   aimRecoilAmount: 0.03
   maxAmmo: 30
-  defaultDamage: 1
+  defaultDamage: 20
   offset: {x: 0, y: -0.935, z: -0.22}
   firePoint: {fileID: 3214798476760302703}
   fireEffect: {fileID: 8636454311355306609}

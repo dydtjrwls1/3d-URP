@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(Health))]
 public class EnemyBase : RecycleObject
 {
     public enum AIState
@@ -16,8 +17,6 @@ public class EnemyBase : RecycleObject
 
     public float attackCoolTime = 2.0f;
     public float attackDistance = 1.5f;
-
-    public uint maxHealth = 10;
 
     NavMeshAgent m_Agent;
 
@@ -35,27 +34,6 @@ public class EnemyBase : RecycleObject
 
     bool m_StateChangable = true;
 
-    uint m_CurrentHealth;
-
-    public uint Health
-    {
-        get => m_CurrentHealth;
-        set
-        {
-            if (m_CurrentHealth != value)
-            {
-                m_CurrentHealth = value;
-                onEnemyHealthChange?.Invoke(m_CurrentHealth);
-
-                if(m_CurrentHealth == 0)
-                {
-                    onEnemyDie?.Invoke();
-                    gameObject.SetActive(false);
-                }
-            }
-        }
-    }
-
     public event Action<uint> onEnemyHealthChange = null;
 
     public event Action onEnemyDie = null;
@@ -69,8 +47,6 @@ public class EnemyBase : RecycleObject
         m_Animator = GetComponent<Animator>();
 
         m_CurrentAttackCoolTime = attackCoolTime;
-
-        m_CurrentHealth = maxHealth;
     }
 
     private void Start()
@@ -127,13 +103,11 @@ public class EnemyBase : RecycleObject
                 }
                 break;
             case AIState.Attack:
+                m_Agent.SetDestination(transform.position);
                 OrientToTarget();
                 Attack();
                 break;
         }
-
-        Debug.Log(m_StateChangable);
-        
     }
 
     private void OrientToTarget()
@@ -155,7 +129,7 @@ public class EnemyBase : RecycleObject
         m_VectorToTarget = m_Player.transform.position - m_Agent.transform.position;
         float distance = Vector3.SqrMagnitude(m_VectorToTarget);
 
-        return distance < attackDistance;
+        return distance < attackDistance * attackDistance;
     }
 
     IEnumerator AttackCoroutine()
