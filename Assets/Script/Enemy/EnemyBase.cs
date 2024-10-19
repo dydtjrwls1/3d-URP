@@ -26,6 +26,8 @@ public class EnemyBase : RecycleObject
 
     Coroutine m_AttackCoroutine = null;
 
+    IInitialize[] m_Inits;
+
     AIState m_State = AIState.Follow;
 
     Vector3 m_VectorToTarget;
@@ -34,30 +36,58 @@ public class EnemyBase : RecycleObject
 
     bool m_StateChangable = true;
 
+    bool m_IsAlive = true;
+
     public event Action<uint> onEnemyHealthChange = null;
 
     public event Action onEnemyDie = null;
 
     readonly int Speed_Hash = Animator.StringToHash("Speed");
     readonly int Attack_Hash = Animator.StringToHash("Attack");
+    readonly int Die_Hash = Animator.StringToHash("Die");
 
     private void Awake()
     {
         m_Agent = GetComponent<NavMeshAgent>();
         m_Animator = GetComponent<Animator>();
-
-        m_CurrentAttackCoolTime = attackCoolTime;
+        
+        m_Inits = GetComponents<IInitialize>();
     }
 
     private void Start()
     {
-        m_Player = GameManager.Instance.Player;
-        m_Agent.SetDestination(m_Player.transform.position);
+        Health health = GetComponent<Health>();
+        if (health != null)
+        {
+            health.onDie += Die;
+        }
     }
 
     protected override void OnReset()
     {
-        // m_Agent.SetDestination(m_Player.transform.position);
+        if(m_Player == null)
+        {
+            m_Player = GameManager.Instance.Player;
+        }
+
+        // m_Agent?.SetDestination(m_Player.transform.position);
+
+        m_CurrentAttackCoolTime = attackCoolTime;
+
+        if (m_Inits.Length > 0)
+        {
+            foreach (IInitialize init in m_Inits)
+            {
+                init.Initialize();
+            }
+        }
+
+        m_IsAlive = true;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
     }
 
     private void Update()
@@ -93,20 +123,27 @@ public class EnemyBase : RecycleObject
         // 공격 쿨타임은 계속해서 감소한다
         m_CurrentAttackCoolTime -= Time.deltaTime;
 
-        switch (m_State)
+        if (m_IsAlive)
         {
-            case AIState.Follow:
-                if (!m_Agent.pathPending)
-                {
-                    m_Agent.SetDestination(m_Player.transform.position);
-                    m_Animator.SetFloat(Speed_Hash, m_Agent.velocity.sqrMagnitude);
-                }
-                break;
-            case AIState.Attack:
-                m_Agent.SetDestination(transform.position);
-                OrientToTarget();
-                Attack();
-                break;
+            switch (m_State)
+            {
+                case AIState.Follow:
+                    if (!m_Agent.pathPending)
+                    {
+                        m_Agent.SetDestination(m_Player.transform.position);
+                        m_Animator.SetFloat(Speed_Hash, m_Agent.velocity.sqrMagnitude);
+                    }
+                    break;
+                case AIState.Attack:
+                    m_Agent.SetDestination(transform.position);
+                    OrientToTarget();
+                    Attack();
+                    break;
+            }
+        }
+        else
+        {
+            m_Agent.SetDestination(transform.position);
         }
     }
 
@@ -122,6 +159,13 @@ public class EnemyBase : RecycleObject
             Util.ResetAndRunCoroutine(this, ref m_AttackCoroutine, AttackCoroutine);
             m_CurrentAttackCoolTime = attackCoolTime;
         }
+    }
+
+    void Die(bool isAlive)
+    {
+        m_IsAlive = isAlive;
+        m_Animator.SetTrigger(Die_Hash);
+        DisableTimer(2.0f);
     }
 
     private bool IsTargetInRange()

@@ -1,11 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Health : MonoBehaviour
+[RequireComponent(typeof(HealthBar))]
+public class Health : MonoBehaviour, IInitialize
 {
     public float maxHealth = 100.0f;
+
+    float inverseMaxHealth;
 
     float m_CurrentHealth;
 
@@ -19,16 +23,19 @@ public class Health : MonoBehaviour
             if (IsAlive)
             {
                 m_CurrentHealth = value;
+                onHealthChange?.Invoke(m_CurrentHealth * inverseMaxHealth);
             }
         }
     }
 
-    private void Start()
-    {
-        m_CurrentHealth = maxHealth;
-    }
+    public Action<bool> onDie = null;
 
-    public float HealthRatio => m_CurrentHealth / maxHealth;
+    public event Action<float> onHealthChange = null;
+
+    private void Awake()
+    {
+        inverseMaxHealth = 1 / maxHealth;
+    }
 
     public void OnDamage(float damage) 
     {
@@ -36,12 +43,13 @@ public class Health : MonoBehaviour
 
         if (CurrentHealth <= 0.0f)
         {
-            OnDie();
+            onDie?.Invoke(IsAlive);
         }
     }
 
-    private void OnDie()
+    public void Initialize()
     {
-        gameObject.SetActive(false);
+        m_CurrentHealth = maxHealth;
+        onHealthChange?.Invoke(1.0f);
     }
 }

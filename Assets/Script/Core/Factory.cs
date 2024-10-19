@@ -10,18 +10,23 @@ public class Factory : SingleTon<Factory>
 
     HitEffectPool flashHitEffectPool;
 
+    ZombiePool zombiePool;
+
     protected override void OnInitialize()
     {
         projectilePool = GetComponentInChildren<ProjectilePool>();
-        projectilePool.Initialize();
+        projectilePool?.Initialize();
 
         Transform child = transform.GetChild(1);
         hitEffectPool = child.GetComponent<HitEffectPool>();
-        hitEffectPool.Initialize();
+        hitEffectPool?.Initialize();
 
         child = transform.GetChild(2);
         flashHitEffectPool = child.GetComponent<HitEffectPool>();
-        flashHitEffectPool.Initialize();
+        flashHitEffectPool?.Initialize();
+
+        zombiePool = GetComponentInChildren<ZombiePool>();
+        zombiePool?.Initialize();
     }
 
     public Projectile GetProjectile(Vector3 position, Vector3 rotation)
@@ -45,5 +50,11 @@ public class Factory : SingleTon<Factory>
         hitEffect.transform.forward = hitNormal;
 
         return hitEffect;
+    }
+
+    public Zombie GetZombie(Vector3 position)
+    {
+        Zombie zombie = zombiePool.GetObject(position);
+        return zombie;
     }
 }
