@@ -28,7 +28,7 @@ public class Health : MonoBehaviour, IInitialize
         }
     }
 
-    public Action<bool> onDie = null;
+    public Action onDie = null;
 
     public event Action<float> onHealthChange = null;
 
@@ -43,7 +43,7 @@ public class Health : MonoBehaviour, IInitialize
 
         if (CurrentHealth <= 0.0f)
         {
-            onDie?.Invoke(IsAlive);
+            onDie?.Invoke();
         }
     }
 

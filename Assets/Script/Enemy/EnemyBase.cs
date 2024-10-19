@@ -85,11 +85,6 @@ public class EnemyBase : RecycleObject
         m_IsAlive = true;
     }
 
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-    }
-
     private void Update()
     {
         UpdateAIState();
@@ -161,11 +156,14 @@ public class EnemyBase : RecycleObject
         }
     }
 
-    void Die(bool isAlive)
+    void Die()
     {
-        m_IsAlive = isAlive;
-        m_Animator.SetTrigger(Die_Hash);
-        DisableTimer(2.0f);
+        if (m_IsAlive)
+        {
+            m_IsAlive = false;
+            m_Animator.SetTrigger(Die_Hash);
+            DisableTimer(2.0f);
+        }
     }
 
     private bool IsTargetInRange()
