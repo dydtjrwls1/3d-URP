@@ -1,5 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class Factory : SingleTon<Factory>
@@ -10,23 +10,40 @@ public class Factory : SingleTon<Factory>
 
     HitEffectPool flashHitEffectPool;
 
-    ZombiePool zombiePool;
+    EnemyPool[] enemyPools;
+
+    EnemyWeaponPool[] enemyWeaponPools;
 
     protected override void OnInitialize()
     {
-        projectilePool = GetComponentInChildren<ProjectilePool>();
-        projectilePool?.Initialize();
+        //projectilePool = GetComponentInChildren<ProjectilePool>();
+        //projectilePool?.Initialize();
 
-        Transform child = transform.GetChild(1);
+        Transform child = transform.GetChild(0);
         hitEffectPool = child.GetComponent<HitEffectPool>();
         hitEffectPool?.Initialize();
 
-        child = transform.GetChild(2);
+        child = transform.GetChild(1);
         flashHitEffectPool = child.GetComponent<HitEffectPool>();
         flashHitEffectPool?.Initialize();
 
-        zombiePool = GetComponentInChildren<ZombiePool>();
-        zombiePool?.Initialize();
+        enemyWeaponPools = GetComponentsInChildren<EnemyWeaponPool>();
+        if (enemyWeaponPools.Length > 0)
+        {
+            foreach (var pool in enemyWeaponPools)
+            {
+                pool.Initialize();
+            }
+        }
+
+        enemyPools = GetComponentsInChildren<EnemyPool>();
+        if (enemyPools.Length > 0)
+        {
+            foreach (var pool in enemyPools)
+            {
+                pool.Initialize();
+            }
+        }
     }
 
     public Projectile GetProjectile(Vector3 position, Vector3 rotation)
@@ -52,9 +69,27 @@ public class Factory : SingleTon<Factory>
         return hitEffect;
     }
 
-    public Zombie GetZombie(Vector3 position)
+    public EnemyBase GetEnemy(Vector3 position, EnemyType type)
     {
-        Zombie zombie = zombiePool.GetObject(position);
-        return zombie;
+        EnemyBase enemy = null;
+        int index = (int)type;
+
+        if(index < enemyPools.Length)
+        {
+            enemy = enemyPools[index].GetObject(position);
+        }
+        
+        return enemy;
+    }
+
+    // 풀에있는 무기 종류 중 아무거나 랜덤으로 가져온다.
+    public EnemyWeapon GetRandomEnemyWeapon(Vector3 position) 
+    {
+        EnemyWeapon weapon = null;
+        int index = UnityEngine.Random.Range(0, enemyWeaponPools.Length);
+
+        weapon = enemyWeaponPools[index].GetObject(position);
+
+        return weapon;
     }
 }

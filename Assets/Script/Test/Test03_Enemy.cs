@@ -9,6 +9,16 @@ public class Test03_Enemy : TestBase
 
     protected override void Num1_performed(InputAction.CallbackContext obj)
     {
-        Factory.Instance.GetZombie(target.position);
+        Factory.Instance.GetEnemy(target.position, EnemyType.Zombie);
+    }
+
+    protected override void Num2_performed(InputAction.CallbackContext obj)
+    {
+        Factory.Instance.GetEnemy(target.position, EnemyType.ZombieWeapon);
+    }
+
+    protected override void Num3_performed(InputAction.CallbackContext obj)
+    {
+        Factory.Instance.GetEnemy(target.position, EnemyType.Power);
     }
 }

@@ -18,11 +18,9 @@ public class EnemyBase : RecycleObject
     public float attackCoolTime = 2.0f;
     public float attackDistance = 1.5f;
 
+    protected Animator m_Animator;
+
     NavMeshAgent m_Agent;
-
-    Player m_Player;
-
-    Animator m_Animator;
 
     Coroutine m_AttackCoroutine = null;
 
@@ -38,6 +36,8 @@ public class EnemyBase : RecycleObject
 
     bool m_IsAlive = true;
 
+    public Player Player { get; set; }
+
     public event Action<uint> onEnemyHealthChange = null;
 
     public event Action onEnemyDie = null;
@@ -46,7 +46,7 @@ public class EnemyBase : RecycleObject
     readonly int Attack_Hash = Animator.StringToHash("Attack");
     readonly int Die_Hash = Animator.StringToHash("Die");
 
-    private void Awake()
+    protected virtual void Awake()
     {
         m_Agent = GetComponent<NavMeshAgent>();
         m_Animator = GetComponent<Animator>();
@@ -57,20 +57,25 @@ public class EnemyBase : RecycleObject
     private void Start()
     {
         Health health = GetComponent<Health>();
+
         if (health != null)
         {
             health.onDie += Die;
         }
     }
 
+
     protected override void OnReset()
     {
-        if(m_Player == null)
-        {
-            m_Player = GameManager.Instance.Player;
-        }
+        //if(m_Player == null)
+        //{
+        //    m_Player = GameManager.Instance.Player;
+        //}
 
         // m_Agent?.SetDestination(m_Player.transform.position);
+
+        
+
 
         m_CurrentAttackCoolTime = attackCoolTime;
 
@@ -85,7 +90,7 @@ public class EnemyBase : RecycleObject
         m_IsAlive = true;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         UpdateAIState();
         EnemyStateAction();
@@ -125,12 +130,17 @@ public class EnemyBase : RecycleObject
                 case AIState.Follow:
                     if (!m_Agent.pathPending)
                     {
-                        m_Agent.SetDestination(m_Player.transform.position);
+                        m_Agent.SetDestination(Player.transform.position);
                         m_Animator.SetFloat(Speed_Hash, m_Agent.velocity.sqrMagnitude);
                     }
                     break;
                 case AIState.Attack:
+                    // 제자리에 정지
                     m_Agent.SetDestination(transform.position);
+
+                    // 애니메이터에 현재 속도 전달
+                    m_Animator.SetFloat(Speed_Hash, m_Agent.velocity.sqrMagnitude);
+
                     OrientToTarget();
                     Attack();
                     break;
@@ -168,7 +178,7 @@ public class EnemyBase : RecycleObject
 
     private bool IsTargetInRange()
     {
-        m_VectorToTarget = m_Player.transform.position - m_Agent.transform.position;
+        m_VectorToTarget = Player.transform.position - m_Agent.transform.position;
         float distance = Vector3.SqrMagnitude(m_VectorToTarget);
 
         return distance < attackDistance * attackDistance;

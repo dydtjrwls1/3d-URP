@@ -3786,7 +3786,6 @@ GameObject:
   - component: {fileID: 3585185623524802049}
   - component: {fileID: 8906426902316394935}
   - component: {fileID: 7669202667747276811}
-  - component: {fileID: 4990220877979949820}
   - component: {fileID: 7428056371071168672}
   - component: {fileID: 4206001107611199092}
   - component: {fileID: 5855583411200642990}
@@ -3869,21 +3868,6 @@ LODGroup:
     - renderer: {fileID: 8255420161492440205}
     - renderer: {fileID: 8375715053329403505}
   m_Enabled: 1
---- !u!114 &4990220877979949820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8767174968946745143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca443f106f18a214e8ea1112bbb1a7ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BodyMaterials:
-  - {fileID: 2100000, guid: cde7794b72ba29b4fbab0dc5d3c3faf0, type: 2}
-  eyesGlow: 0
 --- !u!195 &7428056371071168672
 NavMeshAgent:
   m_ObjectHideFlags: 0

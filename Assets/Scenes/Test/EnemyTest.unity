@@ -1548,11 +1548,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 173409793440235727, guid: ae506af64eb03d94a8bb594c30a576a0,
-        type: 3}
-      propertyPath: poolSize
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2683870910604918206, guid: ae506af64eb03d94a8bb594c30a576a0,
         type: 3}
       propertyPath: m_LocalPosition.x
