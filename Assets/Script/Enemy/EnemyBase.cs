@@ -136,7 +136,7 @@ public class EnemyBase : RecycleObject
                     break;
                 case AIState.Attack:
                     // 제자리에 정지
-                    m_Agent.SetDestination(transform.position);
+                    m_Agent.SetDestination(transform.position + transform.forward * 0.1f);
 
                     // 애니메이터에 현재 속도 전달
                     m_Animator.SetFloat(Speed_Hash, m_Agent.velocity.sqrMagnitude);

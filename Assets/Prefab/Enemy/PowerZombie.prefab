@@ -2098,7 +2098,7 @@ GameObject:
   - component: {fileID: 5458284832760324508}
   - component: {fileID: 9004734783532901047}
   - component: {fileID: 3127665811972404942}
-  - component: {fileID: 6514741821220235547}
+  - component: {fileID: 6736903802201443485}
   m_Layer: 0
   m_Name: PowerZombie
   m_TagString: Untagged
@@ -2231,7 +2231,7 @@ CapsuleCollider:
   m_Height: 1.63
   m_Direction: 1
   m_Center: {x: 0, y: 0.81, z: 0.21}
---- !u!54 &6514741821220235547
+--- !u!54 &6736903802201443485
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2256,7 +2256,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 126
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!1 &7019287501783119791
 GameObject:
