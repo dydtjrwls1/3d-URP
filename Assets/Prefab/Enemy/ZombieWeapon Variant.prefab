@@ -140,4 +140,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackCoolTime: 2
   attackDistance: 1.5
+  equipPivot: {fileID: 3354644851030872572}
   weaponPivot: {fileID: 1115517710179362629}
+--- !u!4 &3354644851030872572 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5593459635810775409, guid: cabc4b46b7f912b4385f93f7eff5e5ac,
+    type: 3}
+  m_PrefabInstance: {fileID: 7138735720347558029}
+  m_PrefabAsset: {fileID: 0}

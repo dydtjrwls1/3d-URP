@@ -2,22 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Zombie : EnemyBase
+public class Zombie : EnemyBase, IEquipable
 {
-    int hand_LayerNum;
+    public Transform equipPivot;
 
-    protected override void Awake()
+    public Transform EquipPivot { get => equipPivot; }
+
+    public EnemyEquipment Equipment { get; private set; }
+
+    public void Equip()
     {
-        base.Awake();
-        hand_LayerNum = m_Animator.GetLayerIndex("Hand");
+        // 50 % 확률로 헬멧을 쓰고 나온다.
+        bool isEquip = Random.value > 0.5f ? true : false;
+        if (isEquip)
+        {
+            Equipment = Factory.Instance.GetRandomEnemyEquipment();
+        }
+        
     }
 
-    protected override void OnReset()
+    protected override void OnDisable()
     {
-        base.OnReset();
+        base.OnDisable();
 
-        // 기본 좀비는 무기를 들고 있지 않기 때문에 hand 레이어의 weight 를 0 으로 설정하여 손을 펴준다.
-        // layer weight는 오브젝트가 활성화될 때마다 초기화 되기때문에 활성화 될 때마다 0으로 설정해준다.
-        m_Animator.SetLayerWeight(hand_LayerNum, 0f);
+        // 죽으면 장착 해제
+        Equipment?.gameObject.SetActive(false);
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        if(Equipment != null)
+        {
+            Equipment.transform.position = EquipPivot.position;
+            Equipment.transform.rotation = EquipPivot.rotation;
+        }
     }
 }

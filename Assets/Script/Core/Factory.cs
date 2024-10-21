@@ -14,6 +14,8 @@ public class Factory : SingleTon<Factory>
 
     EnemyWeaponPool[] enemyWeaponPools;
 
+    EnemyEquipmentPool[] enemyEquipmentPools;
+
     protected override void OnInitialize()
     {
         //projectilePool = GetComponentInChildren<ProjectilePool>();
@@ -40,6 +42,15 @@ public class Factory : SingleTon<Factory>
         if (enemyPools.Length > 0)
         {
             foreach (var pool in enemyPools)
+            {
+                pool.Initialize();
+            }
+        }
+
+        enemyEquipmentPools = GetComponentsInChildren<EnemyEquipmentPool>();
+        if (enemyEquipmentPools.Length > 0)
+        {
+            foreach (var pool in enemyEquipmentPools)
             {
                 pool.Initialize();
             }
@@ -77,6 +88,14 @@ public class Factory : SingleTon<Factory>
         if(index < enemyPools.Length)
         {
             enemy = enemyPools[index].GetObject(position);
+
+            // 적이 장비를 장착할 수 있는경우 장비 장착
+            IEquipable equipable = enemy as IEquipable;
+
+            if(equipable != null)
+            {
+                equipable.Equip();
+            }
         }
         
         return enemy;
@@ -91,5 +110,15 @@ public class Factory : SingleTon<Factory>
         weapon = enemyWeaponPools[index].GetObject(position);
 
         return weapon;
+    }
+
+    public EnemyEquipment GetRandomEnemyEquipment()
+    {
+        EnemyEquipment equipment = null;
+        int index = UnityEngine.Random.Range(0, enemyEquipmentPools.Length);
+
+        equipment = enemyEquipmentPools[index].GetObject();
+
+        return equipment;
     }
 }

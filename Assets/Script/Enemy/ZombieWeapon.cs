@@ -2,16 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZombieWeapon : EnemyBase
+public class ZombieWeapon : Zombie
 {
     public Transform weaponPivot;
 
     EnemyWeapon m_CurrentWeapon;
 
+    int hand_LayerNum;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        hand_LayerNum = m_Animator.GetLayerIndex("Hand");
+    }
+
     protected override void OnReset()
     {
         base.OnReset();
-
+        m_Animator.SetLayerWeight(hand_LayerNum, 1f);
         m_CurrentWeapon = Factory.Instance.GetRandomEnemyWeapon(weaponPivot.position);
     }
 
