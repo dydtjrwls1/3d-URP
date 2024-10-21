@@ -112,12 +112,12 @@ public class Factory : SingleTon<Factory>
         return weapon;
     }
 
-    public EnemyEquipment GetRandomEnemyEquipment()
+    public EnemyEquipment GetRandomEnemyEquipment(Vector3 position)
     {
         EnemyEquipment equipment = null;
         int index = UnityEngine.Random.Range(0, enemyEquipmentPools.Length);
 
-        equipment = enemyEquipmentPools[index].GetObject();
+        equipment = enemyEquipmentPools[index].GetObject(position);
 
         return equipment;
     }

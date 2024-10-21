@@ -21,6 +21,8 @@ public class ZombieWeapon : Zombie
         base.OnReset();
         m_Animator.SetLayerWeight(hand_LayerNum, 1f);
         m_CurrentWeapon = Factory.Instance.GetRandomEnemyWeapon(weaponPivot.position);
+        m_CurrentWeapon.transform.rotation = weaponPivot.rotation;
+        m_CurrentWeapon.transform.SetParent(weaponPivot);
     }
 
     protected override void OnDisable()
@@ -32,10 +34,10 @@ public class ZombieWeapon : Zombie
     protected override void Update()
     {
         base.Update();
-        if (m_CurrentWeapon != null)
-        {
-            m_CurrentWeapon.transform.position = weaponPivot.position;
-            m_CurrentWeapon.transform.rotation = weaponPivot.rotation;
-        }
+        //if (m_CurrentWeapon != null)
+        //{
+        //    m_CurrentWeapon.transform.position = weaponPivot.position;
+        //    m_CurrentWeapon.transform.rotation = weaponPivot.rotation;
+        //}
     }
 }

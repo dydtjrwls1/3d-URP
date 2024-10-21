@@ -16,7 +16,10 @@ public class Zombie : EnemyBase, IEquipable
         bool isEquip = Random.value > 0.5f ? true : false;
         if (isEquip)
         {
-            Equipment = Factory.Instance.GetRandomEnemyEquipment();
+            Equipment = Factory.Instance.GetRandomEnemyEquipment(equipPivot.position);
+            Equipment.transform.rotation = equipPivot.rotation;
+            Equipment.transform.SetParent(equipPivot);
+            Equipment.transform.localScale = Vector3.one;
         }
         
     }
@@ -29,13 +32,13 @@ public class Zombie : EnemyBase, IEquipable
         Equipment?.gameObject.SetActive(false);
     }
 
-    protected override void Update()
-    {
-        base.Update();
-        if(Equipment != null)
-        {
-            Equipment.transform.position = EquipPivot.position;
-            Equipment.transform.rotation = EquipPivot.rotation;
-        }
-    }
+    //protected override void Update()
+    //{
+    //    base.Update();
+    //    if(Equipment != null)
+    //    {
+    //        Equipment.transform.position = EquipPivot.position;
+    //        Equipment.transform.rotation = EquipPivot.rotation;
+    //    }
+    //}
 }
