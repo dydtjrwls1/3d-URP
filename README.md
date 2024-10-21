@@ -24,6 +24,4 @@ https://github.com/user-attachments/assets/02ccd685-c0f7-40c6-8cbd-d7a646ab647f
 
 
 ## 연락처
-- 이메일: your.email@example.com
-- LinkedIn: [프로필 링크]
-- 포트폴리오 웹사이트: [웹사이트 링크]
+- 이메일: yongkwangro2002@gmail.com
