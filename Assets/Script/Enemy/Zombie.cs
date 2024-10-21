@@ -19,7 +19,7 @@ public class Zombie : EnemyBase, IEquipable
             Equipment = Factory.Instance.GetRandomEnemyEquipment(equipPivot.position);
             Equipment.transform.rotation = equipPivot.rotation;
             Equipment.transform.SetParent(equipPivot);
-            Equipment.transform.localScale = Vector3.one;
+            //Equipment.transform.localScale = Vector3.one;
         }
         
     }
