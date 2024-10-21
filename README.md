@@ -10,9 +10,17 @@
 하나의 프리펩으로 다양한 적의 모습을 표현할 수 있게 했습니다.
 
 ### 애니메이션 레이어 활용
-![화면 캡처 2024-10-21 233727](https://github.com/user-attachments/assets/217910a7-e08d-4829-a095-4d4eb93340c0) ![화면 캡처 2024-10-21 233935](https://github.com/user-attachments/assets/43334e21-f323-4fb5-94f4-d3d10a0277cc)
+![화면 캡처 2024-10-21 233727](https://github.com/user-attachments/assets/375de7d8-d3f1-4fa0-a92e-4ff5aaa0dfbf) ![화면 캡처 2024-10-21 233935](https://github.com/user-attachments/assets/43334e21-f323-4fb5-94f4-d3d10a0277cc)
 
 애니메이션 레이어를 활용해 하나의 모델로 무기를 들고 있는상태와 들고 있지 않은 상태를 자연스럽게 전환할 수 있습니다.
+
+### 무기 시점 전환과 반동
+
+
+https://github.com/user-attachments/assets/02ccd685-c0f7-40c6-8cbd-d7a646ab647f
+
+마우스 클릭 시 시점 전환과 총의 반동을 스크립트로 구현했습니다.
+
 
 
 ## 연락처
