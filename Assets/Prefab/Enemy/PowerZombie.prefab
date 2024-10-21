@@ -2186,6 +2186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackCoolTime: 2
   attackDistance: 2
+  score: 50
 --- !u!195 &9004734783532901047
 NavMeshAgent:
   m_ObjectHideFlags: 0

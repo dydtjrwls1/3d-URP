@@ -10,7 +10,9 @@ public class PlayerWeaponHandler : MonoBehaviour
 
     Player m_Player;
 
-    GameObject m_CurrentWeapon;
+    GameObject m_CurrentWeaponPrefab;
+
+    bool m_OnReload = false;
 
     const int Pistol = 0;
     const int Rifle = 1;
@@ -22,6 +24,7 @@ public class PlayerWeaponHandler : MonoBehaviour
         {
             GameObject obj = Instantiate(prefab, m_WeaponPoint);
             Weapon w = obj.GetComponent<Weapon>();
+            w.onReload += (isReload) => { m_OnReload = isReload; };
             w.PrefabObject = obj;
             obj.SetActive(false);
         }
@@ -70,19 +73,19 @@ public class PlayerWeaponHandler : MonoBehaviour
     {
         if (HasWeapon(index))
         {
-            // 현재 착용중인 무기 해제
-            if(m_CurrentWeapon != null)
-            {
-                m_CurrentWeapon.SetActive(false);
-            }
-
             Weapon weapon = GetWeapon(index);
 
             // weapon 을 정상적으로 불러왔다면 무기를 장착한다.
-            if(weapon != null)
+            if (weapon != null && !m_OnReload) // 재장전 중이 아닐 때 
             {
+                // 현재 착용중인 무기 해제
+                if (m_CurrentWeaponPrefab != null)
+                {
+                    m_CurrentWeaponPrefab.SetActive(false);
+                }
+
                 weapon.PrefabObject.SetActive(true);
-                m_CurrentWeapon = weapon.PrefabObject;
+                m_CurrentWeaponPrefab = weapon.PrefabObject;
 
                 m_Player.SetWeaponSetting(weapon);
             }

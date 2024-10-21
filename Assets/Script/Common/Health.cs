@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(HealthBar))]
 public class Health : MonoBehaviour, IInitialize
 {
     public float maxHealth = 100.0f;

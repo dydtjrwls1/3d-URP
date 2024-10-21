@@ -18,6 +18,8 @@ public class EnemyBase : RecycleObject
     public float attackCoolTime = 2.0f;
     public float attackDistance = 1.5f;
 
+    public float score = 10.0f;
+
     protected Animator m_Animator;
 
     NavMeshAgent m_Agent;
@@ -38,9 +40,9 @@ public class EnemyBase : RecycleObject
 
     public Player Player { get; set; }
 
-    public event Action<uint> onEnemyHealthChange = null;
+    // public event Action<uint> onEnemyHealthChange = null;
 
-    public event Action onEnemyDie = null;
+    // public event Action onEnemyDie = null;
 
     readonly int Speed_Hash = Animator.StringToHash("Speed");
     readonly int Attack_Hash = Animator.StringToHash("Attack");
@@ -73,10 +75,6 @@ public class EnemyBase : RecycleObject
         //}
 
         // m_Agent?.SetDestination(m_Player.transform.position);
-
-        
-
-
         m_CurrentAttackCoolTime = attackCoolTime;
 
         if (m_Inits.Length > 0)
@@ -172,6 +170,7 @@ public class EnemyBase : RecycleObject
         {
             m_IsAlive = false;
             m_Animator.SetTrigger(Die_Hash);
+            Player.Score += score;
             DisableTimer(2.0f);
         }
     }

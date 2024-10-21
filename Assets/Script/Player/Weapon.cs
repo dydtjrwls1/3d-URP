@@ -44,6 +44,8 @@ public class Weapon : MonoBehaviour
 
     public GameObject PrefabObject { get; set; }
 
+
+
     public bool Activate
     {
         get => m_IsActivate;
@@ -51,6 +53,8 @@ public class Weapon : MonoBehaviour
     }
 
     public Action<float> onReloadTimeChange = null;
+
+    public Action<bool> onReload = null;
 
     public int CurrentAmmo
     {
@@ -106,6 +110,7 @@ public class Weapon : MonoBehaviour
 
     IEnumerator Reload()
     {
+        onReload?.Invoke(true);
         float elapsedTime = 0.0f;
         float inverseReloadTime = 1 / reloadTime;
 
@@ -119,5 +124,6 @@ public class Weapon : MonoBehaviour
         }
 
         CurrentAmmo = maxAmmo;
+        onReload?.Invoke(false);
     }
 }

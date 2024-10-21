@@ -73,6 +73,8 @@ public class Player : MonoBehaviour
 
     CinemachineVirtualCamera m_PlayerCamera;
 
+    Health m_PlayerHealth;
+
     Transform m_WeaponPoint;
     Transform m_FirePoint;
     Transform m_PlayerWeapons;
@@ -111,6 +113,22 @@ public class Player : MonoBehaviour
     float m_CurrentBobTime = 0f;
     float m_CameraVerticalAngle = 0f;
     float m_FireRate;
+    float m_Score;
+
+    public float Score
+    {
+        get => m_Score;
+        set
+        {
+            if (m_Score != value)
+            {
+                m_Score = value;
+                onScoreChange?.Invoke(m_Score);
+            }
+        }
+    }
+
+    public Health Health => m_PlayerHealth;
 
     public Weapon CurrentWeapon => m_CurrentWeapon;
 
@@ -122,6 +140,8 @@ public class Player : MonoBehaviour
     public event Action<Weapon> onBulletFire = null;
 
     public event Action<Weapon> onWeaponChange = null;
+
+    public event Action<float> onScoreChange = null;
 
     public event Action onKeyOne = null;
     public event Action onKeyTwo = null;
@@ -144,6 +164,8 @@ public class Player : MonoBehaviour
         m_GroundSensor = GetComponentInChildren<GroundSensor>();
 
         m_WeaponList = new List<Weapon>();
+
+        m_PlayerHealth = GetComponent<Health>();
     }
 
    
@@ -193,6 +215,17 @@ public class Player : MonoBehaviour
         };
 
         m_MainLocalPosition = defaultWeaponPosition.localPosition;
+
+        // initialize 해야하는 컴포넌트 초기화
+        IInitialize[] inits = GetComponents<IInitialize>();
+        if (inits.Length > 0) 
+        {
+            foreach (IInitialize init in inits)
+            {
+                init.Initialize();
+            }
+        }
+
 
         //AddWeapon(defaultWeapon);
         //SetWeapon(defaultWeapon);
