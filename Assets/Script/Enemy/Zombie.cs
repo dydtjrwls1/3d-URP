@@ -21,7 +21,6 @@ public class Zombie : EnemyBase, IEquipable
             Equipment.transform.SetParent(equipPivot);
             //Equipment.transform.localScale = Vector3.one;
         }
-        
     }
 
     protected override void OnDisable()
