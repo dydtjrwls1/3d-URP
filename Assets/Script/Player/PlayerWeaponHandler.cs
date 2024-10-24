@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -69,7 +70,7 @@ public class PlayerWeaponHandler : MonoBehaviour
         }
     }
 
-    private void SetWeapon(int index)
+    public void SetWeapon(int index)
     {
         if (HasWeapon(index))
         {
@@ -96,7 +97,9 @@ public class PlayerWeaponHandler : MonoBehaviour
     {
         if (!HasWeapon(index))
         {
-            GetWeapon(index).Activate = true;
+            Weapon weapon = GetWeapon(index);
+
+            weapon.Activate = true;
         }
     }
 

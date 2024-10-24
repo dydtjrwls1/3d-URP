@@ -27,29 +27,35 @@ public class AmmoUI : MonoBehaviour
     {
         Player player = GameManager.Instance.Player;
 
-        player.onWeaponChange += UpdateMaxAmmoDisplay;
+        player.onWeaponChange += UpdateAmmoDisplay;
+
+        foreach(var weapon in player.GetComponentsInChildren<Weapon>(true))
+        {
+            weapon.onBulletChange += UpdateCurrentAmmoDisplay;
+            weapon.onReloadTimeChange += UpdateAmmoIconDisplay;
+        }
 
         // player 의 setWeapon 함수가 시작한 뒤에 UpdateMaxAmmoDisplay 함수가 등록된다. 실행 타이밍이 안맞기 때문에 Update를 한번 해준다.
-        // UpdateMaxAmmoDisplay(player.CurrentWeapon);
-        // UpdateCurrentAmmoDisplay(player.CurrentWeapon.maxAmmo);
+        UpdateAmmoDisplay(player.CurrentWeapon);
+        UpdateCurrentAmmoDisplay(player.CurrentWeapon.maxAmmo);
     }
 
-    private void UpdateCurrentAmmoDisplay(int currentBullets)
+    public void UpdateCurrentAmmoDisplay(int count)
     {
-        m_CurrentAmmoGUI.text = currentBullets.ToString();
+        m_CurrentAmmoGUI.text = count.ToString();
     }
 
-    private void UpdateMaxAmmoDisplay(Weapon weapon)
+    private void UpdateAmmoDisplay(Weapon weapon)
     {
         m_MaxAmmoGUI.text = weapon.maxAmmo.ToString();
         m_CurrentAmmoGUI.text = weapon.CurrentAmmo.ToString();
 
         // Weapon 의 델리게이트와 연결
-        weapon.onBulletChange -= UpdateCurrentAmmoDisplay;
-        weapon.onBulletChange += UpdateCurrentAmmoDisplay;
+        //weapon.onBulletChange -= UpdateCurrentAmmoDisplay;
+        //weapon.onBulletChange += UpdateCurrentAmmoDisplay;
 
-        weapon.onReloadTimeChange -= UpdateAmmoIconDisplay;
-        weapon.onReloadTimeChange += UpdateAmmoIconDisplay;
+        //weapon.onReloadTimeChange -= UpdateAmmoIconDisplay;
+        //weapon.onReloadTimeChange += UpdateAmmoIconDisplay;
     }
 
     private void UpdateAmmoIconDisplay(float ratio)

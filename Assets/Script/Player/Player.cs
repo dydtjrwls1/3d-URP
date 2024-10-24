@@ -69,6 +69,8 @@ public class Player : MonoBehaviour
 
     PlayerInputActions inputAction;
 
+    PlayerWeaponHandler m_PlayerWeaponHandler;
+
     GroundSensor m_GroundSensor;
 
     CinemachineVirtualCamera m_PlayerCamera;
@@ -76,16 +78,12 @@ public class Player : MonoBehaviour
     Health m_PlayerHealth;
 
     Transform m_WeaponPoint;
-    Transform m_FirePoint;
-    Transform m_PlayerWeapons;
 
     Coroutine m_FireLightOnCoroutune;
 
-    List<Weapon> m_WeaponList;
-
     Weapon m_CurrentWeapon;
-    ParticleSystem m_FireEffect;
-    Light m_FireLight;
+    // ParticleSystem m_FireEffect;
+    // Light m_FireLight;
 
     Vector3 m_InputDirection;
     Vector3 m_MainLocalPosition;
@@ -104,15 +102,15 @@ public class Player : MonoBehaviour
     float m_RemainsRecoilRate = 0f;
     float m_RemainsRecoilTime = 0f;
     float m_RecoilModifier = 1.0f;
-    float m_RecoilAmount;
-    float m_RecoilTime;
-    float m_AimRecoilAmount;
+    //float m_RecoilAmount;
+    //float m_RecoilTime;
+    //float m_AimRecoilAmount;
     float m_RandomRecoilX;
     float m_RandomRecoilY;
     float m_RemainsFireCoolTime = 0f;
     float m_CurrentBobTime = 0f;
     float m_CameraVerticalAngle = 0f;
-    float m_FireRate;
+    //float m_FireRate;
     float m_Score;
 
     public float Score
@@ -163,9 +161,9 @@ public class Player : MonoBehaviour
 
         m_GroundSensor = GetComponentInChildren<GroundSensor>();
 
-        m_WeaponList = new List<Weapon>();
-
         m_PlayerHealth = GetComponent<Health>();
+
+        m_PlayerWeaponHandler = GetComponent<PlayerWeaponHandler>();
     }
 
    
@@ -226,7 +224,6 @@ public class Player : MonoBehaviour
             }
         }
 
-
         //AddWeapon(defaultWeapon);
         //SetWeapon(defaultWeapon);
     }
@@ -286,7 +283,7 @@ public class Player : MonoBehaviour
                 onBulletFire?.Invoke(m_CurrentWeapon);
 
                 // 총알 발사 쿨타임 초기화
-                m_RemainsFireCoolTime = m_FireRate;
+                m_RemainsFireCoolTime = CurrentWeapon.fireRate;
 
                 m_IsFired = true;
             }
@@ -358,8 +355,8 @@ public class Player : MonoBehaviour
         {
             if (m_RemainsRecoilRate < 0f)
             {
-                m_RemainsRecoilRate = m_FireRate;
-                m_RemainsRecoilTime = m_RecoilTime;
+                m_RemainsRecoilRate = CurrentWeapon.fireRate;
+                m_RemainsRecoilTime = CurrentWeapon.recoilTime;
 
                 m_RandomRecoilX = Random.Range(-randomRecoilAmount, randomRecoilAmount);
                 m_RandomRecoilY = Random.Range(-randomRecoilAmount, randomRecoilAmount);
@@ -368,9 +365,9 @@ public class Player : MonoBehaviour
             }
 
             // 반동 세기 계산
-            float amplitude = m_IsAim ? m_AimRecoilAmount : m_RecoilAmount;
+            float amplitude = m_IsAim ? CurrentWeapon.aimRecoilAmount : CurrentWeapon.recoilAmount;
 
-            float xValue = Mathf.Max(0, PI * m_RecoilModifier * m_RemainsRecoilTime / m_RecoilTime);
+            float xValue = Mathf.Max(0, PI * m_RecoilModifier * m_RemainsRecoilTime / CurrentWeapon.recoilTime);
 
             float recoil = Mathf.Sin(xValue) * -amplitude;
 
@@ -476,13 +473,11 @@ public class Player : MonoBehaviour
     public void SetWeaponSetting(Weapon weapon)
     {
         m_CurrentWeapon = weapon;
-        m_FireRate = weapon.fireRate;
-        m_FirePoint = weapon.firePoint;
-        m_FireLight = weapon.FireLight;
-        m_FireEffect = weapon.fireEffect;
-        m_RecoilAmount = weapon.recoilAmount;
-        m_RecoilTime = weapon.recoilTime;
-        m_AimRecoilAmount = weapon.aimRecoilAmount;
+        //m_FireLight = weapon.FireLight;
+        //m_FireEffect = weapon.fireEffect;
+        //m_RecoilAmount = weapon.recoilAmount;
+        //m_RecoilTime = weapon.recoilTime;
+        //m_AimRecoilAmount = weapon.aimRecoilAmount;
 
         onWeaponChange?.Invoke(m_CurrentWeapon);
 
@@ -554,8 +549,8 @@ public class Player : MonoBehaviour
     {
         float elapsedTime = lightTime;
 
-        m_FireLight.enabled = true;
-        m_FireEffect.Play();
+        CurrentWeapon.FireLight.enabled = true;
+        CurrentWeapon.fireEffect.Play();
 
         while (elapsedTime > 0f)
         {
@@ -563,7 +558,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        m_FireLight.enabled = false;
+        CurrentWeapon.FireLight.enabled = false;
 
         m_FireLightOnCoroutune = null;
     }

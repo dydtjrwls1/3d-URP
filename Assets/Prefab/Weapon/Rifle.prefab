@@ -349,7 +349,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3497186955080600988}
   - component: {fileID: 6135384110765428830}
-  - component: {fileID: 7407237768931472297}
   m_Layer: 0
   m_Name: M1A1
   m_TagString: Untagged
@@ -428,27 +427,6 @@ LODGroup:
     - renderer: {fileID: 3543795921385928492}
     - renderer: {fileID: 6654663144061588942}
   m_Enabled: 1
---- !u!95 &7407237768931472297
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2057720872482802793}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b91fae2c97e3c4a4c8009feb1bb3b8c2, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2180005654480697497
 GameObject:
   m_ObjectHideFlags: 0

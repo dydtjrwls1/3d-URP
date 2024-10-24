@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements.Experimental;
 
 public class Weapon : MonoBehaviour
-{
+{ 
     [Header("Basic")]
     // 발사 속도
     public float fireRate = 0.5f;
@@ -35,6 +36,8 @@ public class Weapon : MonoBehaviour
 
     // 발사 효과
     public ParticleSystem fireEffect;
+
+    Player player;
 
     Light m_FireLight;
 
@@ -78,24 +81,21 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        CurrentAmmo = maxAmmo;
+        m_CurrentAmmo = maxAmmo;
+        player = GameManager.Instance.Player;
+        m_FireLight = GetComponentInChildren<Light>();
     }
 
     private void OnEnable()
     {
-        Player player = GameManager.Instance.Player;
-
-        m_FireLight = GetComponentInChildren<Light>();
-
         player.onBulletFire += OnBulletFired;
     }
 
     private void OnDisable()
     {
-        Player player = GameManager.Instance.Player;
-
         player.onBulletFire -= OnBulletFired;
     }
+
 
     private void OnBulletFired(Weapon _)
     {

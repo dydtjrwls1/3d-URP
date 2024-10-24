@@ -94,7 +94,6 @@ GameObject:
   - component: {fileID: 3348099412186128817}
   - component: {fileID: 4195895699329141634}
   - component: {fileID: 8773358086121053650}
-  - component: {fileID: 6799018149354135785}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -171,28 +170,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6799018149354135785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2316627332099581786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f72b6cd80358d646984addaf60d8e6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fireRate: 0.5
-  reloadTime: 0.5
-  recoilAmount: 1
-  recoilTime: 0.1
-  aimRecoilAmount: 0.1
-  maxAmmo: 12
-  defaultDamage: 1
-  offset: {x: 0, y: 0, z: 0}
-  firePoint: {fileID: 0}
-  fireEffect: {fileID: 0}
 --- !u!1 &7485070251117267042
 GameObject:
   m_ObjectHideFlags: 0
