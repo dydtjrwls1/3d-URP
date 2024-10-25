@@ -41,6 +41,10 @@ public class Weapon : MonoBehaviour
 
     Light m_FireLight;
 
+    // 총알의 총 개수
+    int m_TotalAmmo;
+
+    // 현재 총알의 개수
     int m_CurrentAmmo;
 
     bool m_IsActivate = false;
@@ -57,7 +61,15 @@ public class Weapon : MonoBehaviour
 
     public Action<float> onReloadTimeChange = null;
 
+    //public Action onReloadStart = null;
+
+    //public Action<int> onReloadEnd = null;
+
     public Action<bool> onReload = null;
+
+    public event Action<int> onCurrentBulletChange = null;
+
+    public event Action<int> onTotalBulletChange = null;
 
     public int CurrentAmmo
     {
@@ -68,22 +80,37 @@ public class Weapon : MonoBehaviour
             {
                 m_CurrentAmmo = value;
 
-                onBulletChange?.Invoke(m_CurrentAmmo);
+                onCurrentBulletChange?.Invoke(m_CurrentAmmo);
             }
         }
     }
 
     public Light FireLight => m_FireLight;
 
+    public int TotalAmmo
+    {
+        get => m_TotalAmmo;
+        set
+        {
+            if (m_TotalAmmo != value)
+            {
+                m_TotalAmmo = value;
+                onTotalBulletChange?.Invoke(m_TotalAmmo);
+            }
+        }
+    }
+
     public bool CanFire => m_CurrentAmmo > 0;
 
-    public event Action<int> onBulletChange = null;
+    
 
     private void Awake()
     {
-        m_CurrentAmmo = maxAmmo;
         player = GameManager.Instance.Player;
         m_FireLight = GetComponentInChildren<Light>();
+
+        m_CurrentAmmo = maxAmmo;
+        m_TotalAmmo = maxAmmo * 5;
     }
 
     private void OnEnable()
@@ -110,7 +137,9 @@ public class Weapon : MonoBehaviour
 
     IEnumerator Reload()
     {
+        // 장전 시작을 알리는 델리게이트 실행
         onReload?.Invoke(true);
+
         float elapsedTime = 0.0f;
         float inverseReloadTime = 1 / reloadTime;
 
@@ -123,7 +152,10 @@ public class Weapon : MonoBehaviour
             yield return null;  
         }
 
+        TotalAmmo -= (maxAmmo - CurrentAmmo);
         CurrentAmmo = maxAmmo;
+
+        // 장전 끝을 알리는 델리게이트 실행
         onReload?.Invoke(false);
     }
 }

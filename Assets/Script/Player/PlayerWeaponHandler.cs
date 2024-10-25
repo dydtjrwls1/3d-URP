@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerWeaponHandler : MonoBehaviour
+public class PlayerWeaponHandler : MonoBehaviour, IPickUp
 {
     public GameObject[] m_WeaponPrefabs;
 
@@ -13,20 +13,24 @@ public class PlayerWeaponHandler : MonoBehaviour
 
     GameObject m_CurrentWeaponPrefab;
 
-    bool m_OnReload = false;
+    bool m_IsReload = false;
 
-    const int Pistol = 0;
-    const int Rifle = 1;
-    const int Shotgun = 2;
+    const int Pistol = (int)ItemCode.Pistol;
+    const int Rifle = (int)ItemCode.Rifle;
+    const int Shotgun = (int)ItemCode.Shotgun;
 
     private void Awake()
     {
         foreach(var prefab in m_WeaponPrefabs)
         {
             GameObject obj = Instantiate(prefab, m_WeaponPoint);
+
             Weapon w = obj.GetComponent<Weapon>();
-            w.onReload += (isReload) => { m_OnReload = isReload; };
-            w.PrefabObject = obj;
+
+            // 장전 중에는 총을 바꾸지 못하게 하기 위한 조치
+            w.onReload += (isReload) => { m_IsReload = isReload; }; // 장전 중일 때 isreload 가 false 가 되면서 총을 바꿀 수 없어진다.
+
+            w.PrefabObject = obj; 
             obj.SetActive(false);
         }
     }
@@ -56,28 +60,18 @@ public class PlayerWeaponHandler : MonoBehaviour
         return weapon.GetComponent<Weapon>();
     }
 
-    private bool HasWeapon(int index)
+    private bool HasWeapon(int index, out Weapon weapon)
     {
-        Weapon weapon = GetWeapon(index);
-
-        if(weapon == null)
-        {
-            return false;
-        }
-        else
-        {
-            return weapon.Activate;
-        }
+        weapon = GetWeapon(index);
+        return weapon.Activate;
     }
 
     public void SetWeapon(int index)
     {
-        if (HasWeapon(index))
+        if (HasWeapon(index, out Weapon weapon))
         {
-            Weapon weapon = GetWeapon(index);
-
             // weapon 을 정상적으로 불러왔다면 무기를 장착한다.
-            if (weapon != null && !m_OnReload) // 재장전 중이 아닐 때 
+            if (weapon != null && !m_IsReload) // 재장전 중이 아닐 때 
             {
                 // 현재 착용중인 무기 해제
                 if (m_CurrentWeaponPrefab != null)
@@ -95,10 +89,8 @@ public class PlayerWeaponHandler : MonoBehaviour
 
     public void AddWeapon(int index)
     {
-        if (!HasWeapon(index))
+        if (!HasWeapon(index, out Weapon weapon))
         {
-            Weapon weapon = GetWeapon(index);
-
             weapon.Activate = true;
         }
     }
@@ -116,6 +108,20 @@ public class PlayerWeaponHandler : MonoBehaviour
     private void OnKeyThree()
     {
         SetWeapon(Shotgun);
+    }
+
+    public void PickUp(ItemCode code, int capacity)
+    {
+        int index = (int)code;
+
+        if (HasWeapon(index, out Weapon weapon))
+        {
+            if(weapon != null)
+            {
+                // 총알 추가
+                weapon.TotalAmmo += capacity;
+            }
+        }
     }
 }
 

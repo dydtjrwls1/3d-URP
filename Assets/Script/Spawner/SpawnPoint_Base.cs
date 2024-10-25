@@ -14,6 +14,8 @@ public class SpawnPoint_Base : MonoBehaviour
     // 게임 내에 보여질 이미지
     Image m_CoolDownImage;
 
+    protected bool m_CanSpawn = true;
+
     float m_CurrentIntervalTime;
     float m_InverseInterval; // 나누기로 인한 성능저하를 방지하기 위한 변수
 

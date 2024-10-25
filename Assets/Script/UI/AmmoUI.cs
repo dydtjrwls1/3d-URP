@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class AmmoUI : MonoBehaviour
 {
-    TextMeshProUGUI m_MaxAmmoGUI;
+    TextMeshProUGUI m_TotalAmmoGUI;
     TextMeshProUGUI m_CurrentAmmoGUI;
 
     Image m_AmmoIcon;
@@ -17,7 +17,7 @@ public class AmmoUI : MonoBehaviour
         m_AmmoIcon = child.GetComponent<Image>();
 
         child = transform.GetChild(1);
-        m_MaxAmmoGUI = child.GetComponent<TextMeshProUGUI>();
+        m_TotalAmmoGUI = child.GetComponent<TextMeshProUGUI>();
 
         child = transform.GetChild(2);
         m_CurrentAmmoGUI = child.GetComponent<TextMeshProUGUI>();
@@ -31,8 +31,9 @@ public class AmmoUI : MonoBehaviour
 
         foreach(var weapon in player.GetComponentsInChildren<Weapon>(true))
         {
-            weapon.onBulletChange += UpdateCurrentAmmoDisplay;
-            weapon.onReloadTimeChange += UpdateAmmoIconDisplay;
+            weapon.onCurrentBulletChange += UpdateCurrentAmmoDisplay;
+            weapon.onReloadTimeChange += UpdateAmmoIconDisplay;   // 재장전 시 아이콘 filled 를 변화
+            weapon.onTotalBulletChange += UpdateTotalAmmoDisplay; // pickup 으로 인해 총 개수가 변할경우 실행된다
         }
 
         // player 의 setWeapon 함수가 시작한 뒤에 UpdateMaxAmmoDisplay 함수가 등록된다. 실행 타이밍이 안맞기 때문에 Update를 한번 해준다.
@@ -47,15 +48,13 @@ public class AmmoUI : MonoBehaviour
 
     private void UpdateAmmoDisplay(Weapon weapon)
     {
-        m_MaxAmmoGUI.text = weapon.maxAmmo.ToString();
+        m_TotalAmmoGUI.text = weapon.TotalAmmo.ToString();
         m_CurrentAmmoGUI.text = weapon.CurrentAmmo.ToString();
+    }
 
-        // Weapon 의 델리게이트와 연결
-        //weapon.onBulletChange -= UpdateCurrentAmmoDisplay;
-        //weapon.onBulletChange += UpdateCurrentAmmoDisplay;
-
-        //weapon.onReloadTimeChange -= UpdateAmmoIconDisplay;
-        //weapon.onReloadTimeChange += UpdateAmmoIconDisplay;
+    private void UpdateTotalAmmoDisplay(int capacity)
+    {
+        m_TotalAmmoGUI.text = capacity.ToString();
     }
 
     private void UpdateAmmoIconDisplay(float ratio)

@@ -494,6 +494,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 207332040545744860, guid: adf49044897dfdb4ba8298bb1bbfde7d, type: 3}
   poolSize: 16
+--- !u!1 &7835069484456089796
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1089989305926988730}
+  - component: {fileID: 2222727313969105296}
+  m_Layer: 0
+  m_Name: FarmerHat
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1089989305926988730
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7835069484456089796}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7777129221075743822}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2222727313969105296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7835069484456089796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 853f381ca2474954a8c3934a44719e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2399360733546801754, guid: 113d78823e537784eac21952516a0159, type: 3}
+  poolSize: 16
 --- !u!1 &8324028604765532616
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,6 +667,7 @@ Transform:
   - {fileID: 5056861675012451753}
   - {fileID: 1657955667600660903}
   - {fileID: 8014602961736206082}
+  - {fileID: 1089989305926988730}
   m_Father: {fileID: 2683870910604918206}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9064490044484760677
