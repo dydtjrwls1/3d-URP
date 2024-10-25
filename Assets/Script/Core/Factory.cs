@@ -16,6 +16,8 @@ public class Factory : SingleTon<Factory>
 
     EnemyEquipmentPool[] enemyEquipmentPools;
 
+    PickUpItemPool pickUpItemPool;
+
     protected override void OnInitialize()
     {
         //projectilePool = GetComponentInChildren<ProjectilePool>();
@@ -55,6 +57,9 @@ public class Factory : SingleTon<Factory>
                 pool.Initialize();
             }
         }
+
+        pickUpItemPool = GetComponentInChildren<PickUpItemPool>();
+        pickUpItemPool.Initialize();
     }
 
     public Projectile GetProjectile(Vector3 position, Vector3 rotation)

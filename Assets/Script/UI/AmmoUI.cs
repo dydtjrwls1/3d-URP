@@ -36,9 +36,10 @@ public class AmmoUI : MonoBehaviour
             weapon.onTotalBulletChange += UpdateTotalAmmoDisplay; // pickup 으로 인해 총 개수가 변할경우 실행된다
         }
 
+
         // player 의 setWeapon 함수가 시작한 뒤에 UpdateMaxAmmoDisplay 함수가 등록된다. 실행 타이밍이 안맞기 때문에 Update를 한번 해준다.
-        UpdateAmmoDisplay(player.CurrentWeapon);
-        UpdateCurrentAmmoDisplay(player.CurrentWeapon.maxAmmo);
+        // UpdateAmmoDisplay(player.CurrentWeapon);
+        // UpdateCurrentAmmoDisplay(player.CurrentWeapon.maxAmmo);
     }
 
     public void UpdateCurrentAmmoDisplay(int count)
