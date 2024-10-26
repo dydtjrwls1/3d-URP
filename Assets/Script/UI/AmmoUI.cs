@@ -38,8 +38,8 @@ public class AmmoUI : MonoBehaviour
 
 
         // player 의 setWeapon 함수가 시작한 뒤에 UpdateMaxAmmoDisplay 함수가 등록된다. 실행 타이밍이 안맞기 때문에 Update를 한번 해준다.
-        // UpdateAmmoDisplay(player.CurrentWeapon);
-        // UpdateCurrentAmmoDisplay(player.CurrentWeapon.maxAmmo);
+        UpdateAmmoDisplay(player.CurrentWeapon);
+        UpdateCurrentAmmoDisplay(player.CurrentWeapon.maxAmmo);
     }
 
     public void UpdateCurrentAmmoDisplay(int count)

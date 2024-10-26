@@ -33,7 +33,7 @@ public class SpawnPoint_Base : MonoBehaviour
         }
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         Canvas canvas = GetComponentInChildren<Canvas>();
         Transform child = canvas.transform.GetChild(0);
@@ -53,13 +53,17 @@ public class SpawnPoint_Base : MonoBehaviour
 
     private void Update()
     {
-        CurrentIntervalTime += Time.deltaTime;
-
-        // 스폰 대기시간이 지났고 스폰이 가능한 상태인경우 Spawn 한다.
-        if (CurrentIntervalTime > spawnInterval && m_CanSpawn)
+        // 스폰 가능할 경우에만
+        if (m_CanSpawn)
         {
-            CurrentIntervalTime = 0.0f;
-            Spawn();
+            CurrentIntervalTime += Time.deltaTime;
+
+            // 스폰 대기시간이 지났을경우 Spawn 한다.
+            if (CurrentIntervalTime > spawnInterval)
+            {
+                CurrentIntervalTime = 0.0f;
+                Spawn();
+            }
         }
     }
 

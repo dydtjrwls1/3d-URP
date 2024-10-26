@@ -16,7 +16,7 @@ public class Factory : SingleTon<Factory>
 
     EnemyEquipmentPool[] enemyEquipmentPools;
 
-    PickUpItemPool pickUpItemPool;
+    PickUpItemPool[] pickUpItemPools;
 
     protected override void OnInitialize()
     {
@@ -58,8 +58,14 @@ public class Factory : SingleTon<Factory>
             }
         }
 
-        pickUpItemPool = GetComponentInChildren<PickUpItemPool>();
-        pickUpItemPool.Initialize();
+        pickUpItemPools = GetComponentsInChildren<PickUpItemPool>();
+        if (pickUpItemPools.Length > 0)
+        {
+            foreach (var pool in pickUpItemPools)
+            {
+                pool.Initialize();
+            }
+        }
     }
 
     public Projectile GetProjectile(Vector3 position, Vector3 rotation)
@@ -125,5 +131,33 @@ public class Factory : SingleTon<Factory>
         equipment = enemyEquipmentPools[index].GetObject(position);
 
         return equipment;
+    }
+
+    public PickUpItem GetPickUpItem(Vector3 position, ItemCode code)
+    {
+        PickUpItemPool itemPool = null;
+
+        // 매개변수로 받은 아이템 코드와 같은 pool 을 찾는다
+        foreach (var pool in pickUpItemPools) 
+        {
+            if(pool.code == code)
+            {
+                itemPool = pool;
+                break;
+            }
+        }
+        
+        if(itemPool != null)
+        {
+            // 같은 코드의 pool 이 있을경우 item 반환
+            PickUpItem item = itemPool.GetObject(position);
+            return item;
+        }
+        else
+        {
+            // 없을경우 null
+            Debug.Log("해당 코드의 아이템 풀이 존재하지 않습니다.");
+            return null;
+        }
     }
 }

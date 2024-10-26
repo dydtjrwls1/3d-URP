@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnPoint_Trigger : MonoBehaviour
+public class SpawnPoint_Trigger : SpawnPoint_Base
 {
-    // Start is called before the first frame update
-    void Start()
+    PickUpItem m_Item = null;
+
+    protected override void Awake()
     {
-        
+        base.Awake();
+        m_CanSpawn = true;
     }
 
-    // Update is called once per frame
-    void Update()
+
+
+    protected override void Spawn()
     {
-        
+        m_Item = Factory.Instance.GetPickUpItem(transform.position, ItemCode.Pistol);
+        m_CanSpawn = false;
     }
 }

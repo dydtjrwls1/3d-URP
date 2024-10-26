@@ -12,10 +12,10 @@ public class ObjectPool<T> : MonoBehaviour where T : RecycleObject // T 는 반�
     public int poolSize = 64;
 
     // 생성된 모든 오브젝트가 들어있는 배열. (제네릭 T타입으로 해서 다양한 오브젝트를 지원)
-    T[] pool;
+    protected T[] pool;
 
     // 현재 사용가능한 오브젝트들을 관리하는 큐(pool 배열에서 비활성화 되어 있는 오브젝트만 들어있는 자료구조)
-    Queue<T> readyQueue;
+    protected Queue<T> readyQueue;
 
     /// <summary>
     /// 초기화용 함수
@@ -108,7 +108,7 @@ public class ObjectPool<T> : MonoBehaviour where T : RecycleObject // T 는 반�
     /// <summary>
     /// 풀을 두배로 확장시키는 함수
     /// </summary>
-    void ExpandPool()
+    protected void ExpandPool()
     {
         // 최대한 실행되지 않아야 함.
         Debug.LogWarning($"{gameObject.name} 풀 사이즈 증가. {poolSize} -> {poolSize * 2}");
