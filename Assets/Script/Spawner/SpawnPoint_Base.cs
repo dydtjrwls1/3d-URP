@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 스폰 시간이 지날경우 자동으로 스폰하는 클래스
 public class SpawnPoint_Base : MonoBehaviour
 {
     [SerializeField]
@@ -54,12 +55,25 @@ public class SpawnPoint_Base : MonoBehaviour
     {
         CurrentIntervalTime += Time.deltaTime;
 
-        if (CurrentIntervalTime > spawnInterval)
+        // 스폰 대기시간이 지났고 스폰이 가능한 상태인경우 Spawn 한다.
+        if (CurrentIntervalTime > spawnInterval && m_CanSpawn)
         {
             CurrentIntervalTime = 0.0f;
             Spawn();
         }
     }
+
+    //protected IEnumerator SpawnCount()
+    //{
+    //    while (CurrentIntervalTime < spawnInterval)
+    //    {
+    //        CurrentIntervalTime += Time.deltaTime;
+    //        yield return null;
+    //    }
+
+    //    Spawn();
+    //}
+
 
     protected virtual void Spawn() { }
 }

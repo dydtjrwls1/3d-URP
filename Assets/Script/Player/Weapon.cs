@@ -94,7 +94,7 @@ public class Weapon : MonoBehaviour
         {
             if (m_TotalAmmo != value)
             {
-                m_TotalAmmo = value;
+                m_TotalAmmo = Mathf.Max(value, 0);
                 onTotalBulletChange?.Invoke(m_TotalAmmo);
             }
         }
@@ -128,7 +128,7 @@ public class Weapon : MonoBehaviour
     {
         CurrentAmmo -= 1;
 
-        if(m_CurrentAmmo < 1)
+        if(m_CurrentAmmo < 1 && m_TotalAmmo > 0) // 총알의 총 개수가 0이하면 재장전 불가능
         {
             // 재장전 알림
             StartCoroutine(Reload());

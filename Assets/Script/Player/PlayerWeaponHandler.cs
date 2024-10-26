@@ -62,8 +62,14 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp
 
     private bool HasWeapon(int index, out Weapon weapon)
     {
+        bool result = false;
+
         weapon = GetWeapon(index);
-        return weapon.Activate;
+
+        // 무기가 존재하고 무기가 활성화 되어 있을경우 true 반환
+        result = weapon != null && weapon.Activate;
+
+        return result;
     }
 
     public void SetWeapon(int index)
@@ -71,7 +77,7 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp
         if (HasWeapon(index, out Weapon weapon))
         {
             // weapon 을 정상적으로 불러왔다면 무기를 장착한다.
-            if (weapon != null && !m_IsReload) // 재장전 중이 아닐 때 
+            if (weapon != null && !m_IsReload && weapon.PrefabObject != m_CurrentWeaponPrefab) // 재장전 중이 아니고 지금 들고있는 무기와 같지 않을 때 
             {
                 // 현재 착용중인 무기 해제
                 if (m_CurrentWeaponPrefab != null)
