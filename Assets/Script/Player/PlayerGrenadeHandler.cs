@@ -2,11 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerGrenadeHandler : MonoBehaviour
 {
+    // 1ÀÎÄª È­¸é¿¡ º¸¿©Áú ÆøÅº ÇÁ¸®Æé
+    public GameObject grenadePrefab;
+
     int m_GrenadeCount = 3;     // ±âº»ÀûÀ¸·Î °¡Áö°í ÀÖ´Â ÆøÅºÀÇ ¼ö
     int m_MaxGrenadeCount = 5;  // °¡Áú ¼ö ÀÖ´Â ÆøÅºÀÇ ÃÑ·®
+
+    bool m_IsGrenadeReady = false;
+
+    public bool IsGrenadeReady => m_IsGrenadeReady;
+
+    Player player;
+
+    Transform m_GrenadePoint;
+
+    GameObject m_GrenadeGameObject;
 
     public int GrenadeCount
     {
@@ -23,15 +37,41 @@ public class PlayerGrenadeHandler : MonoBehaviour
 
     public event Action<int> onGrenadeCountChange = null;
 
-    private void Start()
+    private void Awake()
     {
-        Player player = GetComponent<Player>();
+        player = GetComponent<Player>();
 
-        player.onGrenade += OnGrenadeKey;
+        Transform child = transform.GetChild(1);
+
+        m_GrenadePoint = child.GetChild(4);
     }
 
-    private void OnGrenadeKey()
+    private void Start()
     {
-        throw new NotImplementedException();
+        m_GrenadeGameObject = Instantiate(grenadePrefab, m_GrenadePoint);
+        m_GrenadeGameObject.SetActive(false);
+
+        player.onGrenade += GrenadeReady;
+        player.onGrenadeFire += GrenadeFire;
+    }
+
+    private void GrenadeReady()
+    {
+        if(GrenadeCount > 0)
+        {
+            m_IsGrenadeReady = true;
+            m_GrenadeGameObject?.SetActive(true);
+        }
+    }
+
+    private void GrenadeFire() 
+    {
+        if (m_IsGrenadeReady)
+        {
+            m_IsGrenadeReady = false;
+            m_GrenadeGameObject?.SetActive(false);
+
+            // ÅõÃ´¹«±â ¹ß»ç
+        }
     }
 }

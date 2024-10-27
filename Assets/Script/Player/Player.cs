@@ -115,6 +115,8 @@ public class Player : MonoBehaviour
     //float m_FireRate;
     float m_Score;
 
+    
+
     public float Score
     {
         get => m_Score;
@@ -128,16 +130,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    public Transform WeaponPoint => m_WeaponPoint;
+
     public PlayerGrenadeHandler GrenadeHandler => m_PlayerGrenadeHandler;
 
     public Health Health => m_PlayerHealth;
 
     public Weapon CurrentWeapon => m_CurrentWeapon;
 
-    // 무기의 남은 탄창 수가 0이 아니고 마우스 오른쪽 버튼을 눌렀을 경우
+    // 무기의 남은 탄창 수가 0이 아니고 투척무기 준비상태가 아니고 마우스 오른쪽 버튼을 눌렀을 경우
     public bool CanFire => m_CurrentWeapon.CanFire && m_IsFire;
 
     public event Action onAim = null;
+
+    public event Action onGrenadeFire = null;
 
     public event Action<Weapon> onBulletFire = null;
 
@@ -257,7 +263,6 @@ public class Player : MonoBehaviour
         UpdateRecoilPosition();
         UpdateBobPosition();
         UpdateWeaponChangePosition();
-        
 
         m_WeaponPoint.localPosition = m_MainLocalPosition + m_RecoilWeaponPosition + m_BobWeaponPosition + m_WeaponChangePosition + m_CurrentWeapon.offset;
     }
@@ -531,6 +536,12 @@ public class Player : MonoBehaviour
     private void On_Fire(InputAction.CallbackContext context)
     {
         m_IsFire = !context.canceled;
+
+        if(!CurrentWeapon.gameObject.activeSelf && m_PlayerGrenadeHandler.IsGrenadeReady)
+        {
+            onGrenadeFire?.Invoke();
+            CurrentWeapon.gameObject.SetActive(true);
+        }
     }
 
     private void OnKeyOne(InputAction.CallbackContext _)
@@ -550,6 +561,12 @@ public class Player : MonoBehaviour
     private void OnGrenade(InputAction.CallbackContext _)
     {
         onGrenade?.Invoke();
+
+        if (m_PlayerGrenadeHandler.IsGrenadeReady)
+        {
+            // 무기 관련 행동 잠시 정지
+            CurrentWeapon.gameObject.SetActive(false);
+        }
     }
 
     void SetFOV(float fov)
