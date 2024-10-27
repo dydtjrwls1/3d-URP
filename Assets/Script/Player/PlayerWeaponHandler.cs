@@ -15,9 +15,15 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp
 
     bool m_IsReload = false;
 
+    
+
+    
+
     const int Pistol = (int)ItemCode.Pistol;
     const int Rifle = (int)ItemCode.Rifle;
     const int Shotgun = (int)ItemCode.Shotgun;
+
+    
 
     private void Awake()
     {

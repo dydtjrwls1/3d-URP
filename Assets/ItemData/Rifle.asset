@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   code: 1
-  prefab: {fileID: 128567453166736957, guid: 8107f7dc456607b44a46c9740f9b9c50, type: 3}
+  prefab: {fileID: 128567453166736957, guid: 640d7a282f62e4e49ac55baafcfd3373, type: 3}
   capacity: 8

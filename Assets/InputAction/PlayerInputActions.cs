@@ -98,6 +98,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Grenade"",
+                    ""type"": ""Button"",
+                    ""id"": ""f84d56db-d395-4201-acb5-eb91572a182a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -232,6 +241,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Num3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e2d83cb-1a30-4d2c-a70f-7a85c0fca9b4"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Player"",
+                    ""action"": ""Grenade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -265,6 +285,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Num1 = m_Player.FindAction("Num1", throwIfNotFound: true);
         m_Player_Num2 = m_Player.FindAction("Num2", throwIfNotFound: true);
         m_Player_Num3 = m_Player.FindAction("Num3", throwIfNotFound: true);
+        m_Player_Grenade = m_Player.FindAction("Grenade", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -334,6 +355,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Num1;
     private readonly InputAction m_Player_Num2;
     private readonly InputAction m_Player_Num3;
+    private readonly InputAction m_Player_Grenade;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -346,6 +368,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Num1 => m_Wrapper.m_Player_Num1;
         public InputAction @Num2 => m_Wrapper.m_Player_Num2;
         public InputAction @Num3 => m_Wrapper.m_Player_Num3;
+        public InputAction @Grenade => m_Wrapper.m_Player_Grenade;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -379,6 +402,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Num3.started += instance.OnNum3;
             @Num3.performed += instance.OnNum3;
             @Num3.canceled += instance.OnNum3;
+            @Grenade.started += instance.OnGrenade;
+            @Grenade.performed += instance.OnGrenade;
+            @Grenade.canceled += instance.OnGrenade;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -407,6 +433,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Num3.started -= instance.OnNum3;
             @Num3.performed -= instance.OnNum3;
             @Num3.canceled -= instance.OnNum3;
+            @Grenade.started -= instance.OnGrenade;
+            @Grenade.performed -= instance.OnGrenade;
+            @Grenade.canceled -= instance.OnGrenade;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -443,5 +472,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnNum1(InputAction.CallbackContext context);
         void OnNum2(InputAction.CallbackContext context);
         void OnNum3(InputAction.CallbackContext context);
+        void OnGrenade(InputAction.CallbackContext context);
     }
 }

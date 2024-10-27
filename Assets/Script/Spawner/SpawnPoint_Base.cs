@@ -6,6 +6,8 @@ using UnityEngine.UI;
 // 스폰 시간이 지날경우 자동으로 스폰하는 클래스
 public class SpawnPoint_Base : MonoBehaviour
 {
+    public EnemyType[] spawnTypes;
+
     [SerializeField]
     protected float spawnInterval = 5.0f;
 
@@ -79,5 +81,9 @@ public class SpawnPoint_Base : MonoBehaviour
     //}
 
 
-    protected virtual void Spawn() { }
+    protected virtual void Spawn() 
+    {
+        int randIndex = Random.Range(0, spawnTypes.Length);
+        Factory.Instance.GetEnemy(transform.position, spawnTypes[randIndex]);
+    }
 }

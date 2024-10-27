@@ -160,4 +160,11 @@ public class Factory : SingleTon<Factory>
             return null;
         }
     }
+
+    public PickUpItem GetPickUpItem(Vector3 position, int code)
+    {
+        PickUpItem item = null;
+        item = GetPickUpItem(position, (ItemCode)code);
+        return item;
+    }
 }

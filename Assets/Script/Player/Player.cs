@@ -71,6 +71,8 @@ public class Player : MonoBehaviour
 
     PlayerWeaponHandler m_PlayerWeaponHandler;
 
+    PlayerGrenadeHandler m_PlayerGrenadeHandler;
+
     GroundSensor m_GroundSensor;
 
     CinemachineVirtualCamera m_PlayerCamera;
@@ -126,6 +128,8 @@ public class Player : MonoBehaviour
         }
     }
 
+    public PlayerGrenadeHandler GrenadeHandler => m_PlayerGrenadeHandler;
+
     public Health Health => m_PlayerHealth;
 
     public Weapon CurrentWeapon => m_CurrentWeapon;
@@ -144,6 +148,8 @@ public class Player : MonoBehaviour
     public event Action onKeyOne = null;
     public event Action onKeyTwo = null;
     public event Action onKeyThree = null;
+
+    public event Action onGrenade = null;
 
     const float PI = 3.141592f;
 
@@ -164,6 +170,8 @@ public class Player : MonoBehaviour
         m_PlayerHealth = GetComponent<Health>();
 
         m_PlayerWeaponHandler = GetComponent<PlayerWeaponHandler>();
+
+        m_PlayerGrenadeHandler = GetComponent<PlayerGrenadeHandler>();
     }
 
    
@@ -182,10 +190,14 @@ public class Player : MonoBehaviour
         inputAction.Player.Num1.performed += OnKeyOne;
         inputAction.Player.Num2.performed += OnKeyTwo;
         inputAction.Player.Num3.performed += OnKeyThree;
+        inputAction.Player.Grenade.performed += OnGrenade;
     }
+
+    
 
     private void OnDisable()
     {
+        inputAction.Player.Grenade.performed -= OnGrenade;
         inputAction.Player.Num3.performed -= OnKeyThree;
         inputAction.Player.Num2.performed -= OnKeyTwo;
         inputAction.Player.Num1.performed -= OnKeyOne;
@@ -231,12 +243,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         HandlePlayerMovement();
-        RayCastTarget();
         Fire();
-    }
-
-    private void RayCastTarget()
-    {
     }
 
     private void LateUpdate()
@@ -538,6 +545,11 @@ public class Player : MonoBehaviour
     private void OnKeyThree(InputAction.CallbackContext _)
     {
         onKeyThree?.Invoke();
+    }
+
+    private void OnGrenade(InputAction.CallbackContext _)
+    {
+        onGrenade?.Invoke();
     }
 
     void SetFOV(float fov)

@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8608118765508726116
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1600787393413682136, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_Name
+      value: PickUpItemSpawnPoint Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347782107082840204, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8704004188146340321, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8704004188146340321, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_FillMethod
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8704004188146340321, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      propertyPath: m_FillClockwise
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8036175895201112366, guid: 0b8d0390e7ec4384688748fb1aacd0e2, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1600787393413682136, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6302783816603334117}
+  m_SourcePrefab: {fileID: 100100000, guid: 0b8d0390e7ec4384688748fb1aacd0e2, type: 3}
+--- !u!1 &7007897682100166332 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1600787393413682136, guid: 0b8d0390e7ec4384688748fb1aacd0e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 8608118765508726116}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6302783816603334117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7007897682100166332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e37d0977f9ff14fa968bba21edc17d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnTypes: 
+  spawnInterval: 1
+  intervalImage: {fileID: 2800000, guid: 7e47ad0249396044b852122a53251bb8, type: 3}
+  spawnItems: 000000000100000003000000

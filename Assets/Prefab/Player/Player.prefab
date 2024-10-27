@@ -76,6 +76,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5501794658869192070}
   - component: {fileID: 2102934572849564036}
+  - component: {fileID: 4950023667915846012}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -110,6 +111,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4950023667915846012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2883151243017165298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NoiseProfile: {fileID: 11400000, guid: 46965f9cbaf525742a6da4c2172a99cd, type: 2}
+  m_PivotOffset: {x: 0, y: 0, z: 0}
+  m_AmplitudeGain: 0.5
+  m_FrequencyGain: 0.5
+  mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &3174917749670796107
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,7 +373,6 @@ GameObject:
   m_Component:
   - component: {fileID: 297713345106561835}
   - component: {fileID: 5396421500796309482}
-  - component: {fileID: 8940557721798938714}
   m_Layer: 0
   m_Name: PlayerVCam
   m_TagString: Untagged
@@ -421,18 +438,3 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 5501794658869192070}
---- !u!114 &8940557721798938714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6132637320807025777}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c15d98d00c43a547b8ce982aee3b1a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gunPoint: {fileID: 3410625050264866606}
-  ads: {fileID: 2474781325433258183}
-  gunMesh: {fileID: 0}

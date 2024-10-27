@@ -66,15 +66,14 @@ public class EnemyBase : RecycleObject
         }
     }
 
+    protected virtual void Update()
+    {
+        UpdateAIState();
+        EnemyStateAction();
+    }
 
     protected override void OnReset()
     {
-        //if(m_Player == null)
-        //{
-        //    m_Player = GameManager.Instance.Player;
-        //}
-
-        // m_Agent?.SetDestination(m_Player.transform.position);
         m_CurrentAttackCoolTime = attackCoolTime;
 
         if (m_Inits.Length > 0)
@@ -86,12 +85,6 @@ public class EnemyBase : RecycleObject
         }
 
         m_IsAlive = true;
-    }
-
-    protected virtual void Update()
-    {
-        UpdateAIState();
-        EnemyStateAction();
     }
 
     private void UpdateAIState()

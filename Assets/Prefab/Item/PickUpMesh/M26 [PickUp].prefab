@@ -425,7 +425,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5697457772671630770}
   m_Layer: 0
-  m_Name: M26 [Prefab]
+  m_Name: M26 [PickUp]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

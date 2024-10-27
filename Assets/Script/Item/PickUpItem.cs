@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PickUpItem : RecycleObject
@@ -40,6 +41,7 @@ public class PickUpItem : RecycleObject
         {
             // pickUP함수 실행
             pickUp.PickUp(data.code, data.capacity);
+            DisableTimer(); // 비활성화
         }
     }
 }
