@@ -4,42 +4,35 @@ using UnityEngine;
 
 public class Projectile : RecycleObject
 {
-    //public float speed = 10.0f;
+    [SerializeField]
+    float force = 5.0f;
 
-    //public float lifeTime = 5.0f;
+    [SerializeField]
+    float duration = 2.0f;
 
-    //Rigidbody m_Rb;
+    Rigidbody rb;
 
-    //Vector3 m_Velocity;
+    float elapsedTime = 0.0f;
 
-    //public Vector3 Velocity
-    //{
-    //    get => m_Velocity;
-    //    set => m_Velocity = value;
-    //}
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
-    //private void Awake()
-    //{
-    //    m_Rb = GetComponent<Rigidbody>();
-    //}
+    protected override void OnReset()
+    {
+        rb.AddForce(Camera.main.transform.forward * force, ForceMode.Impulse);
+        elapsedTime = 0.0f;
+    }
 
-    //protected override void OnReset()
-    //{
-    //    // 타이머 설정
-    //    DisableTimer(lifeTime);
-    //}
+    private void Update()
+    {
+        elapsedTime += Time.deltaTime;
 
-    //private void FixedUpdate()
-    //{
-    //    //m_Rb.MovePosition(m_Rb.position + Time.fixedDeltaTime * speed);
-    //    transform.Translate(Time.deltaTime * speed * m_Velocity, Space.World);
-    //}
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    // 즉시 비활성화
-    //    DisableTimer(0.0f);
-    //}
-
-
+        if (elapsedTime > duration)
+        {
+            Factory.Instance.GetExplosionEffect(transform.position);
+            gameObject.SetActive(false);
+        }
+    }
 }

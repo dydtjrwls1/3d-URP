@@ -6,9 +6,11 @@ public class Factory : SingleTon<Factory>
 {
     ProjectilePool projectilePool;
 
-    HitEffectPool hitEffectPool;
+    ParticleEffectPool hitEffectPool;
 
-    HitEffectPool flashHitEffectPool;
+    ParticleEffectPool flashHitEffectPool;
+
+    ParticleEffectPool explosionEffectPool;
 
     EnemyPool[] enemyPools;
 
@@ -18,17 +20,19 @@ public class Factory : SingleTon<Factory>
 
     PickUpItemPool[] pickUpItemPools;
 
+    
+
     protected override void OnInitialize()
     {
-        //projectilePool = GetComponentInChildren<ProjectilePool>();
-        //projectilePool?.Initialize();
+        projectilePool = GetComponentInChildren<ProjectilePool>();
+        projectilePool?.Initialize();
 
         Transform child = transform.GetChild(0);
-        hitEffectPool = child.GetComponent<HitEffectPool>();
+        hitEffectPool = child.GetComponent<ParticleEffectPool>();
         hitEffectPool?.Initialize();
 
         child = transform.GetChild(1);
-        flashHitEffectPool = child.GetComponent<HitEffectPool>();
+        flashHitEffectPool = child.GetComponent<ParticleEffectPool>();
         flashHitEffectPool?.Initialize();
 
         enemyWeaponPools = GetComponentsInChildren<EnemyWeaponPool>();
@@ -66,26 +70,30 @@ public class Factory : SingleTon<Factory>
                 pool.Initialize();
             }
         }
+
+        child = transform.GetChild(7);
+        explosionEffectPool = child.GetComponent<ParticleEffectPool>();
+        explosionEffectPool?.Initialize();
     }
 
-    public Projectile GetProjectile(Vector3 position, Vector3 rotation)
+    public Projectile GetProjectile(Vector3 position)
     {
-        Projectile projectile = projectilePool.GetObject(position, rotation);
+        Projectile projectile = projectilePool.GetObject(position);
         return projectile;
     }
 
     // hitnormal => Hit 위치의 노말 벡터
-    public HitEffect GetHitEffect(Vector3 position, Vector3 hitNormal)
+    public ParticleEffect GetHitEffect(Vector3 position, Vector3 hitNormal)
     {
-        HitEffect hitEffect = hitEffectPool.GetObject(position); 
+        ParticleEffect hitEffect = hitEffectPool.GetObject(position); 
         hitEffect.transform.forward = hitNormal;
 
         return hitEffect;
     }
 
-    public HitEffect GetFlashHitEffect(Vector3 position, Vector3 hitNormal)
+    public ParticleEffect GetFlashHitEffect(Vector3 position, Vector3 hitNormal)
     {
-        HitEffect hitEffect = flashHitEffectPool.GetObject(position);
+        ParticleEffect hitEffect = flashHitEffectPool.GetObject(position);
         hitEffect.transform.forward = hitNormal;
 
         return hitEffect;
@@ -166,5 +174,12 @@ public class Factory : SingleTon<Factory>
         PickUpItem item = null;
         item = GetPickUpItem(position, (ItemCode)code);
         return item;
+    }
+
+    public ParticleEffect GetExplosionEffect(Vector3 position)
+    {
+        ParticleEffect hitEffect = flashHitEffectPool.GetObject(position);
+
+        return hitEffect;
     }
 }

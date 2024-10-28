@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HitEffect : RecycleObject
+public class ParticleEffect : RecycleObject
 {
     ParticleSystem m_hitEffect;
 

@@ -72,6 +72,7 @@ public class PlayerGrenadeHandler : MonoBehaviour
             m_GrenadeGameObject?.SetActive(false);
 
             // 투척무기 발사
+            Factory.Instance.GetProjectile(Camera.main.transform.position);
         }
     }
 }
