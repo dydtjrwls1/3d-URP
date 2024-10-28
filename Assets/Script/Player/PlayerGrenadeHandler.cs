@@ -64,15 +64,17 @@ public class PlayerGrenadeHandler : MonoBehaviour
         }
     }
 
-    private void GrenadeFire() 
-    {
+    private void GrenadeFire()
+    { 
         if (m_IsGrenadeReady)
         {
-            m_IsGrenadeReady = false;
             m_GrenadeGameObject?.SetActive(false);
 
             // 투척무기 발사
             Factory.Instance.GetProjectile(Camera.main.transform.position);
+
+            GrenadeCount--;
+            m_IsGrenadeReady = false;
         }
     }
 }

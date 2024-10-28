@@ -15,7 +15,6 @@ public class RecycleObject : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        
         StopAllCoroutines();    // 이전에 실행중이던 코루틴 모두 정지
         OnReset();
     }

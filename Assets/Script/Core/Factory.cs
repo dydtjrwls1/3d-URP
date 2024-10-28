@@ -178,7 +178,7 @@ public class Factory : SingleTon<Factory>
 
     public ParticleEffect GetExplosionEffect(Vector3 position)
     {
-        ParticleEffect hitEffect = flashHitEffectPool.GetObject(position);
+        ParticleEffect hitEffect = explosionEffectPool.GetObject(position);
 
         return hitEffect;
     }

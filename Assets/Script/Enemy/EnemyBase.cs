@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Health), typeof(NavMeshAgent))]
 public class EnemyBase : RecycleObject
 {
     public enum AIState
@@ -22,11 +22,21 @@ public class EnemyBase : RecycleObject
 
     protected Animator m_Animator;
 
+    //Rigidbody m_Rigidbody;
+
     NavMeshAgent m_Agent;
 
     Coroutine m_AttackCoroutine = null;
 
+    Collider[] colliders;
+
     IInitialize[] m_Inits;
+
+    public IInitialize[] Inits
+    {
+        get => m_Inits;
+        set => m_Inits = value;
+    }
 
     AIState m_State = AIState.Follow;
 
@@ -52,8 +62,9 @@ public class EnemyBase : RecycleObject
     {
         m_Agent = GetComponent<NavMeshAgent>();
         m_Animator = GetComponent<Animator>();
-        
+        //m_Rigidbody = GetComponent<Rigidbody>();
         m_Inits = GetComponents<IInitialize>();
+        colliders = GetComponentsInChildren<Collider>();
     }
 
     private void Start()
@@ -64,6 +75,8 @@ public class EnemyBase : RecycleObject
         {
             health.onDie += Die;
         }
+
+        //m_Inits = GetComponents<IInitialize>();
     }
 
     protected virtual void Update()
@@ -76,14 +89,18 @@ public class EnemyBase : RecycleObject
     {
         m_CurrentAttackCoolTime = attackCoolTime;
 
+        ActivateCollider();
+
         if (m_Inits.Length > 0)
         {
             foreach (IInitialize init in m_Inits)
             {
-                init.Initialize();
+                init?.Initialize();
             }
         }
 
+        m_Agent.enabled = true;
+        //m_Rigidbody.detectCollisions = true;
         m_IsAlive = true;
     }
 
@@ -137,10 +154,6 @@ public class EnemyBase : RecycleObject
                     break;
             }
         }
-        else
-        {
-            m_Agent.SetDestination(transform.position);
-        }
     }
 
     private void OrientToTarget()
@@ -164,7 +177,11 @@ public class EnemyBase : RecycleObject
             m_IsAlive = false;
             m_Animator.SetTrigger(Die_Hash);
             Player.Score += score;
-            DisableTimer(2.0f);
+
+            DeactivateCollider();
+            m_Agent.enabled = false;
+            //m_Rigidbody.detectCollisions = false;
+            DisableTimer(5.0f);
         }
     }
 
@@ -187,5 +204,21 @@ public class EnemyBase : RecycleObject
 
         m_AttackCoroutine = null;
         m_StateChangable = true;
+    }
+
+    void ActivateCollider()
+    {
+        foreach (var collider in colliders)
+        {
+            collider.enabled = true;
+        }
+    }
+
+    void DeactivateCollider()
+    {
+        foreach (var collider in colliders)
+        {
+            collider.enabled = false;
+        }
     }
 } 

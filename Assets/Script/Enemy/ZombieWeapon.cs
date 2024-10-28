@@ -28,7 +28,7 @@ public class ZombieWeapon : Zombie
     protected override void OnDisable()
     {
         base.OnDisable();
-        m_CurrentWeapon.gameObject.SetActive(false);
+        m_CurrentWeapon?.gameObject.SetActive(false);
     }
 
     protected override void Update()

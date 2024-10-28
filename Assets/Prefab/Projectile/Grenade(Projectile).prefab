@@ -467,8 +467,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caecf06fc71eabd43983115dbebf8558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: 5
+  force: 8
   duration: 2
+  drag: 4
+  radius: 5
+  damage: 15
 --- !u!135 &3476721646590672162
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -476,7 +479,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9131551380139947782}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: c8033b61b70ecd843be5aac57beb28aa, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

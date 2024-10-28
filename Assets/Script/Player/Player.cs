@@ -535,12 +535,14 @@ public class Player : MonoBehaviour
 
     private void On_Fire(InputAction.CallbackContext context)
     {
-        m_IsFire = !context.canceled;
-
         if(!CurrentWeapon.gameObject.activeSelf && m_PlayerGrenadeHandler.IsGrenadeReady)
         {
             onGrenadeFire?.Invoke();
             CurrentWeapon.gameObject.SetActive(true);
+        }
+        else
+        {
+            m_IsFire = !context.canceled;
         }
     }
 
@@ -562,7 +564,8 @@ public class Player : MonoBehaviour
     {
         onGrenade?.Invoke();
 
-        if (m_PlayerGrenadeHandler.IsGrenadeReady)
+        // 재장전 중이거나 이미 투척준비 상태일경우는 해당 안됨
+        if (m_CurrentWeapon.CurrentAmmo != 0 && m_PlayerGrenadeHandler.IsGrenadeReady)
         {
             // 무기 관련 행동 잠시 정지
             CurrentWeapon.gameObject.SetActive(false);
