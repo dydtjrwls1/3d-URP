@@ -1,12 +1,9 @@
 using Cinemachine;
-using System.Collections;
-using System.Collections.Generic;
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
-public class Player : MonoBehaviour
+public class PlayerMovementContoller : MonoBehaviour
 {
     [Header("Player Movement")]
     public float moveSpeed = 3.0f;
@@ -29,22 +26,11 @@ public class Player : MonoBehaviour
     public float aimingSpeed = 2f;
 
     [Header("Attack Setting")]
-    // public float fireRate = 0.5f;
-    // public Transform m_FirePoint;
     public float firePointOffset = 0.1f;
 
     [Header("Recoil Setting")]
-    // 반동 주기 ( 이번 반동에서 다음 반동까지의 시간 간격 , 총의 발사시간과 같게 한다.)
-    // public float recoilRate = 0.5f;
-
-    // 반동 시간 ( 이번 반동의 발동 시간 )
-    //public float recoilTime = 0.1f;
-
     // 사격중이 아닐 때 원래 위치로 돌아가는 정도
     public float recoilSmooth = 2.0f;
-
-    // 반동 세기
-    // public float recoilAmount = 1.1f;
 
     // 좌우로 튀는 정도
     public float randomRecoilAmount = 1.0f;
@@ -55,11 +41,6 @@ public class Player : MonoBehaviour
     public float defaultBobAmount = 1.5f;
     public float bobRecoverySpeed = 5.0f;
 
-    [Header("Shoot Effect")]
-    // public ParticleSystem m_FireEffect;
-    // public Light m_FireLight;
-    public float lightTime = 0.5f;
-
     [Header("Weapon")]
     public Weapon defaultWeapon;
     public float weaponChangeOffset = 0.5f;
@@ -67,25 +48,17 @@ public class Player : MonoBehaviour
 
     CharacterController m_controller;
 
-    PlayerInputActions inputAction;
-
-    PlayerWeaponHandler m_PlayerWeaponHandler;
+    PlayerInputController m_PlayerInputController;
 
     PlayerGrenadeHandler m_PlayerGrenadeHandler;
 
-    GroundSensor m_GroundSensor;
-
     CinemachineVirtualCamera m_PlayerCamera;
-
-    Health m_PlayerHealth;
 
     Transform m_WeaponPoint;
 
     Coroutine m_FireLightOnCoroutune;
 
     Weapon m_CurrentWeapon;
-    // ParticleSystem m_FireEffect;
-    // Light m_FireLight;
 
     Vector3 m_InputDirection;
     Vector3 m_MainLocalPosition;
@@ -94,7 +67,6 @@ public class Player : MonoBehaviour
     Vector3 m_WeaponChangePosition;
 
     bool m_IsAim = false;
-    bool m_OnGround = true;
     bool m_IsFire = false;
     bool m_IsFired = false;
     bool m_IsMove = false;
@@ -104,15 +76,11 @@ public class Player : MonoBehaviour
     float m_RemainsRecoilRate = 0f;
     float m_RemainsRecoilTime = 0f;
     float m_RecoilModifier = 1.0f;
-    //float m_RecoilAmount;
-    //float m_RecoilTime;
-    //float m_AimRecoilAmount;
     float m_RandomRecoilX;
     float m_RandomRecoilY;
     float m_RemainsFireCoolTime = 0f;
     float m_CurrentBobTime = 0f;
     float m_CameraVerticalAngle = 0f;
-    //float m_FireRate;
     float m_Score;
 
     
@@ -133,8 +101,6 @@ public class Player : MonoBehaviour
     public Transform WeaponPoint => m_WeaponPoint;
 
     public PlayerGrenadeHandler GrenadeHandler => m_PlayerGrenadeHandler;
-
-    public Health Health => m_PlayerHealth;
 
     public Weapon CurrentWeapon => m_CurrentWeapon;
 
@@ -169,66 +135,15 @@ public class Player : MonoBehaviour
 
         m_controller = GetComponent<CharacterController>();
 
-        inputAction = new PlayerInputActions();
-
-        m_GroundSensor = GetComponentInChildren<GroundSensor>();
-
-        m_PlayerHealth = GetComponent<Health>();
-
-        m_PlayerWeaponHandler = GetComponent<PlayerWeaponHandler>();
+        m_PlayerInputController = GetComponent<PlayerInputController>();
 
         m_PlayerGrenadeHandler = GetComponent<PlayerGrenadeHandler>();
     }
-
-   
-
-    private void OnEnable()
-    {
-        inputAction.Player.Enable();
-        inputAction.Player.Move.performed += OnMove;
-        inputAction.Player.Move.canceled += OnMove;
-        inputAction.Player.MousePoint.performed += On_MouseMove;
-        inputAction.Player.MousePoint.canceled += On_MouseMove;
-        inputAction.Player.Jump.performed += On_Jump;
-        inputAction.Player.RClick.performed += On_RClick;
-        inputAction.Player.Fire.performed += On_Fire;
-        inputAction.Player.Fire.canceled += On_Fire;
-        inputAction.Player.Num1.performed += OnKeyOne;
-        inputAction.Player.Num2.performed += OnKeyTwo;
-        inputAction.Player.Num3.performed += OnKeyThree;
-        inputAction.Player.Grenade.performed += OnGrenade;
-    }
-
-    
-
-    private void OnDisable()
-    {
-        inputAction.Player.Grenade.performed -= OnGrenade;
-        inputAction.Player.Num3.performed -= OnKeyThree;
-        inputAction.Player.Num2.performed -= OnKeyTwo;
-        inputAction.Player.Num1.performed -= OnKeyOne;
-        inputAction.Player.Fire.canceled -= On_Fire;
-        inputAction.Player.Fire.performed -= On_Fire;
-        inputAction.Player.RClick.performed -= On_RClick;
-        inputAction.Player.Jump.performed -= On_Jump;
-        inputAction.Player.MousePoint.canceled -= On_MouseMove;
-        inputAction.Player.MousePoint.performed -= On_MouseMove;
-        inputAction.Player.Move.canceled -= OnMove;
-        inputAction.Player.Move.performed -= OnMove;
-        inputAction.Player.Disable();
-    }
-
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        //cameraPoint.Rotate(Vector3.right * 0.01f);
-        m_GroundSensor.onGround += (isGround) =>
-        {
-            m_OnGround = isGround;
-        };
 
         m_MainLocalPosition = defaultWeaponPosition.localPosition;
 
@@ -242,8 +157,51 @@ public class Player : MonoBehaviour
             }
         }
 
-        //AddWeapon(defaultWeapon);
-        //SetWeapon(defaultWeapon);
+        // 마우스 움직임마다 실행되는 부분
+        m_PlayerInputController.onMouseMove += (delta) =>
+        {
+            m_MouseXInput = Mathf.Clamp(delta.x, -maxRotationInputValue, maxRotationInputValue);
+            m_MouseYInput = Mathf.Clamp(delta.y, -maxRotationInputValue, maxRotationInputValue);
+        };
+
+        // 플레이어 움직임이 있을때마다 실행된다
+        m_PlayerInputController.onMove += (input, performed) =>
+        {
+            m_IsMove = performed;
+            m_InputDirection = new Vector3(input.x, 0, input.y);
+        };
+
+        // 마우스 오른쪽 클릭 시 실행
+        m_PlayerInputController.onRClick += () =>
+        {
+            m_IsAim = !m_IsAim;
+
+            // Aim 상태일경우 트리거 발동
+            if (m_IsAim)
+            {
+                onAim?.Invoke();
+            }
+        };
+
+        // 마우스 왼쪽 클릭 시 실행
+        m_PlayerInputController.onFire += (isFire) =>
+        {
+            if (!CurrentWeapon.gameObject.activeSelf && m_PlayerGrenadeHandler.IsGrenadeReady)
+            {
+                onGrenadeFire?.Invoke();
+                CurrentWeapon.gameObject.SetActive(true);
+            }
+            else
+            {
+                m_IsFire = isFire;
+            }
+        };
+
+        m_PlayerInputController.onKeyOne += OnKeyOne;
+        m_PlayerInputController.onKeyTwo += OnKeyTwo;
+        m_PlayerInputController.onKeyThree += OnKeyThree;
+
+        m_PlayerInputController.onGrenade += OnGrenade;
     }
 
     private void Update()
@@ -280,17 +238,15 @@ public class Player : MonoBehaviour
         {
             if(m_RemainsFireCoolTime < 0f)
             {
-                if(m_FireLightOnCoroutune != null)
-                {
-                    m_FireLightOnCoroutune = null;
-                }
+                //if(m_FireLightOnCoroutune != null)
+                //{
+                //    m_FireLightOnCoroutune = null;
+                //}
 
-                // 총알 발사 이펙트 실행
-                m_FireLightOnCoroutune = StartCoroutine(OnFireEffect());
+                //// 총알 발사 이펙트 실행
+                //m_FireLightOnCoroutune = StartCoroutine(OnFireEffect());
 
-                // 총알 발사
-                //Projectile projectile = Factory.Instance.GetProjectile(m_FirePoint.position + m_FirePoint.forward * firePointOffset, m_FirePoint.eulerAngles);
-                //projectile.Velocity = m_FirePoint.forward;
+                m_CurrentWeapon.StartFireEffectCoroutine();
 
                 onBulletFire?.Invoke(m_CurrentWeapon);
 
@@ -418,149 +374,30 @@ public class Player : MonoBehaviour
         }
     }
 
-    //public void AddWeapon(Weapon weapon)
-    //{
-    //    if (HasWeapon(weapon))
-    //    {
-    //        return;
-    //    }
-
-    //    m_WeaponList.Add(weapon);
-
-    //    //SetWeapon(weapon);
-    //}
-
-    //bool HasWeapon(Weapon weapon)
-    //{
-    //    return m_WeaponList.Contains(weapon);
-    //}
-
-    //public void SetWeapon(Weapon weapon)
-    //{
-    //    GameObject currentWeapon = null;
-
-    //    if (HasWeapon(weapon))
-    //    {
-    //        // 같은 무기면 바꾸지 않는다.
-    //        if (m_CurrentWeapon == weapon)
-    //        {
-    //            return;
-    //        }
-
-    //        // 현재 장착중인 무기 파괴
-    //        if (m_CurrentWeapon != null)
-    //        {
-    //            Destroy(m_CurrentWeapon.gameObject);
-    //        }
-
-    //        // 새로 장착할 무기 생성
-    //        currentWeapon = Instantiate(weapon).gameObject;
-
-    //        m_CurrentWeapon = currentWeapon.GetComponent<Weapon>();
-    //        m_FirePoint = m_CurrentWeapon.firePoint;
-    //        m_FireLight = m_CurrentWeapon.FireLight;
-    //        m_FireEffect = m_CurrentWeapon.fireEffect;
-    //        m_RecoilAmount = m_CurrentWeapon.recoilAmount;
-    //        m_RecoilTime = m_CurrentWeapon.recoilTime;
-    //        m_AimRecoilAmount = m_CurrentWeapon.aimRecoilAmount;
-
-
-    //        onWeaponChange?.Invoke(m_CurrentWeapon);
-
-    //        if (currentWeapon != null)
-    //        {
-    //            // 무기를 weapon point에 위치
-    //            currentWeapon.transform.parent = m_WeaponPoint;
-    //            currentWeapon.transform.localPosition = Vector3.zero;
-    //            currentWeapon.transform.forward = m_PlayerCamera.transform.forward;
-
-    //            m_FireRate = weapon.fireRate;
-
-    //            m_WeaponChangePosition = new Vector3(0, -weaponChangeOffset, 0);
-    //        }
-    //    }
-    //}
-
     // 무기가 바뀔경우 실행될 함수
     public void SetWeaponSetting(Weapon weapon)
     {
         m_CurrentWeapon = weapon;
-        //m_FireLight = weapon.FireLight;
-        //m_FireEffect = weapon.fireEffect;
-        //m_RecoilAmount = weapon.recoilAmount;
-        //m_RecoilTime = weapon.recoilTime;
-        //m_AimRecoilAmount = weapon.aimRecoilAmount;
-
         onWeaponChange?.Invoke(m_CurrentWeapon);
 
         m_WeaponChangePosition = new Vector3(0, -weaponChangeOffset, 0);
     }
 
-    // 키보드 입력 처리 함수
-    private void OnMove(InputAction.CallbackContext context)
-    {
-        m_IsMove = !context.canceled;
-
-        Vector2 input = context.ReadValue<Vector2>();
-        m_InputDirection = new Vector3(input.x, 0, input.y);
-    }
-
-    // 마우스 입력 처리 함수
-    private void On_MouseMove(InputAction.CallbackContext context)
-    {
-        Vector2 delta = context.ReadValue<Vector2>();
-
-        // 마우스 입력 최대, 최소값 설정
-        m_MouseXInput = Mathf.Clamp(delta.x, -maxRotationInputValue, maxRotationInputValue);
-        m_MouseYInput = Mathf.Clamp(delta.y, -maxRotationInputValue, maxRotationInputValue);
-    }
-
-    private void On_RClick(InputAction.CallbackContext obj)
-    {
-        m_IsAim = !m_IsAim;
-
-        // Aim 상태일경우 트리거 발동
-        if (m_IsAim)
-        {
-            onAim?.Invoke();
-        }
-    }
-    private void On_Jump(InputAction.CallbackContext obj)
-    {
-        if (m_OnGround)
-        {
-            //m_Rigidbody.velocity = new Vector3(jumpForce, jumpForce);
-        }
-    }
-
-    private void On_Fire(InputAction.CallbackContext context)
-    {
-        if(!CurrentWeapon.gameObject.activeSelf && m_PlayerGrenadeHandler.IsGrenadeReady)
-        {
-            onGrenadeFire?.Invoke();
-            CurrentWeapon.gameObject.SetActive(true);
-        }
-        else
-        {
-            m_IsFire = !context.canceled;
-        }
-    }
-
-    private void OnKeyOne(InputAction.CallbackContext _)
+    private void OnKeyOne()
     {
         onKeyOne?.Invoke();
     }
 
-    private void OnKeyTwo(InputAction.CallbackContext _)
+    private void OnKeyTwo()
     {
         onKeyTwo?.Invoke();
     }
-    private void OnKeyThree(InputAction.CallbackContext _)
+    private void OnKeyThree()
     {
         onKeyThree?.Invoke();
     }
 
-    private void OnGrenade(InputAction.CallbackContext _)
+    private void OnGrenade()
     {
         onGrenade?.Invoke();
 
@@ -577,29 +414,29 @@ public class Player : MonoBehaviour
         m_PlayerCamera.m_Lens.FieldOfView = fov;
     }
 
-    IEnumerator OnFireEffect()
-    {
-        float elapsedTime = lightTime;
+    //IEnumerator OnFireEffect()
+    //{
+    //    float elapsedTime = lightTime;
 
-        CurrentWeapon.FireLight.enabled = true;
-        CurrentWeapon.fireEffect.Play();
+    //    CurrentWeapon.FireLight.enabled = true;
+    //    CurrentWeapon.fireEffect.Play();
 
-        while (elapsedTime > 0f)
-        {
-            elapsedTime -= Time.deltaTime;
-            yield return null;
-        }
+    //    while (elapsedTime > 0f)
+    //    {
+    //        elapsedTime -= Time.deltaTime;
+    //        yield return null;
+    //    }
 
-        CurrentWeapon.FireLight.enabled = false;
+    //    CurrentWeapon.FireLight.enabled = false;
 
-        m_FireLightOnCoroutune = null;
-    }
+    //    m_FireLightOnCoroutune = null;
+    //}
 
 
 #if UNITY_EDITOR
-    public void Test_CamLock()
-    {
-        inputAction.Player.MousePoint.performed -= On_MouseMove;
-    }
+    //public void Test_CamLock()
+    //{
+    //    inputAction.Player.MousePoint.performed -= On_MouseMove;
+    //}
 #endif
 }

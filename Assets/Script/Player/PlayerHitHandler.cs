@@ -9,7 +9,7 @@ public class PlayerHitHandler : MonoBehaviour
 
     CinemachineVirtualCamera m_PlayerCamera;
 
-    Player Player { get; set; }
+    PlayerMovementContoller Player { get; set; }
 
     int enemyLayerMask; 
     int groundLayerMask; 

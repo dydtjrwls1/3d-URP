@@ -30,7 +30,7 @@ public class AmmoUI : MonoBehaviour
 
     void Start()
     {
-        Player player = GameManager.Instance.Player;
+        PlayerMovementContoller player = GameManager.Instance.Player;
 
         player.onWeaponChange += UpdateAmmoDisplay;
 

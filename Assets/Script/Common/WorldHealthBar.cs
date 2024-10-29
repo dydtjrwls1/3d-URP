@@ -9,7 +9,7 @@ public class WorldHealthBar : MonoBehaviour
 
     public Image healthBar;
 
-    Player player;
+    PlayerMovementContoller player;
 
     private void Start()
     {

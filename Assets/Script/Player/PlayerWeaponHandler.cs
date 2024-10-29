@@ -9,7 +9,7 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp
 
     public Transform m_WeaponPoint;
 
-    Player m_Player;
+    PlayerMovementContoller m_Player;
 
     GameObject m_CurrentWeaponPrefab;
 

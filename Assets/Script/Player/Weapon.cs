@@ -37,9 +37,11 @@ public class Weapon : MonoBehaviour
     // 발사 효과
     public ParticleSystem fireEffect;
 
-    Player player;
+    PlayerMovementContoller player;
 
     Light m_FireLight;
+
+    float lightTime = 0.1f;
 
     // 총알의 총 개수
     int m_TotalAmmo;
@@ -157,5 +159,29 @@ public class Weapon : MonoBehaviour
 
         // 장전 끝을 알리는 델리게이트 실행
         onReload?.Invoke(false);
+    }
+
+    public void StartFireEffectCoroutine()
+    {
+        StopAllCoroutines();
+        StartCoroutine(OnFireEffect());
+    }
+
+    IEnumerator OnFireEffect()
+    {
+        float elapsedTime = lightTime;
+
+        m_FireLight.enabled = true;
+        fireEffect.Play();
+
+        while (elapsedTime > 0f)
+        {
+            elapsedTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        m_FireLight.enabled = false;
+
+        //m_FireLightOnCoroutune = null;
     }
 }

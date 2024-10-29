@@ -32,7 +32,7 @@ public class GunPointController : MonoBehaviour
 
     private void Start()
     {
-        Player player = GameManager.Instance.Player;
+        PlayerMovementContoller player = GameManager.Instance.Player;
 
         player.onAim += Aim;
     }

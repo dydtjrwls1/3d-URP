@@ -31,7 +31,7 @@ public class ScorePanel : MonoBehaviour
     {
         CurrentScore = 0f;
 
-        Player player = GameManager.Instance.Player;
+        PlayerMovementContoller player = GameManager.Instance.Player;
 
         player.onScoreChange += (score) =>
         {

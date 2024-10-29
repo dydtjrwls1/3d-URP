@@ -48,7 +48,7 @@ public class EnemyBase : RecycleObject
 
     bool m_IsAlive = true;
 
-    public Player Player { get; set; }
+    public PlayerMovementContoller Player { get; set; }
 
     // public event Action<uint> onEnemyHealthChange = null;
 

@@ -16,7 +16,7 @@ public class PlayerGrenadeHandler : MonoBehaviour
 
     public bool IsGrenadeReady => m_IsGrenadeReady;
 
-    Player player;
+    PlayerMovementContoller player;
 
     Transform m_GrenadePoint;
 
@@ -39,7 +39,7 @@ public class PlayerGrenadeHandler : MonoBehaviour
 
     private void Awake()
     {
-        player = GetComponent<Player>();
+        player = GetComponent<PlayerMovementContoller>();
 
         Transform child = transform.GetChild(1);
 

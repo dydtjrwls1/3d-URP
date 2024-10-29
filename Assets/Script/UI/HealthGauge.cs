@@ -14,7 +14,7 @@ public class HealthGauge : MonoBehaviour
 
     private void Start()
     {
-        Health health = GameManager.Instance.Player.Health;
+        Health health = GameManager.Instance.Player.GetComponent<Health>();
         health.onHealthChange += (ratio) => { healthSlider.value = ratio; };
     }
 }
