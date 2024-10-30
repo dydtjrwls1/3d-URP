@@ -44,19 +44,19 @@ public class Factory : SingleTon<Factory>
             }
         }
 
-        enemyPools = GetComponentsInChildren<EnemyPool>();
-        if (enemyPools.Length > 0)
+        enemyEquipmentPools = GetComponentsInChildren<EnemyEquipmentPool>();
+        if (enemyEquipmentPools.Length > 0)
         {
-            foreach (var pool in enemyPools)
+            foreach (var pool in enemyEquipmentPools)
             {
                 pool.Initialize();
             }
         }
 
-        enemyEquipmentPools = GetComponentsInChildren<EnemyEquipmentPool>();
-        if (enemyEquipmentPools.Length > 0)
+        enemyPools = GetComponentsInChildren<EnemyPool>();
+        if (enemyPools.Length > 0)
         {
-            foreach (var pool in enemyEquipmentPools)
+            foreach (var pool in enemyPools)
             {
                 pool.Initialize();
             }
@@ -109,12 +109,12 @@ public class Factory : SingleTon<Factory>
             enemy = enemyPools[index].GetObject(position);
 
             // 적이 장비를 장착할 수 있는경우 장비 장착
-            IEquipable equipable = enemy as IEquipable;
+            //IEquipable equipable = enemy as IEquipable;
 
-            if(equipable != null)
-            {
-                equipable.Equip();
-            }
+            //if(equipable != null)
+            //{
+            //    equipable.Equip();
+            //}
         }
         
         return enemy;

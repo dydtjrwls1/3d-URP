@@ -18,6 +18,7 @@ public class PlayerInputController : MonoBehaviour
     public event Action onKeyThree = null;
     public event Action onGrenade = null;
 
+
     private void Awake()
     {
         inputAction = new PlayerInputActions();
@@ -38,6 +39,8 @@ public class PlayerInputController : MonoBehaviour
         inputAction.Player.Num3.performed += OnKeyThree;
         inputAction.Player.Grenade.performed += OnGrenade;
     }
+
+    
 
     private void OnDisable()
     {
@@ -77,6 +80,11 @@ public class PlayerInputController : MonoBehaviour
         onFire?.Invoke(!context.canceled);
     }
 
+    //private void OnKey(InputAction.CallbackContext obj)
+    //{
+    //    obj.ReadValue
+    //}
+
     private void OnKeyOne(InputAction.CallbackContext _)
     {
         onKeyOne?.Invoke();
@@ -90,6 +98,7 @@ public class PlayerInputController : MonoBehaviour
     {
         onKeyThree?.Invoke();
     }
+
 
     private void OnGrenade(InputAction.CallbackContext _)
     {

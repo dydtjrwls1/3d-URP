@@ -175,11 +175,13 @@ public class EnemyBase : RecycleObject
         if (m_IsAlive)
         {
             m_IsAlive = false;
+            m_Agent.enabled = false;
+
             m_Animator.SetTrigger(Die_Hash);
             Player.Score += score;
 
             DeactivateCollider();
-            m_Agent.enabled = false;
+            
             //m_Rigidbody.detectCollisions = false;
             DisableTimer(5.0f);
         }

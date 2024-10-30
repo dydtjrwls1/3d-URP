@@ -9,7 +9,10 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp
 
     public Transform m_WeaponPoint;
 
+
     PlayerMovementContoller m_Player;
+
+    PlayerInputController m_PlayerInputController;
 
     GameObject m_CurrentWeaponPrefab;
 
@@ -33,15 +36,16 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp
             w.PrefabObject = obj; 
             obj.SetActive(false);
         }
+
+        m_PlayerInputController = GetComponent<PlayerInputController>();
+        m_Player = GetComponent<PlayerMovementContoller>();
     }
 
     private void Start()
     {
-        m_Player = GameManager.Instance.Player;
-
-        m_Player.onKeyOne += OnKeyOne;
-        m_Player.onKeyTwo += OnKeyTwo;
-        m_Player.onKeyThree += OnKeyThree;
+        m_PlayerInputController.onKeyOne += OnKeyOne;
+        m_PlayerInputController.onKeyTwo += OnKeyTwo;
+        m_PlayerInputController.onKeyThree += OnKeyThree;
 
         AddWeapon(Pistol);
         AddWeapon(Rifle);

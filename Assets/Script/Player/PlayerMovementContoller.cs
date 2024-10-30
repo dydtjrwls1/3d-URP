@@ -109,7 +109,7 @@ public class PlayerMovementContoller : MonoBehaviour
 
     public event Action onAim = null;
 
-    public event Action onGrenadeFire = null;
+    //public event Action onGrenadeFire = null;
 
     public event Action<Weapon> onBulletFire = null;
 
@@ -117,11 +117,9 @@ public class PlayerMovementContoller : MonoBehaviour
 
     public event Action<float> onScoreChange = null;
 
-    public event Action onKeyOne = null;
-    public event Action onKeyTwo = null;
-    public event Action onKeyThree = null;
-
-    public event Action onGrenade = null;
+    //public event Action onKeyOne = null;
+    //public event Action onKeyTwo = null;
+    //public event Action onKeyThree = null;
 
     const float PI = 3.141592f;
 
@@ -186,9 +184,9 @@ public class PlayerMovementContoller : MonoBehaviour
         // 마우스 왼쪽 클릭 시 실행
         m_PlayerInputController.onFire += (isFire) =>
         {
-            if (!CurrentWeapon.gameObject.activeSelf && m_PlayerGrenadeHandler.IsGrenadeReady)
+            if (!CurrentWeapon.gameObject.activeSelf)// && m_PlayerGrenadeHandler.IsGrenadeReady)
             {
-                onGrenadeFire?.Invoke();
+                //onGrenadeFire?.Invoke();
                 CurrentWeapon.gameObject.SetActive(true);
             }
             else
@@ -197,9 +195,9 @@ public class PlayerMovementContoller : MonoBehaviour
             }
         };
 
-        m_PlayerInputController.onKeyOne += OnKeyOne;
-        m_PlayerInputController.onKeyTwo += OnKeyTwo;
-        m_PlayerInputController.onKeyThree += OnKeyThree;
+        //m_PlayerInputController.onKeyOne += OnKeyOne;
+        //m_PlayerInputController.onKeyTwo += OnKeyTwo;
+        //m_PlayerInputController.onKeyThree += OnKeyThree;
 
         m_PlayerInputController.onGrenade += OnGrenade;
     }
@@ -383,31 +381,42 @@ public class PlayerMovementContoller : MonoBehaviour
         m_WeaponChangePosition = new Vector3(0, -weaponChangeOffset, 0);
     }
 
-    private void OnKeyOne()
-    {
-        onKeyOne?.Invoke();
-    }
+    //private void OnKey(int number)
+    //{
+    //    onKey?.Invoke(number);
+    //}
 
-    private void OnKeyTwo()
-    {
-        onKeyTwo?.Invoke();
-    }
-    private void OnKeyThree()
-    {
-        onKeyThree?.Invoke();
-    }
+    //private void OnKeyOne()
+    //{
+    //    onKeyOne?.Invoke();
+    //}
+
+    //private void OnKeyTwo()
+    //{
+    //    onKeyTwo?.Invoke();
+    //}
+    //private void OnKeyThree()
+    //{
+    //    onKeyThree?.Invoke();
+    //}
 
     private void OnGrenade()
     {
-        onGrenade?.Invoke();
+        //onGrenade?.Invoke();
 
         // 재장전 중이거나 이미 투척준비 상태일경우는 해당 안됨
-        if (m_CurrentWeapon.CurrentAmmo != 0 && m_PlayerGrenadeHandler.IsGrenadeReady)
+        if (m_CurrentWeapon.CurrentAmmo != 0 && m_PlayerGrenadeHandler.GrenadeCount > 0)
         {
             // 무기 관련 행동 잠시 정지
             CurrentWeapon.gameObject.SetActive(false);
         }
+
     }
+
+    //public void DeactivateWeapon()
+    //{
+    //    CurrentWeapon?.gameObject.SetActive(false);
+    //}
 
     void SetFOV(float fov)
     {

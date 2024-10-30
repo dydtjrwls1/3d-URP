@@ -16,7 +16,7 @@ public class PlayerGrenadeHandler : MonoBehaviour
 
     public bool IsGrenadeReady => m_IsGrenadeReady;
 
-    PlayerMovementContoller player;
+    PlayerInputController m_PlayerInputController;
 
     Transform m_GrenadePoint;
 
@@ -39,7 +39,7 @@ public class PlayerGrenadeHandler : MonoBehaviour
 
     private void Awake()
     {
-        player = GetComponent<PlayerMovementContoller>();
+        m_PlayerInputController = GetComponent<PlayerInputController>();
 
         Transform child = transform.GetChild(1);
 
@@ -51,8 +51,8 @@ public class PlayerGrenadeHandler : MonoBehaviour
         m_GrenadeGameObject = Instantiate(grenadePrefab, m_GrenadePoint);
         m_GrenadeGameObject.SetActive(false);
 
-        player.onGrenade += GrenadeReady;
-        player.onGrenadeFire += GrenadeFire;
+        m_PlayerInputController.onGrenade += GrenadeReady;
+        m_PlayerInputController.onFire += GrenadeFire;
     }
 
     private void GrenadeReady()
@@ -64,14 +64,14 @@ public class PlayerGrenadeHandler : MonoBehaviour
         }
     }
 
-    private void GrenadeFire()
+    private void GrenadeFire(bool _)
     { 
         if (m_IsGrenadeReady)
         {
             m_GrenadeGameObject?.SetActive(false);
 
             // 투척무기 발사
-            Factory.Instance.GetProjectile(Camera.main.transform.position);
+            Factory.Instance.GetProjectile(Camera.main.transform.position + Camera.main.transform.forward * 0.5f);
 
             GrenadeCount--;
             m_IsGrenadeReady = false;
