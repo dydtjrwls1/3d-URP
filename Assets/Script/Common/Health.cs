@@ -23,6 +23,12 @@ public class Health : MonoBehaviour, IInitialize
             {
                 m_CurrentHealth = value;
                 onHealthChange?.Invoke(m_CurrentHealth * inverseMaxHealth);
+
+                // 체력에 0 이하이면 사망 이벤트 발생 IsAlive는 자동적으로 false로 변환
+                if (m_CurrentHealth <= 0.0f)
+                {
+                    onDie?.Invoke();
+                }
             }
         }
     }
@@ -39,11 +45,11 @@ public class Health : MonoBehaviour, IInitialize
     public void OnDamage(float damage) 
     {
         CurrentHealth -= damage;
+    }
 
-        if (CurrentHealth <= 0.0f)
-        {
-            onDie?.Invoke();
-        }
+    public void OnHeal(float amount)
+    {
+        CurrentHealth += amount;
     }
 
     public void Initialize()

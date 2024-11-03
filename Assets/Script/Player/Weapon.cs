@@ -167,6 +167,13 @@ public class Weapon : MonoBehaviour
         StartCoroutine(OnFireEffect());
     }
 
+    public void DeactivateAmmoDelegate()
+    {
+        onReloadTimeChange = null;
+        onCurrentBulletChange = null;
+        onTotalBulletChange = null;
+    }
+
     IEnumerator OnFireEffect()
     {
         float elapsedTime = lightTime;

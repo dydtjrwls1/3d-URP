@@ -54,7 +54,7 @@ public class GameManager : SingleTon<GameManager>
 
         itemDataManager = GetComponent<ItemDataManager>();
 
-        inputController = player.GetComponent<PlayerInputController>();
+        inputController = FindAnyObjectByType<PlayerInputController>();
     }
 
     protected override void OnPreInitialize()

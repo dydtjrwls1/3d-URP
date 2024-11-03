@@ -19,7 +19,6 @@ public class EnemyAttack : MonoBehaviour, IInitialize
         hitBox.onHit += (health) => 
         { 
             health.OnDamage(damage);
-            Debug.Log(damage);
         };
     }
 

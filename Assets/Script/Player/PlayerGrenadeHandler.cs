@@ -22,6 +22,8 @@ public class PlayerGrenadeHandler : MonoBehaviour
 
     GameObject m_GrenadeGameObject;
 
+    public event Action<bool> onGrenadeReady = null;
+
     public int GrenadeCount
     {
         get => m_GrenadeCount;
@@ -53,17 +55,27 @@ public class PlayerGrenadeHandler : MonoBehaviour
 
         m_PlayerInputController.onGrenade += GrenadeReady;
         m_PlayerInputController.onFire += GrenadeFire;
+
+        // 투척 준비항태에서 무기변경 시 투척준비 상태 해제를 위한 연결
+        PlayerMovementContoller playerMovementContoller = GetComponent<PlayerMovementContoller>();
+        //playerMovementContoller.onWeaponChange += (_) =>
+        //{
+        //    GrenadeDeactivate();
+        //};
     }
 
+    // 투척 준비상태에 진입시 실행할 함수
     private void GrenadeReady()
     {
         if(GrenadeCount > 0)
         {
             m_IsGrenadeReady = true;
             m_GrenadeGameObject?.SetActive(true);
+            onGrenadeReady?.Invoke(m_IsGrenadeReady);
         }
     }
 
+    // 투척준비상태에서 마우스 왼쪽클릭으로 발사했을 시 실행되는 함수
     private void GrenadeFire(bool _)
     { 
         if (m_IsGrenadeReady)
@@ -75,6 +87,14 @@ public class PlayerGrenadeHandler : MonoBehaviour
 
             GrenadeCount--;
             m_IsGrenadeReady = false;
+            onGrenadeReady?.Invoke(m_IsGrenadeReady);
         }
+    }
+
+    private void GrenadeDeactivate()
+    {
+        m_IsGrenadeReady = false;
+        m_GrenadeGameObject?.SetActive(false);
+        onGrenadeReady?.Invoke(m_IsGrenadeReady);
     }
 }

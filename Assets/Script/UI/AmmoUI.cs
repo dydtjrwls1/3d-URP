@@ -32,7 +32,7 @@ public class AmmoUI : MonoBehaviour
     {
         PlayerMovementContoller player = GameManager.Instance.Player;
 
-        player.onWeaponChange += UpdateAmmoDisplay;
+        //player.onWeaponChange += UpdateAmmoDisplay;
 
         foreach(var weapon in player.GetComponentsInChildren<Weapon>(true))
         {
@@ -41,8 +41,10 @@ public class AmmoUI : MonoBehaviour
             weapon.onTotalBulletChange += UpdateTotalAmmoDisplay; // pickup 으로 인해 총 개수가 변할경우 실행된다
         }
 
+        PlayerGrenadeHandler handler = player.GetComponent<PlayerGrenadeHandler>();
+
         // 투척무기 관련 이벤트 연결
-        player.GrenadeHandler.onGrenadeCountChange += UpdateGrenadeCountDisplay;
+        handler.onGrenadeCountChange += UpdateGrenadeCountDisplay;
         // player 의 setWeapon 함수가 시작한 뒤에 UpdateMaxAmmoDisplay 함수가 등록된다. 실행 타이밍이 안맞기 때문에 Update를 한번 해준다.
         // UpdateAmmoDisplay(player.CurrentWeapon);
         // UpdateCurrentAmmoDisplay(player.CurrentWeapon.maxAmmo);

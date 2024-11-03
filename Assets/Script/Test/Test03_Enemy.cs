@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Test03_Enemy : TestBase
 {
@@ -26,6 +27,18 @@ public class Test03_Enemy : TestBase
 
     protected override void Num4_performed(InputAction.CallbackContext obj)
     {
-       
+        // LoadingManager loadingManager = FindAnyObjectByType<LoadingManager>();
+        // if (loadingManager != null)
+        // {
+        //     loadingManager.LoadScene(1);
+        // }
+        
+        SceneManager.LoadScene(0);
+    }
+
+    protected override void Num5_performed(InputAction.CallbackContext obj)
+    {
+        HealthPresenter presenter = GameManager.Instance.Player.GetComponentInChildren<HealthPresenter>();
+        presenter.OnDamage(60.0f);
     }
 }

@@ -34,7 +34,7 @@ public class GunPointController : MonoBehaviour
     {
         PlayerMovementContoller player = GameManager.Instance.Player;
 
-        player.onAim += Aim;
+        //player.onAim += Aim;
     }
 
     private void Update()

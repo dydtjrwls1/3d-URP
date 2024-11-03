@@ -50,13 +50,9 @@ public class PlayerMovementContoller : MonoBehaviour
 
     PlayerInputController m_PlayerInputController;
 
-    PlayerGrenadeHandler m_PlayerGrenadeHandler;
-
     CinemachineVirtualCamera m_PlayerCamera;
 
     Transform m_WeaponPoint;
-
-    Coroutine m_FireLightOnCoroutune;
 
     Weapon m_CurrentWeapon;
 
@@ -83,8 +79,6 @@ public class PlayerMovementContoller : MonoBehaviour
     float m_CameraVerticalAngle = 0f;
     float m_Score;
 
-    
-
     public float Score
     {
         get => m_Score;
@@ -100,29 +94,20 @@ public class PlayerMovementContoller : MonoBehaviour
 
     public Transform WeaponPoint => m_WeaponPoint;
 
-    public PlayerGrenadeHandler GrenadeHandler => m_PlayerGrenadeHandler;
-
     public Weapon CurrentWeapon => m_CurrentWeapon;
 
     // 무기의 남은 탄창 수가 0이 아니고 투척무기 준비상태가 아니고 마우스 오른쪽 버튼을 눌렀을 경우
     public bool CanFire => m_CurrentWeapon.CanFire && m_IsFire;
 
-    public event Action onAim = null;
-
-    //public event Action onGrenadeFire = null;
+    //public event Action onAim = null;
 
     public event Action<Weapon> onBulletFire = null;
 
-    public event Action<Weapon> onWeaponChange = null;
+    // public event Action<Weapon> onWeaponChange = null;
 
     public event Action<float> onScoreChange = null;
 
-    //public event Action onKeyOne = null;
-    //public event Action onKeyTwo = null;
-    //public event Action onKeyThree = null;
-
     const float PI = 3.141592f;
-
 
     private void Awake()
     {
@@ -135,7 +120,6 @@ public class PlayerMovementContoller : MonoBehaviour
 
         m_PlayerInputController = GetComponent<PlayerInputController>();
 
-        m_PlayerGrenadeHandler = GetComponent<PlayerGrenadeHandler>();
     }
 
     private void Start()
@@ -145,21 +129,18 @@ public class PlayerMovementContoller : MonoBehaviour
 
         m_MainLocalPosition = defaultWeaponPosition.localPosition;
 
-        // initialize 해야하는 컴포넌트 초기화
-        IInitialize[] inits = GetComponents<IInitialize>();
-        if (inits.Length > 0) 
-        {
-            foreach (IInitialize init in inits)
-            {
-                init.Initialize();
-            }
-        }
+        // 현재 무기 변경시 사용할 함수 연결
+        PlayerWeaponHandler handler = GetComponent<PlayerWeaponHandler>();
+        handler.onWeaponChange += SetWeaponSetting;
+        handler.onGrenadeReady += SwapMode;
 
         // 마우스 움직임마다 실행되는 부분
         m_PlayerInputController.onMouseMove += (delta) =>
         {
+            // HandlePlayerMoverment에서 사용할 변수 설정
             m_MouseXInput = Mathf.Clamp(delta.x, -maxRotationInputValue, maxRotationInputValue);
             m_MouseYInput = Mathf.Clamp(delta.y, -maxRotationInputValue, maxRotationInputValue);
+
         };
 
         // 플레이어 움직임이 있을때마다 실행된다
@@ -174,32 +155,36 @@ public class PlayerMovementContoller : MonoBehaviour
         {
             m_IsAim = !m_IsAim;
 
-            // Aim 상태일경우 트리거 발동
-            if (m_IsAim)
-            {
-                onAim?.Invoke();
-            }
+            // Aim 상태일경우와 무기가 활성화 되있을 시 트리거 발동
+            //if (m_IsAim && CurrentWeapon.gameObject.activeSelf)
+            //{
+            //    onAim?.Invoke();
+            //}
         };
 
         // 마우스 왼쪽 클릭 시 실행
         m_PlayerInputController.onFire += (isFire) =>
         {
-            if (!CurrentWeapon.gameObject.activeSelf)// && m_PlayerGrenadeHandler.IsGrenadeReady)
-            {
-                //onGrenadeFire?.Invoke();
-                CurrentWeapon.gameObject.SetActive(true);
-            }
-            else
+            // 현재 무기가 활성화 상태라면
+            if (CurrentWeapon.gameObject.activeSelf)
             {
                 m_IsFire = isFire;
             }
         };
 
-        //m_PlayerInputController.onKeyOne += OnKeyOne;
-        //m_PlayerInputController.onKeyTwo += OnKeyTwo;
-        //m_PlayerInputController.onKeyThree += OnKeyThree;
+        // initialize 해야하는 컴포넌트 초기화
+        IInitialize[] inits = GetComponents<IInitialize>();
+        if (inits.Length > 0)
+        {
+            foreach (IInitialize init in inits)
+            {
+                init.Initialize();
+            }
+        }
 
-        m_PlayerInputController.onGrenade += OnGrenade;
+        
+
+        
     }
 
     private void Update()
@@ -234,16 +219,8 @@ public class PlayerMovementContoller : MonoBehaviour
 
         if (CanFire)
         {
-            if(m_RemainsFireCoolTime < 0f)
+            if (m_RemainsFireCoolTime < 0f)
             {
-                //if(m_FireLightOnCoroutune != null)
-                //{
-                //    m_FireLightOnCoroutune = null;
-                //}
-
-                //// 총알 발사 이펙트 실행
-                //m_FireLightOnCoroutune = StartCoroutine(OnFireEffect());
-
                 m_CurrentWeapon.StartFireEffectCoroutine();
 
                 onBulletFire?.Invoke(m_CurrentWeapon);
@@ -273,7 +250,7 @@ public class PlayerMovementContoller : MonoBehaviour
         Vector3 characterVelocity = transform.TransformVector(m_InputDirection) * moveSpeed;
 
         // 공중이라면
-        if(!m_controller.isGrounded)
+        if (!m_controller.isGrounded)
         {
             characterVelocity += Vector3.up * -gravityForce;
         }
@@ -287,7 +264,7 @@ public class PlayerMovementContoller : MonoBehaviour
 
         if (m_IsMove)
         {
-            
+
             if (m_CurrentBobTime < 0)
             {
                 m_CurrentBobTime = bobRate;
@@ -376,76 +353,26 @@ public class PlayerMovementContoller : MonoBehaviour
     public void SetWeaponSetting(Weapon weapon)
     {
         m_CurrentWeapon = weapon;
-        onWeaponChange?.Invoke(m_CurrentWeapon);
+        //onWeaponChange?.Invoke(m_CurrentWeapon);
 
         m_WeaponChangePosition = new Vector3(0, -weaponChangeOffset, 0);
     }
 
-    //private void OnKey(int number)
-    //{
-    //    onKey?.Invoke(number);
-    //}
-
-    //private void OnKeyOne()
-    //{
-    //    onKeyOne?.Invoke();
-    //}
-
-    //private void OnKeyTwo()
-    //{
-    //    onKeyTwo?.Invoke();
-    //}
-    //private void OnKeyThree()
-    //{
-    //    onKeyThree?.Invoke();
-    //}
-
-    private void OnGrenade()
+    private void SwapMode(bool isGrenadeReady)
     {
-        //onGrenade?.Invoke();
+        // 수류탄 발사 준비완료 상태라면 현재  weapon 을 비활성화한다.
+        CurrentWeapon.gameObject.SetActive(!isGrenadeReady);
 
-        // 재장전 중이거나 이미 투척준비 상태일경우는 해당 안됨
-        if (m_CurrentWeapon.CurrentAmmo != 0 && m_PlayerGrenadeHandler.GrenadeCount > 0)
+        // 에임 상태에서 수류탄 준비상태 진입 시 줌아웃
+        if (m_IsAim)
         {
-            // 무기 관련 행동 잠시 정지
-            CurrentWeapon.gameObject.SetActive(false);
+            m_IsAim = false;
         }
-
     }
 
-    //public void DeactivateWeapon()
-    //{
-    //    CurrentWeapon?.gameObject.SetActive(false);
-    //}
 
     void SetFOV(float fov)
     {
         m_PlayerCamera.m_Lens.FieldOfView = fov;
     }
-
-    //IEnumerator OnFireEffect()
-    //{
-    //    float elapsedTime = lightTime;
-
-    //    CurrentWeapon.FireLight.enabled = true;
-    //    CurrentWeapon.fireEffect.Play();
-
-    //    while (elapsedTime > 0f)
-    //    {
-    //        elapsedTime -= Time.deltaTime;
-    //        yield return null;
-    //    }
-
-    //    CurrentWeapon.FireLight.enabled = false;
-
-    //    m_FireLightOnCoroutune = null;
-    //}
-
-
-#if UNITY_EDITOR
-    //public void Test_CamLock()
-    //{
-    //    inputAction.Player.MousePoint.performed -= On_MouseMove;
-    //}
-#endif
 }
