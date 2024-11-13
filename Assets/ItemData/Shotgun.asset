@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   code: 2
-  prefab: {fileID: 128567453166736957, guid: 8107f7dc456607b44a46c9740f9b9c50, type: 3}
+  prefab: {fileID: 712154720006232494, guid: cee686865f1a5234b8303a683dee4931, type: 3}
   capacity: 8

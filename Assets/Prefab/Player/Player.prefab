@@ -169,6 +169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7797106933857450889}
   - component: {fileID: 1041328118816283808}
+  - component: {fileID: 3019185777750619400}
   m_Layer: 9
   m_Name: HitBox
   m_TagString: PlayerHitBox
@@ -214,6 +215,20 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3019185777750619400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3568670766984696303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c3b60115dae4f24bb421310eff2892e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: -8660497287426316812}
+  slider: {fileID: 0}
 --- !u!1 &3943688126188289584
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,7 +335,6 @@ GameObject:
   - component: {fileID: 1395298000263882106}
   - component: {fileID: 1084126163104668116}
   - component: {fileID: -8660497287426316812}
-  - component: {fileID: 5810385869209966545}
   - component: {fileID: 5637402737063589400}
   - component: {fileID: 4798330798683888558}
   - component: {fileID: 829576119709252267}
@@ -347,6 +361,7 @@ Transform:
   - {fileID: 9173467271449527373}
   - {fileID: 297713345106561835}
   - {fileID: 7797106933857450889}
+  - {fileID: 1409410386793318603}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2521232454291280881
@@ -400,6 +415,9 @@ MonoBehaviour:
   - {fileID: 7508044950429389412, guid: ea3dec04f8812b54b8cb642e1e3c51dd, type: 3}
   - {fileID: 128567453166736957, guid: 8107f7dc456607b44a46c9740f9b9c50, type: 3}
   m_WeaponPoint: {fileID: 3410625050264866606}
+  grenadePrefab: {fileID: 9131551380139947782, guid: 34b6d20e3dad48e43858d27b45d822da,
+    type: 3}
+  maxGrenadeCount: 5
 --- !u!114 &1084126163104668116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,20 +444,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
---- !u!114 &5810385869209966545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5635179325454967451}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cd3fbf495db0044f97c25e8867a4a6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grenadePrefab: {fileID: 9131551380139947782, guid: 34b6d20e3dad48e43858d27b45d822da,
-    type: 3}
 --- !u!114 &5637402737063589400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -581,3 +585,49 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 5501794658869192070}
+--- !u!1 &7059946657946358470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1409410386793318603}
+  - component: {fileID: 2961320673262522865}
+  m_Layer: 9
+  m_Name: Presenters
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1409410386793318603
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7059946657946358470}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3907663538294600270}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2961320673262522865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7059946657946358470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67bdf69c8abedb645a64b0c7dbc2ac49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handler: {fileID: 1395298000263882106}
+  viewer: {fileID: 0}

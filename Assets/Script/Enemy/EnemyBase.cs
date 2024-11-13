@@ -76,6 +76,11 @@ public class EnemyBase : RecycleObject
             health.onDie += Die;
         }
 
+        if(Player == null)
+        {
+            Player = GameManager.Instance.Player;
+        }
+
         //m_Inits = GetComponents<IInitialize>();
     }
 

@@ -66,6 +66,7 @@ public class PlayerMovementContoller : MonoBehaviour
     bool m_IsFire = false;
     bool m_IsFired = false;
     bool m_IsMove = false;
+    bool m_IsGrenade = false;
 
     float m_MouseXInput;
     float m_MouseYInput;
@@ -168,7 +169,15 @@ public class PlayerMovementContoller : MonoBehaviour
             // 현재 무기가 활성화 상태라면
             if (CurrentWeapon.gameObject.activeSelf)
             {
-                m_IsFire = isFire;
+                // 수류탄 발사와 동시에 총이 발사되는것 방지용
+                if (m_IsGrenade)
+                {
+                    m_IsGrenade = false;
+                }
+                else
+                {
+                    m_IsFire = isFire;
+                }
             }
         };
 
@@ -181,10 +190,6 @@ public class PlayerMovementContoller : MonoBehaviour
                 init.Initialize();
             }
         }
-
-        
-
-        
     }
 
     private void Update()
@@ -353,8 +358,6 @@ public class PlayerMovementContoller : MonoBehaviour
     public void SetWeaponSetting(Weapon weapon)
     {
         m_CurrentWeapon = weapon;
-        //onWeaponChange?.Invoke(m_CurrentWeapon);
-
         m_WeaponChangePosition = new Vector3(0, -weaponChangeOffset, 0);
     }
 
@@ -362,6 +365,11 @@ public class PlayerMovementContoller : MonoBehaviour
     {
         // 수류탄 발사 준비완료 상태라면 현재  weapon 을 비활성화한다.
         CurrentWeapon.gameObject.SetActive(!isGrenadeReady);
+
+        if (isGrenadeReady)
+        {
+            m_IsGrenade = true;
+        }
 
         // 에임 상태에서 수류탄 준비상태 진입 시 줌아웃
         if (m_IsAim)

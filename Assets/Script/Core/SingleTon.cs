@@ -66,12 +66,12 @@ public class SingleTon<T> : MonoBehaviour where T : Component
 
     private void OnEnable()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded; // 씬이 로딩되었을 때 OnSceneLoaded 함수를 실행하도록 등록.
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded; // 씬이 로딩되었을 때 OnSceneLoaded 함수를 실행하도록 등록.
     }
 
     private void OnDisable()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded; // 등록 해제
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded; // 등록 해제
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

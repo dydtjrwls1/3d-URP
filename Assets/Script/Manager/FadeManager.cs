@@ -27,7 +27,7 @@ public class FadeManager : SingleTon<FadeManager>
         fadeCanvas.sortingOrder = 1;
         yield return StartCoroutine(Fade(0, 1));
 
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneNum);
+        AsyncOperation asyncLoad = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneNum);
         while (!asyncLoad.isDone)
         {
             yield return null;

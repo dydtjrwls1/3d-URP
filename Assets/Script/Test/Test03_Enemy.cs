@@ -32,8 +32,8 @@ public class Test03_Enemy : TestBase
         // {
         //     loadingManager.LoadScene(1);
         // }
-        
-        SceneManager.LoadScene(0);
+
+        SceneController.Instance.ReloadCurrentScene();
     }
 
     protected override void Num5_performed(InputAction.CallbackContext obj)

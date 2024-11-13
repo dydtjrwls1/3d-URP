@@ -44,7 +44,7 @@ public class LoadingWindow : MonoBehaviour
         float elapsedTime = 0.0f;
         bool isLoadingComplete = false;
 
-        async = SceneManager.LoadSceneAsync(sceneNumber);
+        async = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneNumber);
         async.allowSceneActivation = false;
 
         // 로딩이 완료될 때 까지

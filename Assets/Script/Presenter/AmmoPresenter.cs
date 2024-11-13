@@ -12,13 +12,12 @@ public class AmmoPresenter : MonoBehaviour
 
     Weapon currentWeapon;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         handler.onWeaponChange += OnWeaponChange;
         handler.onGrenadeCountChange += UpdateGrenadeCountDisplay;
     }
-    
+
     private void UpdateGrenadeCountDisplay(int count)
     {
         viewer.GrenadeUI.text = count.ToString();

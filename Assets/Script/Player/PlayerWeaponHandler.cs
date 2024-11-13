@@ -89,13 +89,14 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp, IInitialize
         m_GrenadeGameObject = Instantiate(grenadePrefab, m_GrenadePoint);
         m_GrenadeGameObject.SetActive(false);
 
-        PlayerInputController m_PlayerInputController = GetComponent<PlayerInputController>();
+        PlayerInputController inputController = GetComponent<PlayerInputController>();
 
-        m_PlayerInputController.onKeyOne += OnKeyOne;
-        m_PlayerInputController.onKeyTwo += OnKeyTwo;
-        m_PlayerInputController.onKeyThree += OnKeyThree;
+        inputController.onKeyOne += OnKeyOne;
+        inputController.onKeyTwo += OnKeyTwo;
+        inputController.onKeyThree += OnKeyThree;
 
-        
+        inputController.onGrenade += OnGrenadeReady;
+        inputController.onFire += OnGrenadeFire;
     }
 
     private Weapon GetWeapon(int index)
@@ -216,6 +217,7 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp, IInitialize
         // 총 추가하기 (굳이 필요하진 않음)
         AddWeapon(Pistol);
         AddWeapon(Rifle);
+        AddWeapon(Shotgun);
 
         // 현재 무기 Pistol로 설정
         SetWeapon(Pistol);

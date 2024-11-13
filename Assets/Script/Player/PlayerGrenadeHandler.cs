@@ -57,7 +57,7 @@ public class PlayerGrenadeHandler : MonoBehaviour
         m_PlayerInputController.onFire += GrenadeFire;
 
         // 투척 준비항태에서 무기변경 시 투척준비 상태 해제를 위한 연결
-        PlayerMovementContoller playerMovementContoller = GetComponent<PlayerMovementContoller>();
+        //PlayerMovementContoller playerMovementContoller = GetComponent<PlayerMovementContoller>();
         //playerMovementContoller.onWeaponChange += (_) =>
         //{
         //    GrenadeDeactivate();
