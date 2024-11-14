@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WorldHealthBar : MonoBehaviour
+public class WorldHealthBar : MonoBehaviour, IInitialize
 {
     public Transform healthBarPivot;
 
@@ -11,10 +11,16 @@ public class WorldHealthBar : MonoBehaviour
 
     PlayerMovementContoller player;
 
+    public void Initialize()
+    {
+        if (player == null)
+        {
+            player = GameManager.Instance.Player;
+        }
+    }
+
     private void Start()
     {
-        player = GameManager.Instance.Player;
-
         Health health = GetComponent<Health>();
         health.onHealthChange += (ratio) => { healthBar.fillAmount = ratio; };
     }

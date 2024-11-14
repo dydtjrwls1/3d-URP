@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6637046982093507873}
-  - component: {fileID: 6188952877555700654}
+  - component: {fileID: 885969045564002346}
   m_Layer: 5
   m_Name: AmmoUI
   m_TagString: Untagged
@@ -41,7 +41,7 @@ RectTransform:
   m_AnchoredPosition: {x: -92, y: 12}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6188952877555700654
+--- !u!114 &885969045564002346
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -50,7 +50,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 163078932726390004}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a51b5203b4528624f81b3369b42c1975, type: 3}
+  m_Script: {fileID: 11500000, guid: 337042bdae690864f963a381e9e65220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &465550213345106073
@@ -609,7 +609,7 @@ GameObject:
   - component: {fileID: 6405513157782450448}
   - component: {fileID: 798780198314360363}
   m_Layer: 5
-  m_Name: MaxAmmo
+  m_Name: TotalAmmo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

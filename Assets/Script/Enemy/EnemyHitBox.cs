@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class EnemyHitBox : MonoBehaviour
 {
-    public event Action<HealthPresenter> onHit = null;
+    public event Action<Health> onHit = null;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("PlayerHitBox"))
         {
-            HealthPresenter health = other.GetComponent<HealthPresenter>();
+            Health health = other.GetComponentInParent<Health>();
             if (health != null)
             {
                 onHit?.Invoke(health);

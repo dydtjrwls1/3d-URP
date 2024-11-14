@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,6 +22,13 @@ public class SceneController : SingleTon<SceneController>
     // 게임오버일 경우 현재 신 로드
     IEnumerator LoadCurrentSceneAsync()
     {
+        // 플레이어 인풋 시스템 정지
+        PlayerInputController controller = GameManager.Instance.Player?.GetComponent<PlayerInputController>();
+        if (controller != null) { controller.DeActivateInputSystem(); }
+
+        // 모든 오브젝트 풀의 오브젝트 비활성화
+        Factory.Instance?.DisableAll();
+
         // 게임 오버 화면으로 전환
         yield return StartCoroutine(ScreenFader.Instance.FadeOut(ScreenFader.ScreenType.GameOver));
 
@@ -55,11 +60,21 @@ public class SceneController : SingleTon<SceneController>
 
         // 현재 화면으로 전환
         yield return StartCoroutine(ScreenFader.Instance.FadeIn());
+
+        // 플레이어 인풋 시스템 활성화
+        controller?.ActivateInputSystem();
     }
 
     // 특정 신 로드
     IEnumerator LoadSceneAsync(int sceneId)
     {
+        // 플레이어 인풋 시스템 정지
+        PlayerInputController controller = GameManager.Instance.Player?.GetComponent<PlayerInputController>();
+        if (controller != null) { controller.DeActivateInputSystem(); }
+
+        // 모든 오브젝트 풀의 오브젝트 비활성화
+        //Factory.Instance?.DisableAll();
+
         // 로딩화면으로 전환
         yield return StartCoroutine(ScreenFader.Instance.FadeOut(ScreenFader.ScreenType.Loading));
 
@@ -67,6 +82,9 @@ public class SceneController : SingleTon<SceneController>
 
         // 현재 화면으로 전환
         yield return StartCoroutine(ScreenFader.Instance.FadeIn());
+
+        // 플레이어 인풋 시스템 활성화
+        controller?.ActivateInputSystem();
     }
 
     public void RestartBoolChange()

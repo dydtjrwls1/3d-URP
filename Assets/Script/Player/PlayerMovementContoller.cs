@@ -135,6 +135,13 @@ public class PlayerMovementContoller : MonoBehaviour
         handler.onWeaponChange += SetWeaponSetting;
         handler.onGrenadeReady += SwapMode;
 
+        // 플레이어 사망 시 재시작
+        Health health = GetComponent<Health>();
+        health.onDie += () =>
+        {
+            SceneController.Instance.ReloadCurrentScene();
+        };
+
         // 마우스 움직임마다 실행되는 부분
         m_PlayerInputController.onMouseMove += (delta) =>
         {
@@ -222,7 +229,7 @@ public class PlayerMovementContoller : MonoBehaviour
     {
         m_RemainsFireCoolTime -= Time.deltaTime;
 
-        if (CanFire)
+        if (CanFire && m_CurrentWeapon.gameObject.activeSelf)
         {
             if (m_RemainsFireCoolTime < 0f)
             {
@@ -370,6 +377,8 @@ public class PlayerMovementContoller : MonoBehaviour
         {
             m_IsGrenade = true;
         }
+
+        m_IsFire = false;
 
         // 에임 상태에서 수류탄 준비상태 진입 시 줌아웃
         if (m_IsAim)

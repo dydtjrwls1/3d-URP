@@ -39,9 +39,6 @@ public class PlayerInputController : MonoBehaviour
         inputAction.Player.Num3.performed += OnKeyThree;
         inputAction.Player.Grenade.performed += OnGrenade;
     }
-
-    
-
     private void OnDisable()
     {
         inputAction.Player.Grenade.performed -= OnGrenade;
@@ -103,5 +100,15 @@ public class PlayerInputController : MonoBehaviour
     private void OnGrenade(InputAction.CallbackContext _)
     {
         onGrenade?.Invoke();
+    }
+
+    public void ActivateInputSystem()
+    {
+        inputAction.Player.Enable();
+    }
+
+    public void DeActivateInputSystem()
+    {
+        inputAction.Player.Disable();
     }
 }

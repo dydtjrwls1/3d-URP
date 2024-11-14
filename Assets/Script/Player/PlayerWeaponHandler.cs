@@ -52,11 +52,8 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp, IInitialize
         get => m_CurrentGrenadeCount;
         set
         {
-            if(value < 0)
-            {
-                m_CurrentGrenadeCount = Mathf.Clamp(value, 0, maxGrenadeCount);
-                onGrenadeCountChange?.Invoke(m_CurrentGrenadeCount);
-            }
+            m_CurrentGrenadeCount = Mathf.Clamp(value, 0, maxGrenadeCount);
+            onGrenadeCountChange?.Invoke(m_CurrentGrenadeCount);
         }
     }
 
@@ -184,6 +181,8 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp, IInitialize
     // 투척준비상태에서 마우스 왼쪽클릭으로 발사했을 시 실행되는 함수
     private void OnGrenadeFire(bool _)
     {
+
+
         if (m_IsGrenadeReady)
         {
             m_GrenadeGameObject?.SetActive(false);
@@ -200,14 +199,21 @@ public class PlayerWeaponHandler : MonoBehaviour, IPickUp, IInitialize
 
     public void PickUp(ItemCode code, int capacity)
     {
-        int index = (int)code;
-
-        if (HasWeapon(index, out Weapon weapon))
+        if(code == ItemCode.Grenade)
         {
-            if(weapon != null)
+            CurrentGrenadeCount++;
+        }
+        else
+        {
+            int index = (int)code;
+
+            if (HasWeapon(index, out Weapon weapon))
             {
-                // 총알 추가
-                weapon.TotalAmmo += capacity;
+                if (weapon != null)
+                {
+                    // 총알 추가
+                    weapon.TotalAmmo += capacity;
+                }
             }
         }
     }

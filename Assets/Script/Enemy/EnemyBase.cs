@@ -76,11 +76,6 @@ public class EnemyBase : RecycleObject
             health.onDie += Die;
         }
 
-        if(Player == null)
-        {
-            Player = GameManager.Instance.Player;
-        }
-
         //m_Inits = GetComponents<IInitialize>();
     }
 
@@ -92,6 +87,11 @@ public class EnemyBase : RecycleObject
 
     protected override void OnReset()
     {
+        if (Player == null)
+        {
+            Player = GameManager.Instance.Player;
+        }
+
         m_CurrentAttackCoolTime = attackCoolTime;
 
         ActivateCollider();

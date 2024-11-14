@@ -169,7 +169,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7797106933857450889}
   - component: {fileID: 1041328118816283808}
-  - component: {fileID: 3019185777750619400}
   m_Layer: 9
   m_Name: HitBox
   m_TagString: PlayerHitBox
@@ -215,20 +214,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3019185777750619400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3568670766984696303}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c3b60115dae4f24bb421310eff2892e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: -8660497287426316812}
-  slider: {fileID: 0}
 --- !u!1 &3943688126188289584
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,6 +323,7 @@ GameObject:
   - component: {fileID: 5637402737063589400}
   - component: {fileID: 4798330798683888558}
   - component: {fileID: 829576119709252267}
+  - component: {fileID: 7513750284717221399}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -414,6 +400,7 @@ MonoBehaviour:
   m_WeaponPrefabs:
   - {fileID: 7508044950429389412, guid: ea3dec04f8812b54b8cb642e1e3c51dd, type: 3}
   - {fileID: 128567453166736957, guid: 8107f7dc456607b44a46c9740f9b9c50, type: 3}
+  - {fileID: 712154720006232494, guid: cee686865f1a5234b8303a683dee4931, type: 3}
   m_WeaponPoint: {fileID: 3410625050264866606}
   grenadePrefab: {fileID: 9131551380139947782, guid: 34b6d20e3dad48e43858d27b45d822da,
     type: 3}
@@ -509,6 +496,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!136 &7513750284717221399
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5635179325454967451}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6132637320807025777
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,6 +605,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1409410386793318603}
   - component: {fileID: 2961320673262522865}
+  - component: {fileID: 8779733874524160704}
+  - component: {fileID: 3638708648075689498}
   m_Layer: 9
   m_Name: Presenters
   m_TagString: Untagged
@@ -631,3 +643,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handler: {fileID: 1395298000263882106}
   viewer: {fileID: 0}
+--- !u!114 &8779733874524160704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7059946657946358470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c3b60115dae4f24bb421310eff2892e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: -8660497287426316812}
+  slider: {fileID: 0}
+--- !u!114 &3638708648075689498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7059946657946358470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50ac98b0e8335fb4eaeb41827b9b721f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMovementContoller: {fileID: 2521232454291280881}
+  scoreTextGUI: {fileID: 0}

@@ -12,7 +12,7 @@ public class Test03_Enemy : TestBase
 
     protected override void Num1_performed(InputAction.CallbackContext obj)
     {
-        Factory.Instance.GetEnemy(target.position, EnemyType.Zombie);
+        GameManager.Instance.Player.GetComponent<Health>().OnDamage(500.0f);
     }
 
     protected override void Num2_performed(InputAction.CallbackContext obj)

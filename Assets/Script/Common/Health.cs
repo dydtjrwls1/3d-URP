@@ -21,7 +21,7 @@ public class Health : MonoBehaviour, IInitialize
         {
             if (IsAlive)
             {
-                m_CurrentHealth = value;
+                m_CurrentHealth = Mathf.Clamp(value, 0f, maxHealth);
                 onHealthChange?.Invoke(m_CurrentHealth * inverseMaxHealth);
 
                 // 체력에 0 이하이면 사망 이벤트 발생 IsAlive는 자동적으로 false로 변환

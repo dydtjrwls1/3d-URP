@@ -20,7 +20,10 @@ public class Factory : SingleTon<Factory>
 
     PickUpItemPool[] pickUpItemPools;
 
-    
+    private void Awake()
+    {
+        Debug.Log(transform.childCount);
+    }
 
     protected override void OnInitialize()
     {
@@ -74,6 +77,16 @@ public class Factory : SingleTon<Factory>
         child = transform.GetChild(7);
         explosionEffectPool = child.GetComponent<ParticleEffectPool>();
         explosionEffectPool?.Initialize();
+    }
+
+    public void DisableAll()
+    {
+        RecycleObject[] objects = GetComponentsInChildren<RecycleObject>();
+
+        foreach(var obj in objects)
+        {
+            obj.gameObject.SetActive(false);
+        }
     }
 
     public Projectile GetProjectile(Vector3 position)

@@ -63,10 +63,6 @@ public class Weapon : MonoBehaviour
 
     public Action<float> onReloadTimeChange = null;
 
-    //public Action onReloadStart = null;
-
-    //public Action<int> onReloadEnd = null;
-
     public Action<bool> onReload = null;
 
     public event Action<int> onCurrentBulletChange = null;
@@ -103,8 +99,6 @@ public class Weapon : MonoBehaviour
     }
 
     public bool CanFire => m_CurrentAmmo > 0;
-
-    
 
     private void Awake()
     {

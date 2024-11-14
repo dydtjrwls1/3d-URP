@@ -11,7 +11,8 @@ public class Projectile : RecycleObject
     float duration = 2.0f;
 
     [SerializeField]
-    float drag = 5.0f;
+    [Range(0f, 1f)]
+    float drag = 1.0f;
 
     [SerializeField]
     float radius = 5.0f;
@@ -56,8 +57,9 @@ public class Projectile : RecycleObject
 
         if (isCollided)
         {
-            Vector3 nextVelocity = rb.velocity - drag * Time.deltaTime * Vector3.one;
-            rb.velocity = Vector3.Max(Vector3.zero, nextVelocity);
+            Vector3 nextVelocity = rb.velocity * drag;
+            // rb.velocity = Vector3.Max(Vector3.zero, nextVelocity);
+            rb.velocity = nextVelocity;
 
             rb.angularVelocity = Vector3.right * rb.angularVelocity.x;
         }
